@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.android.tools.build:gradle:2.0.0'
+
+    // NOTE: Do not place your application dependencies here; they belong
+    // in the individual module build.gradle files
+  }
+}
+
+repositories {
+  jcenter()
+}
+
+
+android {
+  compileSdkVersion 23
+  buildToolsVersion '25.0.0'
+
+  defaultConfig {
+    applicationId "com.examples.inspire"
+    minSdkVersion 16
+    targetSdkVersion 23
+    versionCode 1
+    versionName "1.0"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
+  lintOptions {
+    disable 'InvalidPackage', 'RtlCompat'
+  }
+}
+
+dependencies {
+  compile fileTree( include: ['*.jar'], dir: 'libs' )
+  compile "com.android.support:support-v4:23.0.0"
+  
+  compile group: 'com.backendless', name: 'backendless', version: '4.0.3'
+}

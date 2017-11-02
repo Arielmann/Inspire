@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Inspire</string>
+    <string name="download_content_error">There was a error downloading the quotes. Please try again in a few minutes</string>
+    <string name="action_settings">Settings</string>
+</resources>
