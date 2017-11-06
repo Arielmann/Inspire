@@ -2,5 +2,9 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-    <dimen name="quote_size">45sp</dimen>
+    <dimen name="quote_small_text_size">30sp</dimen>
+    <dimen name="quote_large_text_size">45sp</dimen>
+    <dimen name="bg_item_layout_width">150dp</dimen>
+    <dimen name="bg_item_width">100dp</dimen>
+    <dimen name="bg_item_height">100dp</dimen>
 </resources>

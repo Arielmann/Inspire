@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import inspire.ariel.inspire.common.quoteslist.Quote;
-import inspire.ariel.inspire.common.resources.AppStrings;
+import inspire.ariel.inspire.common.constants.AppStrings;
 
 
 public class QuoteUploadService extends IntentService {

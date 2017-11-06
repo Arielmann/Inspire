@@ -9,9 +9,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import inspire.ariel.inspire.Leader;
+import inspire.ariel.inspire.leader.Leader;
 import inspire.ariel.inspire.common.quoteslist.Quote;
-import inspire.ariel.inspire.common.resources.AppStrings;
+import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 
 @Module

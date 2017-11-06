@@ -9,8 +9,8 @@ import com.backendless.IDataStore;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import inspire.ariel.inspire.Leader;
-import inspire.ariel.inspire.common.resources.AppStrings;
+import inspire.ariel.inspire.leader.Leader;
+import inspire.ariel.inspire.common.constants.AppStrings;
 
 public class QuoteRetrievalService extends IntentService {
 

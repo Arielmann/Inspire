@@ -4,14 +4,29 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import inspire.ariel.inspire.common.quoteslist.model.QuotesModel;
-import inspire.ariel.inspire.common.quoteslist.model.QuotesModelImpl;
+import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
+import inspire.ariel.inspire.common.quoteslist.model.QuotesListModelImpl;
+import inspire.ariel.inspire.common.resources.ResourcesInitializer;
+import inspire.ariel.inspire.common.resources.ResourcesProvider;
+import inspire.ariel.inspire.common.resources.ResourcesProviderImpl;
 
 @Module
 public class ModelsModule {
     @Singleton
     @Provides
-    QuotesModel provideQuotesModel(){
-        return QuotesModelImpl.getInstance();
+    QuoteListModel provideQuotesListModel(){
+        return QuotesListModelImpl.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    ResourcesProvider provideResourcesProvider(){
+        return ResourcesProviderImpl.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    ResourcesInitializer provideResourcesInitializer(){
+        return ResourcesProviderImpl.getInstance();
     }
 }

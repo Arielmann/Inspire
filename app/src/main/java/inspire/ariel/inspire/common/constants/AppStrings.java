@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.common.resources;
+package inspire.ariel.inspire.common.constants;
 
 public class AppStrings {
 
@@ -25,5 +25,9 @@ public class AppStrings {
     //Other
     public static final String LEADER_NAME = "Winston Churchill";
     public static final String LEADER_DEVICE_ID = "B8E5E40A-4575-3599-FF01-A18C28199B00";
+
+    //Frags names
+    public static final String QUOTES_CREATOR_NAME = "Inspire" ;
+    public static final String QUOTES_LIST_NAME = "My Quotes";
 }
 

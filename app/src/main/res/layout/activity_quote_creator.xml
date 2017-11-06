@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/creatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg1"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/quoteEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/quote_large_text_size"
+            android:hint="@string/hint_type_quote"
+            android:inputType="textMultiLine" />
+
+        <com.yarolegovich.discretescrollview.DiscreteScrollView
+            android:id="@+id/bgPicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bg_item_picker_background_color" />
+
+
+    </RelativeLayout>
+</layout>

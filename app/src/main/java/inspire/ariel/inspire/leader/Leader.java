@@ -1,4 +1,4 @@
-package inspire.ariel.inspire;
+package inspire.ariel.inspire.leader;
 
 import com.backendless.BackendlessUser;
 

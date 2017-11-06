@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 
 import java.util.HashMap;
 
-import inspire.ariel.inspire.common.resources.AppStrings;
+import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.utils.imageutils.ImageUtils;
 
 public class SharedPrefManager {

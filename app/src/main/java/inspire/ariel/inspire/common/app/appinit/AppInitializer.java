@@ -7,26 +7,31 @@ import android.widget.Toast;
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
-import com.backendless.messaging.PublishOptions;
+
+import javax.inject.Inject;
 
 import inspire.ariel.inspire.common.app.InspireApplication;
-import inspire.ariel.inspire.common.datamanager.DataManager;
-import inspire.ariel.inspire.common.resources.AppStrings;
-import inspire.ariel.inspire.common.utils.sharedprefutils.SharedPrefManager;
+import inspire.ariel.inspire.common.constants.AppInts;
+import inspire.ariel.inspire.common.constants.AppStrings;
+import inspire.ariel.inspire.common.resources.ResourcesInitializer;
+import inspire.ariel.inspire.common.resources.ResourcesProviderImpl;
 
-public class AppInit {
+public class AppInitializer {
 
-    private static final String TAG = AppInit.class.getSimpleName();
+    @Inject
+    ResourcesInitializer resourcesInitializer;
 
-    public static void InitApp(final InspireApplication application) {
+    private static final String TAG = AppInitializer.class.getSimpleName();
+
+    public void InitApp(final InspireApplication application) {
         Backendless.initApp(application, AppStrings.BACKENDLESS_APPLICATION_ID, AppStrings.BACKENDLESS_API_KEY);
 
         //TODO: use realm instead of SharedPrefManager
 
-            registerDeviceToBackendless(application, "");
-            registerDeviceToBackendless(application, AppStrings.LEADER_NAME);
-
-
+        registerDeviceToBackendless(application, "");
+        registerDeviceToBackendless(application, AppStrings.LEADER_NAME);
+        application.getAppComponent().inject(this);
+        resourcesInitializer.init(application);
     }
 
     private static void registerDeviceToBackendless(final Context context, String channel) {
@@ -34,7 +39,6 @@ public class AppInit {
             @Override
             public void handleResponse(Void response) {
                 Log.d(TAG, "Successfully registered device to backendless");
-                SharedPrefManager.getInstance(context).saveBooleanToSharedPreferences(SharedPrefManager.SharedPrefProperty.IS_FIRST_LAUNCH, false);
             }
 
             @Override

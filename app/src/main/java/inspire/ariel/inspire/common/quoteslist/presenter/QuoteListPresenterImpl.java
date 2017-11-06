@@ -8,13 +8,13 @@ import com.backendless.exceptions.BackendlessFault;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import inspire.ariel.inspire.Leader;
+import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
+import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
+import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
+import inspire.ariel.inspire.leader.Leader;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.quoteslist.Quote;
-import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
-import inspire.ariel.inspire.common.quoteslist.model.QuotesModel;
-import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivityView;
-import inspire.ariel.inspire.common.resources.AppStrings;
+import inspire.ariel.inspire.common.constants.AppStrings;
 
 public class QuoteListPresenterImpl implements QuoteListPresenter {
 
@@ -23,12 +23,12 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     IDataStore<Leader> leadersStorage;
 
     @Inject
-    QuotesModel model;
+    QuoteListModel model;
 
-    private QuotesListActivityView view;
+    private QuotesListView view;
     private QuoteListAdapter adapter;
 
-    public QuoteListPresenterImpl(AppComponent appComponent, QuotesListActivityView view) {
+    public QuoteListPresenterImpl(AppComponent appComponent, QuotesListView view) {
         this.view = view;
         appComponent.inject(this);
         retrieveLeaderQuotesFromServer();
@@ -51,7 +51,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
             public void handleResponse(Leader leader) {
                 adapter = new QuoteListAdapter(leader.getQuotes());
                 Quote quote = new Quote();
-                quote.setMessage("This is an extremely loNG quote it is soooooo long so I can test if it gets out of screen! I don't want an innocent user to come and read his quote but then find out during application's runtime that he cannot read it all because SOMEONE has messed up the coding and allowed too long quotes to disappear forever");
+                quote.setMessage("This is an extremely long quote it is soooooo long so I can test if it gets out of screen! I don't want an innocent user to come and read his quote but then find out during application's runtime that he cannot read it all because SOMEONE has messed up the coding and allowed too long quotes to disappear forever");
                 leader.getQuotes().add(quote);
                 model.setDataSet(leader.getQuotes());
                 view.presentQuotesOnScreen(adapter);

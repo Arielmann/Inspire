@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="inspire.ariel.inspire">
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <uses-permission android:name="inspire.ariel.inspire.permission.C2D_MESSAGE"/>
-    <permission android:name="inspire.ariel.inspire.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="inspire.ariel.inspire.permission.C2D_MESSAGE" />
+
+    <permission
+        android:name="inspire.ariel.inspire.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
 
     <application
         android:name=".common.app.InspireApplication"
@@ -16,9 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-            android:name=".common.quoteslist.view.QuoteListActivity"
+            android:name=".common.quoteslist.view.QuotesListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -28,26 +30,37 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".leader.quotecreatorfrag.view.QuotesCreatorActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <service
             android:name=".common.quoteslist.services.QuoteRetrievalService"
-            android:exported="false" />
-
+            android:exported="false"
+           />
         <service
             android:name=".common.quoteslist.services.QuoteUploadService"
-            android:exported="false" />
+            android:exported="false"
+            />
 
 
-        <receiver android:name="com.backendless.push.BackendlessBroadcastReceiver"
+        <service android:name="com.backendless.push.BackendlessPushService"
+            android:exported="false"
+          />
+
+        <receiver
+            android:name="com.backendless.push.BackendlessBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <category android:name="inspire.ariel.inspire"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="inspire.ariel.inspire" />
             </intent-filter>
         </receiver>
-        <service android:name="com.backendless.push.BackendlessPushService" />
+
+
     </application>
-
-
 
 </manifest>

@@ -10,13 +10,15 @@ import com.backendless.exceptions.BackendlessFault;
 
 import java.util.Random;
 
-import inspire.ariel.inspire.common.app.appinit.AppInit;
+import inspire.ariel.inspire.common.app.appinit.AppInitializer;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerAppComponent;
+import inspire.ariel.inspire.common.di.ModelsModule;
 import inspire.ariel.inspire.common.di.NetworkModule;
-import inspire.ariel.inspire.common.resources.AppStrings;
+import inspire.ariel.inspire.common.di.ResourcesModule;
+import inspire.ariel.inspire.common.constants.AppStrings;
 
 public class InspireApplication extends Application {
 
@@ -27,8 +29,9 @@ public class InspireApplication extends Application {
     public void onCreate() {
         super.onCreate();
         appComponent = DaggerAppComponent.builder().appModule(new AppModule(this))
-                .networkModule(new NetworkModule()).build();
-        AppInit.InitApp(this);
+                .networkModule(new NetworkModule()).modelsModule(new ModelsModule()).resourcesModule(new ResourcesModule(getResources())).build();
+        AppInitializer initializer = new AppInitializer();
+        initializer.InitApp(this);
        //registerDummyUser();
     }
 

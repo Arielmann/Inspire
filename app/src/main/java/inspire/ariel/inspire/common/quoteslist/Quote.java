@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import java.util.UUID;
 
-import inspire.ariel.inspire.Leader;
+import inspire.ariel.inspire.leader.Leader;
 import inspire.ariel.inspire.common.utils.listutils.ListPresentable;
 
 public class Quote implements ListPresentable{

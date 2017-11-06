@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.common.quoteslist.view;
+package inspire.ariel.inspire.common.quoteslist.events;
 
 
 import inspire.ariel.inspire.common.quoteslist.Quote;

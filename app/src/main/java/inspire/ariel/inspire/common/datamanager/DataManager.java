@@ -4,7 +4,7 @@ import com.backendless.BackendlessUser;
 
 import java.util.UUID;
 
-import inspire.ariel.inspire.Leader;
+import inspire.ariel.inspire.leader.Leader;
 
 public class DataManager {
 
