@@ -28,16 +28,12 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     private QuotesListView view;
     private QuoteListAdapter adapter;
 
-    public QuoteListPresenterImpl(AppComponent appComponent, QuotesListView view) {
+    public QuoteListPresenterImpl(QuotesListView view, AppComponent appComponent) {
         this.view = view;
         appComponent.inject(this);
         retrieveLeaderQuotesFromServer();
     }
 
-    @Override
-    public void onDestroy() {
-        view = null;
-    }
 
     private void retrieveLeaderQuotesFromServer() {
 
@@ -62,5 +58,10 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
                 view.showErrorMessage();
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        view = null;
     }
 }

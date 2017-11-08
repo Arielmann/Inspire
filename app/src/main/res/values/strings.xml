@@ -3,4 +3,7 @@
     <string name="download_content_error">There was a error downloading the quotes. Please try again in a few minutes</string>
     <string name="action_settings">Settings</string>
     <string name="hint_type_quote">Share your wisdom…</string>
+    <string name="action_choose_quote_font">Font</string>
+    <string name="action_choose_quote_text_color">Color</string>
+    <string name="action_choose_quote_text_size">Size</string>
 </resources>

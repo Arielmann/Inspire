@@ -17,10 +17,9 @@ import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppInts;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.di.AppComponent;
-import inspire.ariel.inspire.databinding.ActivityQuoteCreatorBinding;
+import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.leader.quotecreatorfrag.adapter.BgItemsAdapter;
 import inspire.ariel.inspire.leader.quotecreatorfrag.view.QuotesCreatorView;
-import inspire.ariel.inspire.common.resources.ResourcesProvider;
 
 public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter, DiscreteScrollView.OnItemChangedListener, DiscreteScrollView.ScrollStateChangeListener {
 
@@ -30,27 +29,22 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter, Discr
     @Inject
     Resources res;
 
-    private BgItemsAdapter adapter;
     private QuotesCreatorView view;
 
     public QuotesCreatorPresenterImpl(QuotesCreatorView view, AppComponent component) {
         component.inject(this);
         this.view = view;
-        adapter = new BgItemsAdapter(model.getBackgroundImages());
+        initBgPicker(view.getBgPicker());
+        initQuoteEditText(view.getQuoteEditText());
     }
 
     @Override
     public void onDestroy() {
-    }
-
-    @Override
-    public void init(ActivityQuoteCreatorBinding binding) {
-       initBgPicker(binding.bgPicker);
-       initQuoteEditText(binding.quoteEditText);
-
+        view = null;
     }
 
     private void initBgPicker(DiscreteScrollView bgPicker) {
+        BgItemsAdapter adapter = new BgItemsAdapter(model.getBackgroundImages());
         bgPicker.setSlideOnFling(false);
         bgPicker.setAdapter(adapter);
         bgPicker.addOnItemChangedListener(this);

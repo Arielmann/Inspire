@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuotesCreatorActivity">
+
+    <item
+        android:id="@+id/chooseQuoteFontImgBtn"
+        android:orderInCategory="100"
+        android:icon="@drawable/female_icon"
+        android:title="@string/action_choose_quote_font"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/chooseQuoteTextColorImgBtn"
+        android:orderInCategory="100"
+        android:icon="@drawable/bg4"
+        android:title="@string/action_choose_quote_text_color"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/chooseQuoteTextSizeImgBtn"
+        android:orderInCategory="100"
+        android:icon="@drawable/bg3"
+        android:title="@string/action_choose_quote_text_size"
+        app:showAsAction="always" />
+</menu>

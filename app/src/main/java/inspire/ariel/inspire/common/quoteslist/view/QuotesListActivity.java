@@ -47,9 +47,9 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
         super.onDestroy();
     }
 
-    private void startQuotesFetching(){
+    private void startQuotesFetching() {
         //Download quotes server call is done on presenter
-        presenter = new QuoteListPresenterImpl(((InspireApplication) getApplication()).getAppComponent(), this);
+        presenter = new QuoteListPresenterImpl(this, ((InspireApplication) getApplication()).getAppComponent());
     }
 
     @Override
