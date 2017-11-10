@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
         android:id="@+id/creatorLayout"
@@ -9,20 +8,55 @@
         android:background="@drawable/bg1"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:minHeight="?attr/actionBarSize"
-            android:layout_width="match_parent"
+
+        <RelativeLayout
+            android:id="@+id/optionsFragsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <fragment
+            android:id="@+id/quoteFontFrag"
+            android:name="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuoteOptionFrag"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:titleTextColor="@android:color/white"
-            android:background="?attr/colorPrimary">
-        </android.support.v7.widget.Toolbar>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="@dimen/quote_creator_option_frag_left_margin"
+            android:layout_marginStart="@dimen/quote_creator_option_frag_left_margin"
+            android:layout_marginTop="@dimen/quote_creator_option_frag_top_margin" />
+
+        <fragment
+            android:id="@+id/quoteColorFrag"
+            android:name="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuoteOptionFrag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/quote_creator_option_frag_top_margin"
+            android:layout_marginLeft="@dimen/quote_creator_option_frag_left_margin"
+            android:layout_marginStart="@dimen/quote_creator_option_frag_left_margin"
+            android:layout_toEndOf="@+id/quoteFontFrag"
+            android:layout_toRightOf="@+id/quoteFontFrag" />
+
+        <fragment
+            android:id="@+id/quoteSizeFrag"
+            android:name="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuoteOptionFrag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/quote_creator_option_frag_top_margin"
+            android:layout_marginLeft="@dimen/quote_creator_option_frag_left_margin"
+            android:layout_marginStart="@dimen/quote_creator_option_frag_left_margin"
+            android:layout_toEndOf="@+id/quoteColorFrag"
+            android:layout_toRightOf="@+id/quoteColorFrag" />
+
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/quoteEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/quote_creator_text_bottom_margin"
+            android:layout_above="@+id/bgPicker"
+            android:layout_below="@id/optionsFragsLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:hint="@string/hint_type_quote"
@@ -35,6 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/bg_item_picker_background_color" />
+
 
 
     </RelativeLayout>

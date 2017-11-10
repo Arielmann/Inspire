@@ -4,7 +4,7 @@
     tools:context="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuotesCreatorActivity">
 
     <item
-        android:id="@+id/chooseQuoteFontImgBtn"
+        android:id="@+id/optionImgBtn"
         android:orderInCategory="100"
         android:icon="@drawable/female_icon"
         android:title="@string/action_choose_quote_font"

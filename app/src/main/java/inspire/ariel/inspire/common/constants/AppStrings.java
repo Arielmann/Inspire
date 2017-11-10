@@ -29,5 +29,14 @@ public class AppStrings {
     //Frags names
     public static final String QUOTES_CREATOR_NAME = "Inspire" ;
     public static final String QUOTES_LIST_NAME = "My Quotes";
+
+    //Fonts
+    public static final String ARIAL = "Arial";
+    public static final String DAVID = "David";
+    public static final String VERDANA = "Verdana";
+
+    //Resources names
+    public static final String BG_IMAGES = "bgImages";
+    public static final String COLORS = "colors";
 }
 

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ResourcesProvider {
     List<Bitmap> getBackgroundImages();
+    List<Bitmap> getColors();
+    List<String> getFonts();
 }
