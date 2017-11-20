@@ -8,13 +8,19 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.utils.listutils.vh.SingleImageViewButtonVH;
+import inspire.ariel.inspire.common.utils.listutils.vh.SingleImageViewVH;
 
-public class SingleBitmapListAdapter extends RecyclerView.Adapter<SingleImageViewButtonVH> {
+public class SingleBitmapListAdapter extends RecyclerView.Adapter<SingleImageViewVH> {
 
     private final int vhLayout;
     private List<Bitmap> bitmaps;
+    private View.OnClickListener onImageClicked;
+
+    public SingleBitmapListAdapter(List<Bitmap> bitmaps, int vhLayout, View.OnClickListener onImageClicked) {
+        this.bitmaps = bitmaps;
+        this.vhLayout= vhLayout;
+        this.onImageClicked = onImageClicked;
+    }
 
     public SingleBitmapListAdapter(List<Bitmap> bitmaps, int vhLayout) {
         this.bitmaps = bitmaps;
@@ -22,14 +28,14 @@ public class SingleBitmapListAdapter extends RecyclerView.Adapter<SingleImageVie
     }
 
     @Override
-    public SingleImageViewButtonVH onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SingleImageViewVH onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(vhLayout, parent, false);
-        return new SingleImageViewButtonVH(view);
+        return new SingleImageViewVH(view);
     }
 
     @Override
-    public void onBindViewHolder(SingleImageViewButtonVH holder, int position) {
-        holder.setUIDataOnView(bitmaps.get(position));
+    public void onBindViewHolder(SingleImageViewVH holder, int position) {
+        holder.setUIDataOnView(bitmaps.get(position), onImageClicked);
     }
 
     @Override

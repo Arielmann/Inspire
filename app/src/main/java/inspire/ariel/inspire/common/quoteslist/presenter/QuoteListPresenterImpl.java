@@ -1,6 +1,5 @@
 package inspire.ariel.inspire.common.quoteslist.presenter;
 
-
 import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
@@ -11,6 +10,7 @@ import javax.inject.Named;
 import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
 import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
+import inspire.ariel.inspire.common.utils.imageutils.ImageUtils;
 import inspire.ariel.inspire.leader.Leader;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.quoteslist.Quote;
@@ -34,7 +34,6 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         retrieveLeaderQuotesFromServer();
     }
 
-
     private void retrieveLeaderQuotesFromServer() {
 
         //LoadRelationsQueryBuilder<Quote> loadRelationsQueryBuilder;
@@ -46,7 +45,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
             @Override
             public void handleResponse(Leader leader) {
                 adapter = new QuoteListAdapter(leader.getQuotes());
-                Quote quote = new Quote();
+                Quote quote = new Quote("hello", "message", ImageUtils.defaultProfileImage);
                 quote.setMessage("This is an extremely long quote it is soooooo long so I can test if it gets out of screen! I don't want an innocent user to come and read his quote but then find out during application's runtime that he cannot read it all because SOMEONE has messed up the coding and allowed too long quotes to disappear forever");
                 leader.getQuotes().add(quote);
                 model.setDataSet(leader.getQuotes());

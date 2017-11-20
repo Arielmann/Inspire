@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.leader.quotecreatorfrag.presenter;
+package inspire.ariel.inspire.leader.quotescreator.presenter;
 
 public interface QuotesCreatorPresenter {
 

@@ -2,19 +2,23 @@ package inspire.ariel.inspire.leader;
 
 import com.backendless.BackendlessUser;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import inspire.ariel.inspire.common.quoteslist.Quote;
+import lombok.Data;
+import lombok.NonNull;
 
+@Data
 public class Leader {
 
-    private String objectId;
-    private String name;
-    private String description;
+    @NonNull private String objectId;
+    @NonNull private String name;
+    @NonNull private String description;
+    @NonNull private List<BackendlessUser> followers;
+    @NonNull private List<Quote> quotes;
     //private Bitmap image = ImageUtils.defaultProfileImage;
-    private List<BackendlessUser> followers;
-    private List<Quote> quotes;
 
     //Convenience Constructor
     public Leader() {
@@ -23,54 +27,4 @@ public class Leader {
         this.followers = new ArrayList<>();
         this.followers.add(new BackendlessUser());
     }
-
-    //************Setters****************//
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
-    }
-
-    public void setQuotes(List<Quote> quotes) {
-        this.quotes = quotes;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setFollowers(List<BackendlessUser> followers) {
-        this.followers = followers;
-    }
-
-
-    //*************Getters*******************//
-
-    public String getObjectId() {
-        return objectId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-   /* public Bitmap getImage() {
-        return image;
-    }*/
-
-    public List<BackendlessUser> getFollowers() {
-        return followers;
-    }
-
-    public List<Quote> getQuotes() {
-        return quotes;
-    }
-
-
 }

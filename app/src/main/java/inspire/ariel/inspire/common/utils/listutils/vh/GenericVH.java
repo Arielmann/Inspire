@@ -5,11 +5,11 @@ import android.view.View;
 
 import inspire.ariel.inspire.common.utils.listutils.ListPresentable;
 
-public abstract class GenericViewHolder extends RecyclerView.ViewHolder{
+public abstract class GenericVH extends RecyclerView.ViewHolder{
 
     private int tag = -1; //App crashes if try to access a tag based position without changing this default
 
-    public GenericViewHolder(View itemView) {
+    public GenericVH(View itemView) {
         super(itemView);
     }
 

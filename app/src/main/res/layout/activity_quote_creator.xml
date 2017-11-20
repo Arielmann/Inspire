@@ -8,53 +8,19 @@
         android:background="@drawable/bg1"
         android:orientation="vertical">
 
-
-        <RelativeLayout
-            android:id="@+id/optionsFragsLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
         <fragment
-            android:id="@+id/quoteFontFrag"
-            android:name="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuoteOptionFrag"
-            android:layout_width="wrap_content"
+            android:id="@+id/quoteOptionsFrag"
+            android:name="inspire.ariel.inspire.leader.quotescreator.view.QuoteOptionsFrag"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="@dimen/quote_creator_option_frag_left_margin"
-            android:layout_marginStart="@dimen/quote_creator_option_frag_left_margin"
-            android:layout_marginTop="@dimen/quote_creator_option_frag_top_margin" />
-
-        <fragment
-            android:id="@+id/quoteColorFrag"
-            android:name="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuoteOptionFrag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/quote_creator_option_frag_top_margin"
-            android:layout_marginLeft="@dimen/quote_creator_option_frag_left_margin"
-            android:layout_marginStart="@dimen/quote_creator_option_frag_left_margin"
-            android:layout_toEndOf="@+id/quoteFontFrag"
-            android:layout_toRightOf="@+id/quoteFontFrag" />
-
-        <fragment
-            android:id="@+id/quoteSizeFrag"
-            android:name="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuoteOptionFrag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/quote_creator_option_frag_top_margin"
-            android:layout_marginLeft="@dimen/quote_creator_option_frag_left_margin"
-            android:layout_marginStart="@dimen/quote_creator_option_frag_left_margin"
-            android:layout_toEndOf="@+id/quoteColorFrag"
-            android:layout_toRightOf="@+id/quoteColorFrag" />
-
-        </RelativeLayout>
+            android:layout_centerHorizontal="true"/>
 
         <EditText
             android:id="@+id/quoteEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/bgPicker"
-            android:layout_below="@id/optionsFragsLayout"
+            android:layout_below="@id/quoteOptionsFrag"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:background="@android:color/transparent"

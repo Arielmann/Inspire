@@ -9,9 +9,9 @@ import java.util.List;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.quoteslist.Quote;
-import inspire.ariel.inspire.common.utils.listutils.vh.GenericViewHolder;
+import inspire.ariel.inspire.common.utils.listutils.vh.GenericVH;
 
-public class QuoteListAdapter extends RecyclerView.Adapter<GenericViewHolder>{
+public class QuoteListAdapter extends RecyclerView.Adapter<GenericVH>{
 
     private List<Quote> dataSet;
 
@@ -21,13 +21,13 @@ public class QuoteListAdapter extends RecyclerView.Adapter<GenericViewHolder>{
     }
 
     @Override
-    public GenericViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GenericVH onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.vh_quote, parent, false);
         return new QuoteViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(GenericViewHolder holder, int position) {
+    public void onBindViewHolder(GenericVH holder, int position) {
         holder.setUIDataOnView(dataSet.get(position));
     }
 

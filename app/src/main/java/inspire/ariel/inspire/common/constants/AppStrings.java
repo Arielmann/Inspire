@@ -14,7 +14,7 @@ public class AppStrings {
     //FCM
     public static final String SENDER_ID = "876549986257";
 
-    //Fields
+    //Data Fields
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
@@ -22,21 +22,40 @@ public class AppStrings {
     public static final String IS_FIRST_LAUNCH = "isFirstLaunch";
     public static final String PROFILE_IMAGE_URL = "profileImageUrl";
 
+    //Device Data Fields
+    public static final String DEVICE_STRING_HEIGHT = "deviceHeight";
+    public static final String DEVICE_STRING_WIDTH = "deviceWidth";
+
     //Other
     public static final String LEADER_NAME = "Winston Churchill";
     public static final String LEADER_DEVICE_ID = "B8E5E40A-4575-3599-FF01-A18C28199B00";
-
-    //Frags names
-    public static final String QUOTES_CREATOR_NAME = "Inspire" ;
-    public static final String QUOTES_LIST_NAME = "My Quotes";
-
-    //Fonts
-    public static final String ARIAL = "Arial";
-    public static final String DAVID = "David";
-    public static final String VERDANA = "Verdana";
+    public static final String EMPTY_STRING = "";
+    public static final String ACCOUNT_INFO = "Account Info";
 
     //Resources names
     public static final String BG_IMAGES = "bgImages";
     public static final String COLORS = "colors";
+    public static final String FONTS = "fonts";
+    public static final String FONT_SIZES = "fontSizes";
+
+    //Fonts Names
+    public static final String MONTSERRAT_BOLD = "Mon B";
+    public static final String MONTSERRAT_REG = "Mon";
+    public static final String QUIRLYCUES = "Qui";
+    public static final String MYRIAD_PRO_REG = "Myr";
+    public static final String LARO_REG = "Lat";
+    public static final String ARIAL = "Arial";
+    public static final String ALEF_REG = "Alef";
+    public static final String ALEF_BOLD = "Alef B";
+
+    //Fonts Paths
+    public static final String ARIAL_PATH = "fonts/Arial.ttf";
+    public static final String ALEF_REG_PATH = "fonts/Alef-Regular.ttf";
+    public static final String ALEF_BOLD_PATH = "fonts/Alef-Bold.ttf";
+    public static final String MONTSERRAT_BOLD_PATH = "fonts/Montserrat-Bold.ttf";
+    public static final String MONTSERRAT_REG_PATH = "fonts/Montserrat-Regular.ttf";
+    public static final String QUIRLYCUES_PATH = "fonts/Quirlycues.ttf";
+    public static final String MYRIAD_PRO_REG_PATH = "fonts/Myriad_Pro-Regular.ttf";
+    public static final String LATO_REG_PATH = "fonts/Lato-Regular.ttf";
 }
 

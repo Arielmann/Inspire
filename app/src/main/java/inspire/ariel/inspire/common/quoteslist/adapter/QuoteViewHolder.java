@@ -7,9 +7,9 @@ import android.widget.TextView;
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.utils.listutils.ListPresentable;
-import inspire.ariel.inspire.common.utils.listutils.vh.GenericViewHolder;
+import inspire.ariel.inspire.common.utils.listutils.vh.GenericVH;
 
-class QuoteViewHolder extends GenericViewHolder {
+class QuoteViewHolder extends GenericVH {
 
     private static final String TAG = QuoteViewHolder.class.getSimpleName();
 
@@ -20,7 +20,7 @@ class QuoteViewHolder extends GenericViewHolder {
     public void setUIDataOnView(ListPresentable data) {
         final Quote quote = (Quote) data;
         if(quote.getMessage() != null && !quote.getMessage().equals("")){
-            TextView quoteTv = (TextView) itemView.findViewById(R.id.quoteTv);
+            TextView quoteTv = itemView.findViewById(R.id.quoteTv);
             quoteTv.setText(quote.getMessage());
             Log.d(TAG, quote.getMessage() + " is presented in the list as a quote");
         }

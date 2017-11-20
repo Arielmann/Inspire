@@ -12,8 +12,13 @@
     <dimen name="quote_option_img_btn_width">50dp</dimen>
     <dimen name="quote_option_img_item_width">35dp</dimen>
     <dimen name="quote_option_img_item_height">35dp</dimen>
-    <dimen name="quote_creator_option_frag_left_margin">20dp</dimen>
+    <dimen name="quote_creator_option_frag_margin">20dp</dimen>
     <dimen name="quote_creator_option_frag_top_margin">20dp</dimen>
-    <dimen name="quote_option_expandable_layout_top_margin">10dp</dimen>
-    <dimen name="quote_option_item_top_margin">15dp</dimen>
+    <dimen name="quote_option_expandable_layout_top_and_bottom_margin">10dp</dimen>
+    <dimen name="quote_option_item_top_and_bottom_margin">15dp</dimen>
+    <dimen name="quote_top_margin">275dp</dimen>
+    <dimen name="quote_option_img_item_side_margin">10dp</dimen>
+    <dimen name="quote_option_img_item_top_margin">10dp</dimen>
+    <dimen name="single_tv_vh_text_size">25sp</dimen>
+    <dimen name="single_line">1</dimen>
 </resources>

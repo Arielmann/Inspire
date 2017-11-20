@@ -9,6 +9,8 @@ import javax.inject.Named;
 
 import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppStrings;
+import inspire.ariel.inspire.common.di.ResourcesModule;
+import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 
 public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitializer {
 
@@ -23,10 +25,15 @@ public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitia
 
     @Inject
     @Named(AppStrings.COLORS)
-    List<Bitmap> colors;
+    List<Integer> colors;
 
     @Inject
-    List<String> fonts;
+    @Named(AppStrings.FONTS)
+    List<FontsManager.Font> fonts;
+
+    @Inject
+    @Named(AppStrings.FONT_SIZES)
+    List<ResourcesModule.Size> fontSizes;
 
     private static ResourcesProviderImpl model;
 
@@ -51,12 +58,18 @@ public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitia
     }
 
     @Override
-    public List<Bitmap> getColors() {
+    public List<Integer> getColors() {
         return colors;
     }
+
     @Override
-    public List<String> getFonts() {
+    public List<FontsManager.Font> getFonts() {
         return fonts;
+    }
+
+    @Override
+    public List<ResourcesModule.Size> getFontsSizes() {
+        return fontSizes;
     }
 }
 

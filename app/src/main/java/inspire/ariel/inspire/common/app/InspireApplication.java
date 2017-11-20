@@ -29,7 +29,7 @@ public class InspireApplication extends Application {
     public void onCreate() {
         super.onCreate();
         appComponent = DaggerAppComponent.builder().appModule(new AppModule(this))
-                .networkModule(new NetworkModule()).modelsModule(new ModelsModule()).resourcesModule(new ResourcesModule(getResources())).build();
+                .networkModule(new NetworkModule()).modelsModule(new ModelsModule()).resourcesModule(new ResourcesModule(getResources(), getAssets())).build();
         AppInitializer initializer = new AppInitializer();
         initializer.InitApp(this);
        //registerDummyUser();

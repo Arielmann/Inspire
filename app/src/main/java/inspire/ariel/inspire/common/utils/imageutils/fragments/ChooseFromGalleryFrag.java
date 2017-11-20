@@ -1,5 +1,6 @@
 package inspire.ariel.inspire.common.utils.imageutils.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 
+import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.utils.imageutils.ImageUtils;
 import inspire.ariel.inspire.common.utils.sharedprefutils.SharedPrefManager;
 
@@ -33,11 +35,10 @@ public class ChooseFromGalleryFrag extends Fragment implements Serializable {
         this.data = data;
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == RESULT_LOAD_IMAGE && resultCode == getActivity().RESULT_OK && null != data) {
-                String senderName = SharedPrefManager.getInstance(getContext()).getUserName();
+            if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK && null != data) {
                 Uri selectedImageUri = data.getData();
                 int[] imageSizes = ImageUtils.chooseImageSizes(getActivity(), 2, 2);
-                ImageUtils.createBitmapFromImageSource(senderName, getActivity(), selectedImageUri, imageSizes[0], imageSizes[1]);
+                ImageUtils.createBitmapFromImageSource("Method is mocked. Check ChooseFromGallery Frag for this error", getActivity(), selectedImageUri, imageSizes[0], imageSizes[1]);
             } else {
                 Toast.makeText(getActivity(), "You haven't picked an Image", Toast.LENGTH_LONG).show();
             }

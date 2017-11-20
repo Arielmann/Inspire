@@ -1,7 +1,10 @@
 package inspire.ariel.inspire.common.quoteslist.view;
 
+import android.content.pm.ResolveInfo;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,13 +13,16 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
+
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
 import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.databinding.ActivityQuoteListBinding;
-import inspire.ariel.inspire.leader.quotecreatorfrag.view.QuotesCreatorActivity;
+import inspire.ariel.inspire.leader.quotescreator.view.QuotesCreatorActivity;
 
 public class QuotesListActivity extends AppCompatActivity implements QuotesListView {
 
@@ -60,8 +66,7 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
     @Override
     public void showErrorMessage() {
         Toast.makeText(this, R.string.download_content_error, Toast.LENGTH_LONG).show();
-    }
-
+    }  
 }
 
 

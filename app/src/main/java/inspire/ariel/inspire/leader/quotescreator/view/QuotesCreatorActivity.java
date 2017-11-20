@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.leader.quotecreatorfrag.view;
+package inspire.ariel.inspire.leader.quotescreator.view;
 
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
@@ -15,9 +15,10 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
+import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.databinding.ActivityQuoteCreatorBinding;
-import inspire.ariel.inspire.leader.quotecreatorfrag.presenter.QuotesCreatorPresenter;
-import inspire.ariel.inspire.leader.quotecreatorfrag.presenter.QuotesCreatorPresenterImpl;
+import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenter;
+import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenterImpl;
 
 
 public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCreatorView {
@@ -29,14 +30,9 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_creator);
-        QuoteOptionView quoteOptionFontView = (QuoteOptionView) getSupportFragmentManager().findFragmentById(R.id.quoteFontFrag);
-        QuoteOptionView quoteOptionColorView = (QuoteOptionView) getSupportFragmentManager().findFragmentById(R.id.quoteColorFrag);
-        QuoteOptionView quoteOptionSizeView = (QuoteOptionView) getSupportFragmentManager().findFragmentById(R.id.quoteSizeFrag);
+        QuoteOptionView quoteOptionView = (QuoteOptionView) getSupportFragmentManager().findFragmentById(R.id.quoteOptionsFrag);
         presenter = new QuotesCreatorPresenterImpl.Builder(this, ((InspireApplication) getApplication()).getAppComponent())
-                .quoteFontFragView(quoteOptionFontView)
-                .quoteColorFragView(quoteOptionColorView)
-                .quoteSizeFragView(quoteOptionSizeView).build();
-
+                .quoteOptionsFragView(quoteOptionView).build();
         KeyboardVisibilityEvent.setEventListener(this, keyboardVisibilityListener); //NOTE: Unregisters automatically on onDestroy()
     }
 
@@ -47,20 +43,31 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     };
 
     @Override
-    public void changeBackground(Bitmap background) {
+    public void setBackground(Bitmap background) {
         binding.creatorLayout.setBackground(new BitmapDrawable(getResources(), background));
     }
 
+    @Override
+    public void setQuoteTextSize(int size) {
+        binding.quoteEditText.setTextSize(size);
+    }
 
     @Override
-    public void changeQuoteTextSize(int value) {
-        binding.quoteEditText.setTextSize(value);
+    public void setQuoteFont(FontsManager.Font font) {
+        FontsManager.getInstance().setFontOnTV(font, binding.quoteEditText);
+    }
+
+    @Override
+    public void setQuoteTextColor(int color) {
+        binding.quoteEditText.setHintTextColor(color);
+        binding.quoteEditText.setTextColor(color);
     }
 
     @Override
     public void setBgPickerVisibility(int visibility) {
         binding.bgPicker.setVisibility(visibility);
     }
+
 
     @Override
     public DiscreteScrollView getBgPicker() {
@@ -71,21 +78,6 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     public EditText getQuoteEditText() {
         return binding.quoteEditText;
     }
-
-  /*  @Override
-    public QuoteOptionView getQuoteFontView() {
-        return quoteOptionFontView;
-    }
-
-    @Override
-    public QuoteOptionView getQuoteColorView() {
-        return quoteOptionColorView;
-    }
-
-    @Override
-    public QuoteOptionView getQuoteSizeView() {
-        return quoteOptionSizeView;
-    }*/
 
     @Override
     protected void onDestroy() {

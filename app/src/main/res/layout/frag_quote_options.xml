@@ -3,85 +3,105 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_yellow_400">
 
         <ImageButton
-            android:id="@+id/optionImgBtn"
+            android:id="@+id/quoteTextColorImgBtn"
             android:layout_width="@dimen/quote_option_img_btn_width"
             android:layout_height="@dimen/quote_option_img_btn_height"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:src="@drawable/bg3" />
+            android:layout_marginLeft="@dimen/quote_option_img_item_side_margin"
+            android:layout_marginStart="@dimen/quote_option_img_item_side_margin"
+            android:layout_marginTop="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
+            android:layout_marginBottom="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
+            android:src="@drawable/bg3"/>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-            android:id="@+id/optionExpandingLayout"
+            android:id="@+id/quoteTextColorExpandingLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/optionImgBtn"
-            android:layout_marginTop="@dimen/quote_option_expandable_layout_top_margin"
-            app:ael_duration="500"
-            app:ael_expanded="false"
+            android:layout_below="@+id/quoteTextColorImgBtn"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/quote_option_img_item_side_margin"
+            android:layout_marginLeft="@dimen/quote_option_img_item_side_margin"
+            app:ael_duration="350"
             app:ael_interpolator="fastOutLinearIn"
             app:ael_orientation="vertical">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/optionRV"
+                android:id="@+id/quoteTextColorRV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:transcriptMode="normal" />
-
-  <!--          <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:transcriptMode="normal" />-->
-
         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
-    </RelativeLayout>
-</layout><!--
-        <RelativeLayout
-            android:id="@+id/chooseQuoteTextSizeLayout"
+
+        <ImageButton
+            android:id="@+id/quoteFontImgBtn"
+            android:layout_width="@dimen/quote_option_img_btn_width"
+            android:layout_height="@dimen/quote_option_img_btn_height"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
+            android:layout_marginBottom="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
+            android:src="@drawable/bg3" />
+
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            android:id="@+id/quoteFontExpandingLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/quote_creator_option_left_margin"
-            android:layout_marginStart="@dimen/quote_creator_option_left_margin"
-            android:layout_toEndOf="@+id/chooseQuoteFontLayout"
-            android:layout_toRightOf="@+id/chooseQuoteFontLayout">
+            android:layout_below="@+id/quoteTextColorExpandingLayout"
+            android:layout_centerHorizontal="true"
+            app:ael_duration="350"
+            app:ael_interpolator="fastOutLinearIn"
+            app:ael_orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/chooseQuoteTextSizeImgBtn"
-                android:layout_width="@dimen/quote_creator_option_img_btn_width"
-                android:layout_height="@dimen/quote_creator_option_img_btn_height"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/bg4" />
 
-            <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-                android:id="@+id/chooseQuoteTextSizeExpansion"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/quoteFontRV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/chooseQuoteTextSizeImgBtn"
-                app:ael_duration="500"
-                app:ael_expanded="false"
-                app:ael_interpolator="bounce"
-                app:ael_orientation="vertical">
+                android:transcriptMode="normal" />
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
-                <TextView
-                    android:id="@+id/chooseQuoteTextSizeImgBtnExpansionTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="sample" />
+        <ImageButton
+            android:id="@+id/quoteTextSizeImgBtn"
+            android:layout_width="@dimen/quote_option_img_btn_width"
+            android:layout_height="@dimen/quote_option_img_btn_height"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/quote_option_img_item_side_margin"
+            android:layout_marginEnd="@dimen/quote_option_img_item_side_margin"
+            android:layout_marginTop="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
+            android:layout_marginBottom="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
+            android:src="@drawable/bg3" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/chooseQuoteTextSizeImgBtnExpansionTv"
-                    android:text="sample2" />
-            </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
-        </RelativeLayout>
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            android:id="@+id/quoteTextSizeExpandingLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/quoteTextSizeImgBtn"
+            android:layout_marginRight="@dimen/quote_option_img_item_side_margin"
+            android:layout_marginEnd="@dimen/quote_option_img_item_side_margin"
+            app:ael_duration="350"
+            app:ael_interpolator="fastOutLinearIn"
+            app:ael_orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/quoteTextSizeRV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:transcriptMode="normal" />
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+
     </RelativeLayout>
-</RelativeLayout>-->
+</layout>

@@ -1,5 +1,6 @@
 package inspire.ariel.inspire.common.utils.imageutils.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,18 +29,13 @@ public class TakePhotoFrag extends Fragment implements Serializable {
 
         //****The actual camera inbuilt application opens here****///
         try {
-            String senderName = SharedPrefManager.getInstance(getContext()).getUserName();
-            if (requestCode == CAM_REQUEST && resultCode == getActivity().RESULT_OK) {
+            //String senderName = SharedPrefManager.getInstance(getContext()).getUserName();
+            if (requestCode == CAM_REQUEST && resultCode == Activity.RESULT_OK) {
                 Uri selectedImageUri = data.getData();
                 int[] imageSizes = ImageUtils.chooseImageSizes(getActivity(), 2, 2);
-                ImageUtils.createBitmapFromImageSource(senderName, getActivity(), selectedImageUri, imageSizes[0], imageSizes[1]);
-                return;
+                ImageUtils.createBitmapFromImageSource("Method is mocked. Check Take Photo Frag for this error", getActivity(), selectedImageUri, imageSizes[0], imageSizes[1]);
                 //Adding Image to array method occurs on parent class
 
-            } else if (requestCode == CAM_REQUEST && resultCode == getActivity().RESULT_CANCELED) {
-
-
-                return;
             }
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();

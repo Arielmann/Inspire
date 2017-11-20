@@ -22,7 +22,7 @@ import java.util.List;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.quoteslist.Quote;
-import inspire.ariel.inspire.common.utils.listutils.vh.GenericViewHolder;
+import inspire.ariel.inspire.common.utils.listutils.vh.GenericVH;
 import inspire.ariel.inspire.common.utils.sharedprefutils.SharedPrefManager;
 
 public class ImageUtils {
@@ -78,7 +78,7 @@ public class ImageUtils {
 
 
     //Called from contactedUsersViewHolder
-    public static void createBitmapFromImageSource(final String position, final Context context, final GenericViewHolder interfacedHolder, final Uri imageUri, final int targetImageHeight, final int targetImageWidth) { //It's a static method because it doesn't use any class members!
+    public static void createBitmapFromImageSource(final String position, final Context context, final GenericVH interfacedHolder, final Uri imageUri, final int targetImageHeight, final int targetImageWidth) { //It's a static method because it doesn't use any class members!
         GlideExceptionsListener listener = new GlideExceptionsListener(interfacedHolder);
         Glide.with(context).load(imageUri).asBitmap().listener(listener).into(new SimpleTarget<Bitmap>(targetImageHeight, targetImageWidth) {
             @Override
@@ -133,7 +133,7 @@ public class ImageUtils {
     public static void initDefaultProfileImage(Context context) {
         defaultProfileImage = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.female_icon);
-        SharedPrefManager.getInstance(context).setUserImageBitmap(defaultProfileImage);
+        //SharedPrefManager.getInstance(context).setUserImageBitmap(defaultProfileImage);
     }
 
    /* public static void createImageFromResource(Context context, int res, Bitmap imageTarget, int targetImageHeight, int targetImageWidth) {
@@ -174,11 +174,11 @@ public class ImageUtils {
     }
 
     public static void setUserImageFile(Context context, Quote group, Bitmap profileImage, String senderName) {
-        String fileDirName = Environment.getExternalStorageDirectory().toString() + SharedPrefManager.getInstance(context).getProfileImagesDir();
+       // String fileDirName = Environment.getExternalStorageDirectory().toString() + SharedPrefManager.getInstance(context).getProfileImagesDir();
         String fileNameWithSpace = "Contact_" + senderName + ".jpg";
         String finalFileName = fileNameWithSpace.replace(' ', '_');
-        File newProfileImageFile = ImageUtils.writeBitmapToFile(profileImage, fileDirName, finalFileName);
-        assert newProfileImageFile != null;
+        //File newProfileImageFile = ImageUtils.writeBitmapToFile(profileImage, fileDirName, finalFileName);
+        //assert newProfileImageFile != null;
         //group.setImageLocalPath(newProfileImageFile.getAbsolutePath());
     }
 
@@ -187,7 +187,7 @@ public class ImageUtils {
         int[] imageSizes = ImageUtils.chooseImageSizes(context, 2, 2);
         int targetImageHeight = imageSizes[0];
         int targetImageWidth = imageSizes[1];
-        File profileImageFile = new File(SharedPrefManager.getInstance(context).getProfileImagePath());
-        ImageUtils.createBitmapFromImageSource("", context, interfaceHolder, profileImageFile, targetImageHeight, targetImageWidth); //create the image from the filepath and activate presentDownloadedImageOnScreen after this method
+        //File profileImageFile = new File(SharedPrefManager.getInstance(context).getProfileImagePath());
+        //ImageUtils.createBitmapFromImageSource("", context, interfaceHolder, profileImageFile, targetImageHeight, targetImageWidth); //create the image from the filepath and activate presentDownloadedImageOnScreen after this method
     }
 }

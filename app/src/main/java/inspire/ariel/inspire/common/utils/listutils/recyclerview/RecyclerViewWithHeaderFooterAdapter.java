@@ -10,35 +10,35 @@ import com.karumi.headerrecyclerview.HeaderRecyclerViewAdapter;
 import java.util.List;
 
 import inspire.ariel.inspire.common.utils.listutils.ListPresentable;
-import inspire.ariel.inspire.common.utils.listutils.vh.GenericViewHolder;
+import inspire.ariel.inspire.common.utils.listutils.vh.GenericVH;
 
 
-class RecyclerViewWithHeaderFooterAdapter extends HeaderRecyclerViewAdapter<GenericViewHolder, ListPresentable, ListPresentable, GenericViewHolder> {
+class RecyclerViewWithHeaderFooterAdapter extends HeaderRecyclerViewAdapter<GenericVH, ListPresentable, ListPresentable, GenericVH> {
 
     private List<ListPresentable> dataSet;
-    private GenericViewHolder headerView;
+    private GenericVH headerView;
     private ViewHoldersFactory vhFactory;
 
     @Override
-    protected GenericViewHolder onCreateHeaderViewHolder(ViewGroup parent, int viewType) {
+    protected GenericVH onCreateHeaderViewHolder(ViewGroup parent, int viewType) {
         //final View headerView = getLayoutInflater(parent).inflate(R.layout.header_course_details, parent, false);
         return headerView;
     }
 
     @Override
-    public GenericViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
+    public GenericVH onCreateItemViewHolder(ViewGroup parent, int viewType) {
         //final View view = getLayoutInflater(parent).inflate(R.layout.vh_quote, parent, false);
         return vhFactory.newViewHolder();
     }
 
     @Override
-    public void onBindItemViewHolder(GenericViewHolder holder, int position) {
+    public void onBindItemViewHolder(GenericVH holder, int position) {
         holder.itemView.setOnClickListener((View.OnClickListener) holder);
         holder.setUIDataOnView(dataSet.get(position)); //-1 for header
     }
 
     @Override
-    protected void onBindHeaderViewHolder(GenericViewHolder holder, int position) {
+    protected void onBindHeaderViewHolder(GenericVH holder, int position) {
         holder.setUIDataOnView(dataSet.get(position));
     }
 
@@ -53,14 +53,14 @@ class RecyclerViewWithHeaderFooterAdapter extends HeaderRecyclerViewAdapter<Gene
 
         // Optional parameters - initialized to default values
         private Context context;
-        private GenericViewHolder headerView;
+        private GenericVH headerView;
 
         public Builder(ViewHoldersFactory vhFactory, List<ListPresentable> dataSet) {
             this.vhFactory = vhFactory;
             this.dataSet = dataSet;
         }
 
-        public Builder withHeader(GenericViewHolder headerView) {
+        public Builder withHeader(GenericVH headerView) {
             this.headerView = headerView;
             return this;
         }

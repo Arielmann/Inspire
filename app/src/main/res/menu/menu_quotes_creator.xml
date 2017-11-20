@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="inspire.ariel.inspire.leader.quotecreatorfrag.view.QuotesCreatorActivity">
+    tools:context="inspire.ariel.inspire.leader.quotescreator.view.QuotesCreatorActivity">
 
     <item
         android:id="@+id/optionImgBtn"

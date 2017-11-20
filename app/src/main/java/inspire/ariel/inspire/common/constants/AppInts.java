@@ -13,4 +13,17 @@ public class AppInts {
 
     //floats
     public static final float FLOAT_EIGHT_TENTHS = 0.8f;
+
+    //Font Sizes
+    public static final int SIXTEEN = 16;
+    public static final int TWENTY = 20;
+    public static final int THIRTY = 30;
+    public static final int FORTY = 40;
+    public static final int FIFTY = 50;
+    public static final int SIXTY = 60;
+    public static final int SEVENTY = 70;
+
+    //LayoutManager data
+    public static final int SEVEN_SPAN_COUNT = 7;
+    public static final int THREE_SPAN_COUNT = 3;
 }
