@@ -55,4 +55,9 @@ public class FontsManager  {
         Typeface headlineFont = Typeface.createFromAsset(assetManager, font.path);
         tv.setTypeface(headlineFont);
     }
+
+    public void setFontOnTV(String fontPath, TextView tv) {
+        Typeface headlineFont = Typeface.createFromAsset(assetManager, fontPath);
+        tv.setTypeface(headlineFont);
+    }
 }

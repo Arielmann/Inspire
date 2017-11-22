@@ -28,11 +28,8 @@ public class AppInitializer {
         application.getAppComponent().inject(this);
         resourcesInitializer.init(application);
         FontsManager.getInstance().init(application);
-        if (SharedPrefManager.getInstance(application).isFirstLaunch()) {
             registerDeviceToBackendless(application, AppStrings.EMPTY_STRING);
             registerDeviceToBackendless(application, AppStrings.LEADER_NAME);
-            SharedPrefManager.getInstance(application).saveBooleanToSharedPreferences(SharedPrefManager.SharedPrefProperty.IS_FIRST_LAUNCH, false);
-        }
     }
 
     private static void registerDeviceToBackendless(final Context context, String channel) {

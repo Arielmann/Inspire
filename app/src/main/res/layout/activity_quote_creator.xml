@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:id="@+id/creatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg1"
+        android:background="@drawable/purple_blue_yellow_bg"
         android:orientation="vertical">
 
         <fragment
@@ -13,21 +14,29 @@
             android:name="inspire.ariel.inspire.leader.quotescreator.view.QuoteOptionsFrag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true" />
 
         <EditText
             android:id="@+id/quoteEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/bgPicker"
-            android:layout_below="@id/quoteOptionsFrag"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_below="@id/quoteOptionsFrag"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:hint="@string/hint_type_quote"
             android:inputType="textMultiLine"
             android:textSize="@dimen/quote_large_text_size" />
+
+        <ImageButton
+            android:id="@+id/postImgButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/quoteEditText"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/post_icon" />
 
         <com.yarolegovich.discretescrollview.DiscreteScrollView
             android:id="@+id/bgPicker"
@@ -35,8 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/bg_item_picker_background_color" />
-
-
 
     </RelativeLayout>
 </layout>

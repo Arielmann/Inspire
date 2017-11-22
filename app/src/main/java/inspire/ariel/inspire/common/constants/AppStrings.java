@@ -1,5 +1,7 @@
 package inspire.ariel.inspire.common.constants;
 
+import inspire.ariel.inspire.BuildConfig;
+
 public class AppStrings {
 
     //Backendless
@@ -10,6 +12,15 @@ public class AppStrings {
     public static final String BACKENDLESS_TABLE_LEADER = "Leader";
     public static final String BACKENDLESS_TABLE_LEADER_COLUMN_QUOTES = "quotes";
     public static final String BACKENDLESS_CHANNEL_DEFAULT = "default";
+
+    //Background names
+    public static final String BLUE_YELLOW_BG = "blue_yellow_bg";
+    public static final String PINK_BG = "pink_bg";
+    public static final String PURPLE_BLUE_YELLOW_BG = "purple_blue_yellow_bg";
+    public static final String PINK_GREY_BG = "pink_grey_bg";
+
+    //Prefixes
+    public static String DRAWABLE_PATH_PREFIX = "android.resource://" + BuildConfig.APPLICATION_ID + "/drawable/";
 
     //FCM
     public static final String SENDER_ID = "876549986257";

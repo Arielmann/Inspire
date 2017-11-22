@@ -1,10 +1,8 @@
 package inspire.ariel.inspire.common.quoteslist.view;
 
-import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.HandlerThread;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +10,6 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
@@ -27,14 +22,13 @@ import inspire.ariel.inspire.leader.quotescreator.view.QuotesCreatorActivity;
 public class QuotesListActivity extends AppCompatActivity implements QuotesListView {
 
     private String TAG = QuotesListActivity.class.getName();
-    private ActivityQuoteListBinding binding;
     private QuoteListPresenterImpl presenter;
     private RecyclerView rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_list);
+        ActivityQuoteListBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_list);
         rv = binding.recyclerView;
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this);
         rv.setLayoutManager(lm);
@@ -66,7 +60,7 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
     @Override
     public void showErrorMessage() {
         Toast.makeText(this, R.string.download_content_error, Toast.LENGTH_LONG).show();
-    }  
+    }
 }
 
 

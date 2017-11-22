@@ -7,12 +7,11 @@ import android.widget.TextView;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
-import inspire.ariel.inspire.common.utils.listutils.vh.SingleImageViewVH;
 import inspire.ariel.inspire.leader.quotescreator.events.OnFontClicked;
 
 public class FontVH extends RecyclerView.ViewHolder {
 
-    private static final String TAG = SingleImageViewVH.class.getSimpleName();
+    private static final String TAG = FontVH.class.getSimpleName();
     private OnFontClicked onTextViewClicked;
 
     public FontVH(View itemView, OnFontClicked onTextViewClicked) {
@@ -27,4 +26,6 @@ public class FontVH extends RecyclerView.ViewHolder {
         tv.setOnClickListener(view -> onTextViewClicked.onClick(font));
         Log.d(TAG, "Font view holder bound for font: " + font.getName());
     }
+
 }
+

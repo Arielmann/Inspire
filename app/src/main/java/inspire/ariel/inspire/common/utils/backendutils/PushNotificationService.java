@@ -24,8 +24,8 @@ public class PushNotificationService extends BackendlessPushService
     @Override
     public boolean onMessage( Context context, Intent intent )
     {
-        String message = intent.getStringExtra( "message" );
-        Toast.makeText( context, "Push message received. Message: " + message, Toast.LENGTH_LONG ).show();
+        String message = intent.getStringExtra( "text" );
+        Toast.makeText( context, "Push text received. Message: " + message, Toast.LENGTH_LONG ).show();
         // When returning 'true', default Backendless onMessage implementation will be executed.
         // The default implementation displays the notification in the Android Notification Center.
         // Returning false, cancels the execution of the default implementation.

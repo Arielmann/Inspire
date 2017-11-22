@@ -17,7 +17,7 @@
             android:layout_marginStart="@dimen/quote_option_img_item_side_margin"
             android:layout_marginTop="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
             android:layout_marginBottom="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
-            android:src="@drawable/bg3"/>
+            android:src="@drawable/pink_bg"/>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/quoteTextColorExpandingLayout"
@@ -46,7 +46,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
             android:layout_marginBottom="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
-            android:src="@drawable/bg3" />
+            android:src="@drawable/pink_bg" />
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/quoteFontExpandingLayout"
@@ -78,7 +78,7 @@
             android:layout_marginEnd="@dimen/quote_option_img_item_side_margin"
             android:layout_marginTop="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
             android:layout_marginBottom="@dimen/quote_option_expandable_layout_top_and_bottom_margin"
-            android:src="@drawable/bg3" />
+            android:src="@drawable/pink_bg" />
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/quoteTextSizeExpandingLayout"

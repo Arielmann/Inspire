@@ -2,10 +2,10 @@ package inspire.ariel.inspire.common.di;
 
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Named;
@@ -17,7 +17,7 @@ import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppInts;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
-import inspire.ariel.inspire.common.utils.listutils.ListPresentable;
+import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
 import lombok.Getter;
 
 @Module
@@ -42,6 +42,7 @@ public class ResourcesModule {
 
     private Resources res;
     private AssetManager assetManager;
+    private List<InspireBackgroundImage> bgImages;
 
     public ResourcesModule(Resources res, AssetManager assetManager) {
         this.res = res;
@@ -51,12 +52,20 @@ public class ResourcesModule {
     @Singleton
     @Provides
     @Named(AppStrings.BG_IMAGES)
-    List<Bitmap> provideDefaultBackgroundBitmaps() {
-        List<Bitmap> bgImages = new ArrayList<>();
-        bgImages.add(BitmapFactory.decodeResource(res, R.drawable.bg1));
-        bgImages.add(BitmapFactory.decodeResource(res, R.drawable.bg2));
-        bgImages.add(BitmapFactory.decodeResource(res, R.drawable.bg3));
-        bgImages.add(BitmapFactory.decodeResource(res, R.drawable.bg4));
+    List<InspireBackgroundImage> provideDefaultBackgroundBitmapsArray() {
+        List<InspireBackgroundImage> bgImages = new ArrayList<>();
+        bgImages.add(new InspireBackgroundImage(AppStrings.BLUE_YELLOW_BG, res.getDrawable(R.drawable.blue_yellow_bg)));
+        bgImages.add(new InspireBackgroundImage(AppStrings.PINK_BG, res.getDrawable(R.drawable.pink_bg)));
+        bgImages.add(new InspireBackgroundImage(AppStrings.PINK_GREY_BG, res.getDrawable(R.drawable.pink_grey_bg)));
+        bgImages.add(new InspireBackgroundImage(AppStrings.PURPLE_BLUE_YELLOW_BG, res.getDrawable(R.drawable.purple_blue_yellow_bg)));
+        return bgImages;
+    }
+
+    @Singleton
+    @Provides
+    @Named(AppStrings.BG_IMAGES)
+    HashSet<InspireBackgroundImage> provideDefaultBackgroundBitmapsHashMap() {
+        HashSet<InspireBackgroundImage> bgImages = new HashSet<>();
         return bgImages;
     }
 
@@ -65,19 +74,20 @@ public class ResourcesModule {
     @Named(AppStrings.COLORS)
     List<Integer> provideColorBitmaps() {
         List<Integer> colors = new ArrayList<>();
-        colors.add(res.getColor(R.color.md_red_700));
-        colors.add(res.getColor(R.color.md_blue_700));
-        colors.add(res.getColor(R.color.md_yellow_300));
-        colors.add(res.getColor(R.color.md_black_1000));
-        colors.add(res.getColor(R.color.md_white_1000));
-        colors.add(res.getColor(R.color.md_orange_300));
-        colors.add(res.getColor(R.color.md_teal_300));
-        colors.add(res.getColor(R.color.md_light_green_400));
-        colors.add(res.getColor(R.color.md_green_900));
+        colors.add(Color.RED);
+        colors.add(Color.BLUE);
+        colors.add(Color.YELLOW);
+        colors.add(Color.GREEN);
+        colors.add(Color.BLACK);
+        colors.add(Color.WHITE);
+        colors.add(Color.GRAY);
+        colors.add(Color.MAGENTA);
+        colors.add(Color.CYAN);
+     /* colors.add(res.getColor(R.color.md_green_900));
         colors.add(res.getColor(R.color.md_brown_700));
         colors.add(res.getColor(R.color.md_grey_700));
         colors.add(res.getColor(R.color.md_deep_purple_700));
-        colors.add(res.getColor(R.color.md_pink_300));
+        colors.add(res.getColor(R.color.md_pink_300));*/
         return colors;
     }
 

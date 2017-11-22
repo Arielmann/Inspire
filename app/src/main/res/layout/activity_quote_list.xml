@@ -4,7 +4,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg2"
+        android:background="@drawable/pink_grey_bg"
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView

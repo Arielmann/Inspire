@@ -31,8 +31,6 @@ public class ImageUtils {
     public static String testImagePath = Environment.getExternalStorageDirectory() + "/DCIM/camera/me.jpg";
     public static final CharSequence[] chooseImageAlertBoxItems = {"Take Photo", "Choose from Gallery", "Cancel"};
     public static Bitmap defaultProfileImage;
-    private static PicassoProfileImageTarget picassoProfileImageTarget;
-    private static PicassoChatImageTarget picassoChatImageTarget;
 
     public static int[] chooseImageSizes(Context context, int screenHeightDivider, int screenWidthDivider) {
         int targetImageHeight = SharedPrefManager.getInstance(context).getUserDeviceScreenHeight() / screenHeightDivider;
@@ -103,20 +101,6 @@ public class ImageUtils {
     protected static void startImageLoaderInterface(Object interfaceHolder, String senderName, Bitmap resource, Uri imageUri) {
         ImageLoader loader = (ImageLoader) interfaceHolder;
 
-    }
-
-    public static void downloadProfileImage(Context context, final ImageLoader loader, Quote quote, String url) {
-        Log.d(TAG, "entered imageUtils download image method method for " +  quote.getMessage() + "'s profile image");
-        picassoProfileImageTarget = new PicassoProfileImageTarget(context, loader, quote, url);
-        Picasso.with(context).load(url).into(picassoProfileImageTarget);
-    }
-
-    //TODO: Use ImageCacheManager gor persistent data saving directly to device cache
-    public static void downloadChatImage(final Context context, ImageLoader loader, String senderName, final String url) {
-        picassoChatImageTarget = new PicassoChatImageTarget(context, senderName, loader, url);
-        Picasso.with(context)
-                .load(url)
-                .into(picassoChatImageTarget);
     }
 
     public static void initLoadedStylistsImageBitmaps(Context context, List<Quote> quotes, int targetImageHeight, int targetImageWidth) {

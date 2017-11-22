@@ -1,6 +1,6 @@
 package inspire.ariel.inspire.common.resources;
 
-import android.graphics.Bitmap;
+import android.content.res.Resources;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
+import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
 
 public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitializer {
 
@@ -21,7 +22,7 @@ public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitia
 
     @Inject
     @Named(AppStrings.BG_IMAGES)
-    List<Bitmap> bgImages;
+    List<InspireBackgroundImage> bgImages;
 
     @Inject
     @Named(AppStrings.COLORS)
@@ -34,6 +35,9 @@ public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitia
     @Inject
     @Named(AppStrings.FONT_SIZES)
     List<ResourcesModule.Size> fontSizes;
+
+    @Inject
+    Resources res;
 
     private static ResourcesProviderImpl model;
 
@@ -53,7 +57,7 @@ public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitia
     }
 
     @Override
-    public List<Bitmap> getBackgroundImages() {
+    public List<InspireBackgroundImage> getBackgroundImages() {
         return bgImages;
     }
 
@@ -70,6 +74,11 @@ public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitia
     @Override
     public List<ResourcesModule.Size> getFontsSizes() {
         return fontSizes;
+    }
+
+    @Override
+    public Resources getResources() {
+        return res;
     }
 }
 

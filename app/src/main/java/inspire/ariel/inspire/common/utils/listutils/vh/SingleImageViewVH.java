@@ -1,11 +1,12 @@
 package inspire.ariel.inspire.common.utils.listutils.vh;
 
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import inspire.ariel.inspire.R;
+import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
 
 public class SingleImageViewVH extends RecyclerView.ViewHolder {
 
@@ -15,11 +16,12 @@ public class SingleImageViewVH extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public void setUIDataOnView(Bitmap bitmap, View.OnClickListener onImageClicked) {
-        if(bitmap != null){
+    public void setUIDataOnView(InspireBackgroundImage image, View.OnClickListener onImageClicked) {
+        if(image.getDrawable() != null){
             ImageView imgView = itemView.findViewById(R.id.quoteOptionItemImageView);
-            imgView.setImageBitmap(bitmap);
+            imgView.setImageDrawable(image.getDrawable());
             imgView.setOnClickListener(onImageClicked);
+            Log.i(TAG, "imageView set for bitmap " + image.getName());
         }
     }
 }

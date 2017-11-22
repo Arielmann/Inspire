@@ -4,50 +4,68 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
-import android.widget.EditText;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.backendless.IDataStore;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppInts;
+import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.di.AppComponent;
+import inspire.ariel.inspire.common.quoteslist.Quote;
+import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
+import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivity;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
+import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.common.utils.listutils.genericadapters.SingleBitmapListAdapter;
 import inspire.ariel.inspire.leader.quotescreator.adapters.FontSizesAdapter;
 import inspire.ariel.inspire.leader.quotescreator.adapters.FontsAdapter;
 import inspire.ariel.inspire.leader.quotescreator.adapters.TextColorsAdapter;
+import inspire.ariel.inspire.leader.quotescreator.model.QuoteCreatorModel;
 import inspire.ariel.inspire.leader.quotescreator.view.QuoteOptionView;
 import inspire.ariel.inspire.leader.quotescreator.view.QuotesCreatorView;
 
 public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter, DiscreteScrollView.OnItemChangedListener, DiscreteScrollView.ScrollStateChangeListener {
 
     @Inject
-    ResourcesProvider model;
+    ResourcesProvider customResourcesProvider;
 
     @Inject
     Resources res;
 
+    @Inject
+    @Named(AppStrings.BACKENDLESS_TABLE_QUOTE)
+    IDataStore<Quote> quotesStorage;
+
+    @Inject
+    QuoteCreatorModel model;
+
     private QuotesCreatorView quotesCreatorView;
+    private String TAG = QuoteListPresenterImpl.class.getName();
 
     private QuotesCreatorPresenterImpl(Builder builder) {
         builder.component.inject(this);
         this.quotesCreatorView = builder.quoteCreatorView;
         initBgPicker(quotesCreatorView.getBgPicker());
-        initQuoteEditText(quotesCreatorView.getQuoteEditText());
         initQuoteOptionsFrag(builder.quoteOptionsView);
     }
 
     private void initQuoteOptionsFrag(QuoteOptionView quoteOptionView) {
-        quoteOptionView.getFontsRV().setAdapter(new FontsAdapter(model.getFonts(), font -> quotesCreatorView.setQuoteFont(font)));
-        quoteOptionView.getQuoteTextSizesRV().setAdapter(new FontSizesAdapter(model.getFontsSizes(), fontSize -> quotesCreatorView.setQuoteTextSize(fontSize.getSize())));
-        quoteOptionView.getQuoteTextColorRV().setAdapter(new TextColorsAdapter(model.getColors(), color -> quotesCreatorView.setQuoteTextColor(color)));
+        quoteOptionView.getFontsRV().setAdapter(new FontsAdapter(customResourcesProvider.getFonts(), font -> {
+            quotesCreatorView.setQuoteFont(font);
+            model.setFontPath(font.getPath());
+        }));
+        quoteOptionView.getQuoteTextSizesRV().setAdapter(new FontSizesAdapter(customResourcesProvider.getFontsSizes(), fontSize -> quotesCreatorView.setQuoteTextSize(fontSize.getSize())));
+        quoteOptionView.getQuoteTextColorRV().setAdapter(new TextColorsAdapter(customResourcesProvider.getColors(), color -> quotesCreatorView.setQuoteTextColor(color)));
     }
 
     @Override
@@ -55,8 +73,34 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter, Discr
         quotesCreatorView = null;
     }
 
+    @Override
+    public void postQuote(Quote quote) {
+        quotesStorage.save(quote, new AsyncCallback<Quote>() {
+            @Override
+            public void handleResponse(Quote response) {
+                ActivityStarter.startActivity(quotesCreatorView.getContext(), QuotesListActivity.class);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Toast.makeText(quotesCreatorView.getContext(), "There was an error posting the quote, please try again", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Error saving quote to server: " + fault.toString());
+            }
+        });
+    }
+
+    @Override
+    public String getBgImgName() {
+        return model.getBgImageName();
+    }
+
+    @Override
+    public String getFontPath() {
+        return model.getFontPath();
+    }
+
     private void initBgPicker(DiscreteScrollView bgPicker) {
-        SingleBitmapListAdapter adapter = new SingleBitmapListAdapter(model.getBackgroundImages(), R.layout.vh_quote_bg_img);
+        SingleBitmapListAdapter adapter = new SingleBitmapListAdapter(customResourcesProvider.getBackgroundImages(), R.layout.vh_quote_bg_img);
         bgPicker.setSlideOnFling(false);
         bgPicker.setAdapter(adapter);
         bgPicker.addOnItemChangedListener(this);
@@ -68,44 +112,10 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter, Discr
                 .build());
     }
 
-    private void initQuoteEditText(EditText editText) {
-
-        editText.setOnFocusChangeListener((view, hasFocus) -> {
-            if(hasFocus){
-                QuotesCreatorPresenterImpl.this.quotesCreatorView.setBgPickerVisibility(View.GONE);
-            } else {
-                QuotesCreatorPresenterImpl.this.quotesCreatorView.setBgPickerVisibility(View.VISIBLE);
-            }
-        });
-
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() > AppInts.QUOTE_LARGE_TEXT_MAX_LENGTH && editText.getTextSize() != res.getDimension(R.dimen.quote_small_text_size)) {
-                    quotesCreatorView.setQuoteTextSize(30);
-                    return;
-                }
-
-                if (editable.length() < AppInts.QUOTE_LARGE_TEXT_MAX_LENGTH && editText.getTextSize() == res.getDimension(R.dimen.quote_small_text_size)) {
-                    quotesCreatorView.setQuoteTextSize(45);
-                }
-            }
-        });
-    }
-
     @Override
     public void onCurrentItemChanged(@Nullable RecyclerView.ViewHolder viewHolder, int adapterPosition) {
-        quotesCreatorView.setBackground(model.getBackgroundImages().get(adapterPosition));
+        model.setBgImageName(customResourcesProvider.getBackgroundImages().get(adapterPosition).getName());
+        quotesCreatorView.setBackground(customResourcesProvider.getBackgroundImages().get(adapterPosition).getDrawable());
     }
 
     @Override
