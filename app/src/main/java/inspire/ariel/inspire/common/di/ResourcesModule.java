@@ -42,7 +42,6 @@ public class ResourcesModule {
 
     private Resources res;
     private AssetManager assetManager;
-    private List<InspireBackgroundImage> bgImages;
 
     public ResourcesModule(Resources res, AssetManager assetManager) {
         this.res = res;
@@ -54,10 +53,10 @@ public class ResourcesModule {
     @Named(AppStrings.BG_IMAGES)
     List<InspireBackgroundImage> provideDefaultBackgroundBitmapsArray() {
         List<InspireBackgroundImage> bgImages = new ArrayList<>();
-        bgImages.add(new InspireBackgroundImage(AppStrings.BLUE_YELLOW_BG, res.getDrawable(R.drawable.blue_yellow_bg)));
-        bgImages.add(new InspireBackgroundImage(AppStrings.PINK_BG, res.getDrawable(R.drawable.pink_bg)));
-        bgImages.add(new InspireBackgroundImage(AppStrings.PINK_GREY_BG, res.getDrawable(R.drawable.pink_grey_bg)));
-        bgImages.add(new InspireBackgroundImage(AppStrings.PURPLE_BLUE_YELLOW_BG, res.getDrawable(R.drawable.purple_blue_yellow_bg)));
+        bgImages.add(new InspireBackgroundImage(AppStrings.BLUE_YELLOW_BG, res.getDrawable(R.drawable.blue_yellow_bg), R.drawable.blue_yellow_bg));
+        bgImages.add(new InspireBackgroundImage(AppStrings.PINK_BG, res.getDrawable(R.drawable.pink_bg), R.drawable.pink_bg));
+        bgImages.add(new InspireBackgroundImage(AppStrings.PINK_GREY_BG, res.getDrawable(R.drawable.pink_grey_bg), R.drawable.pink_grey_bg));
+        bgImages.add(new InspireBackgroundImage(AppStrings.PURPLE_BLUE_YELLOW_BG, res.getDrawable(R.drawable.purple_blue_yellow_bg), R.drawable.purple_blue_yellow_bg));
         return bgImages;
     }
 

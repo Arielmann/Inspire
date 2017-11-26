@@ -2,15 +2,20 @@ package inspire.ariel.inspire.common.app;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 
 import java.util.Random;
 
-import inspire.ariel.inspire.common.app.appinit.AppInitializer;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.di.AppModule;
@@ -19,8 +24,20 @@ import inspire.ariel.inspire.common.di.ModelsModule;
 import inspire.ariel.inspire.common.di.NetworkModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.constants.AppStrings;
+import inspire.ariel.inspire.common.quoteslist.view.ContinuousOperationCallback;
+import inspire.ariel.inspire.common.resources.ResourcesInitializer;
+import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
+import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
+import inspire.ariel.inspire.leader.Leader;
 
 public class InspireApplication extends Application {
+
+    @Inject
+    ResourcesInitializer resourcesInitializer;
+
+    @Inject
+    @Named(AppStrings.BACKENDLESS_TABLE_LEADER)
+    IDataStore<Leader> leadersStorage;
 
     private static final String TAG = InspireApplication.class.getSimpleName();
     private AppComponent appComponent;
@@ -30,8 +47,6 @@ public class InspireApplication extends Application {
         super.onCreate();
         appComponent = DaggerAppComponent.builder().appModule(new AppModule(this))
                 .networkModule(new NetworkModule()).modelsModule(new ModelsModule()).resourcesModule(new ResourcesModule(getResources(), getAssets())).build();
-        AppInitializer initializer = new AppInitializer();
-        initializer.InitApp(this);
        //registerDummyUser();
     }
 
@@ -54,6 +69,35 @@ public class InspireApplication extends Application {
 
             public void handleFault(BackendlessFault fault) {
                 Log.e(TAG, "Leader registration error: " + fault.getCode());
+            }
+        });
+    }
+
+    public void initApp(ContinuousOperationCallback operationCallback){
+        if(NetworkHelper.getInstance().hasNetworkAccess(this)) {
+            this.getAppComponent().inject(this);
+            Backendless.initApp(this, AppStrings.BACKENDLESS_APPLICATION_ID, AppStrings.BACKENDLESS_API_KEY);
+            resourcesInitializer.init(this);
+            FontsManager.getInstance().init(this);
+            registerDeviceToBackendless(AppStrings.EMPTY_STRING, () -> Toast.makeText(InspireApplication.this, getResources().getString(R.string.error_general_channel_registration), Toast.LENGTH_LONG).show());
+            registerDeviceToBackendless(AppStrings.LEADER_NAME, operationCallback);
+        }else{
+            operationCallback.onFailure();
+        }
+    }
+
+    private void registerDeviceToBackendless(String channel, ContinuousOperationCallback operationCallback) {
+        Backendless.Messaging.registerDevice(AppStrings.SENDER_ID, channel, new AsyncCallback<Void>() {
+            @Override
+            public void handleResponse(Void response) {
+                operationCallback.onSuccess();
+                Log.d(TAG, "Successfully registered device to backendless");
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                operationCallback.onFailure();
+                Log.d(TAG, "Error registering device: " + fault.getMessage());
             }
         });
     }

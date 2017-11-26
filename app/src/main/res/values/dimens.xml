@@ -21,4 +21,5 @@
     <dimen name="quote_option_img_item_top_margin">10dp</dimen>
     <dimen name="single_tv_vh_text_size">25sp</dimen>
     <dimen name="single_line">1</dimen>
+    <dimen name="error_msg_text_size">35sp</dimen>
 </resources>

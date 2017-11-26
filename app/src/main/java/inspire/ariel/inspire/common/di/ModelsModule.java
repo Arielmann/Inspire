@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppInts;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
@@ -27,7 +28,7 @@ public class ModelsModule {
     @Singleton
     @Provides
     QuoteCreatorModel provideQuotesCreatorModel(){
-        return new QuoteCreatorModelImpl(FontsManager.Font.ALEF_BOLD.getPath(), AppStrings.BLUE_YELLOW_BG);
+        return QuoteCreatorModelImpl.builder().bgImageName(AppStrings.BLUE_YELLOW_BG).fontPath(FontsManager.Font.ALEF_BOLD.getPath()).bgDrawableIntValue(R.drawable.blue_yellow_bg).build();
     }
 
     @Singleton

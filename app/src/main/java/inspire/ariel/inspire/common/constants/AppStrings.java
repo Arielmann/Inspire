@@ -4,6 +4,12 @@ import inspire.ariel.inspire.BuildConfig;
 
 public class AppStrings {
 
+    /**
+    * Static constants class which contains all strings that are NOT directly presented
+    * to the user (excluding log messages).
+    * All user presented strings are located on R.string in the res package
+    */
+
     //Backendless
     public static final String BACKENDLESS_APPLICATION_ID = "1C0DA01D-01F8-CC77-FF89-629A70D7CB00";
     public static final String BACKENDLESS_API_KEY = "D5242878-29DD-0377-FF39-FC1E91E64300";
@@ -18,6 +24,13 @@ public class AppStrings {
     public static final String PINK_BG = "pink_bg";
     public static final String PURPLE_BLUE_YELLOW_BG = "purple_blue_yellow_bg";
     public static final String PINK_GREY_BG = "pink_grey_bg";
+
+    //Animations names
+    public static final String FADE_IN_ANIM = "fadeIn";
+    public static final String FADE_OUT_ANIM = "fadeOut";
+
+    //Regex
+    public static final String FIND_WHITESPACES_REGEX = "\\s";
 
     //Prefixes
     public static String DRAWABLE_PATH_PREFIX = "android.resource://" + BuildConfig.APPLICATION_ID + "/drawable/";
@@ -68,5 +81,6 @@ public class AppStrings {
     public static final String QUIRLYCUES_PATH = "fonts/Quirlycues.ttf";
     public static final String MYRIAD_PRO_REG_PATH = "fonts/Myriad_Pro-Regular.ttf";
     public static final String LATO_REG_PATH = "fonts/Lato-Regular.ttf";
+
 }
 

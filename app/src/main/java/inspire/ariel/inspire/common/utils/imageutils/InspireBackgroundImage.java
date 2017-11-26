@@ -8,13 +8,9 @@ import lombok.NonNull;
 @Data
 public class InspireBackgroundImage {
 
-   @NonNull String name;
-   @NonNull Drawable drawable;
-
-   public InspireBackgroundImage(String identifier, Drawable drawable) {
-      this.name = identifier;
-      this.drawable = drawable;
-   }
+   @NonNull private String name;
+   @NonNull private Drawable drawable;
+   @NonNull private int drawableIntValue;
 }
 
 

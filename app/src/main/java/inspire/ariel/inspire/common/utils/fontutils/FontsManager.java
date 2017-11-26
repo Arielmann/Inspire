@@ -2,6 +2,7 @@ package inspire.ariel.inspire.common.utils.fontutils;
 
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.widget.TextView;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import lombok.Getter;
 
 public class FontsManager  {
 
+    private static final String TAG = FontsManager.class.getSimpleName();
     @Inject
     AssetManager assetManager;
 
@@ -57,7 +59,13 @@ public class FontsManager  {
     }
 
     public void setFontOnTV(String fontPath, TextView tv) {
-        Typeface headlineFont = Typeface.createFromAsset(assetManager, fontPath);
-        tv.setTypeface(headlineFont);
+
+        try {
+            tv.setTypeface(Typeface.createFromAsset(assetManager, fontPath));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error assigning font with path: " + fontPath + " assigning default font (Alef Bold)");
+            tv.setTypeface(Typeface.createFromAsset(assetManager, Font.ALEF_BOLD.path));
+        }
     }
 }

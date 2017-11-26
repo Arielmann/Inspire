@@ -14,17 +14,17 @@
             android:transcriptMode="normal" />
 
         <TextView
-            android:id="@+id/emptyDataSetTV"
+            android:id="@+id/criticalErrorTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textColor="@color/md_black_1000"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/error_app_init"
+            android:textSize="@dimen/error_msg_text_size"
             android:visibility="gone" />
-
 
         <Button
             android:id="@+id/goToCreateQuoteActivityBtn"

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
+        android:id="@+id/fragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/md_yellow_400">
@@ -52,7 +53,7 @@
             android:id="@+id/quoteFontExpandingLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/quoteTextColorExpandingLayout"
+            android:layout_below="@+id/quoteFontImgBtn"
             android:layout_centerHorizontal="true"
             app:ael_duration="350"
             app:ael_interpolator="fastOutLinearIn"
@@ -63,8 +64,9 @@
                 android:id="@+id/quoteFontRV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
+                android:layout_alignLeft="@+id/quoteFontExpandingLayout"
+                android:layout_alignStart="@+id/quoteFontExpandingLayout"
+                android:layout_below="@+id/quoteFontImgBtn"
                 android:transcriptMode="normal" />
         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 

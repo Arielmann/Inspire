@@ -1,5 +1,9 @@
 package inspire.ariel.inspire.common.di;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -19,6 +23,12 @@ public class AppModule {
     @Singleton //Also being provided to other modules
     InspireApplication providesApplication() {
         return application;
+    }
+
+    @Provides
+    @Singleton
+    ActivityManager provideActivityManager(){
+        return (ActivityManager) application.getSystemService(Context.ACTIVITY_SERVICE);
     }
 
 }

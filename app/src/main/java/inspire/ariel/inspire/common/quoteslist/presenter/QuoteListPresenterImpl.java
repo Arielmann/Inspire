@@ -1,8 +1,8 @@
 package inspire.ariel.inspire.common.quoteslist.presenter;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 
 import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
@@ -10,23 +10,26 @@ import com.backendless.exceptions.BackendlessFault;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.constants.AppInts;
+import inspire.ariel.inspire.common.constants.AppStrings;
+import inspire.ariel.inspire.common.datamanager.DataManager;
+import inspire.ariel.inspire.common.di.AppComponent;
+import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
 import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
-import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.leader.Leader;
-import inspire.ariel.inspire.common.di.AppComponent;
-import inspire.ariel.inspire.common.quoteslist.Quote;
-import inspire.ariel.inspire.common.constants.AppStrings;
 
-public class QuoteListPresenterImpl implements QuoteListPresenter{
+public class QuoteListPresenterImpl implements QuoteListPresenter {
+
+    private static final String TAG = QuoteListPresenterImpl.class.getName();
 
     @Inject
     @Named(AppStrings.BACKENDLESS_TABLE_LEADER)
@@ -44,10 +47,10 @@ public class QuoteListPresenterImpl implements QuoteListPresenter{
     public QuoteListPresenterImpl(QuotesListView view, AppComponent appComponent) {
         this.view = view;
         appComponent.inject(this);
-        retrieveLeaderQuotesFromServer();
     }
 
-    private void retrieveLeaderQuotesFromServer() {
+    @Override
+    public void retrieveLeaderQuotesFromServer() {
 
         //LoadRelationsQueryBuilder<Quote> loadRelationsQueryBuilder;
         //loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Quote.class);
@@ -57,25 +60,62 @@ public class QuoteListPresenterImpl implements QuoteListPresenter{
         leadersStorage.findById(AppStrings.LEADER_DEVICE_ID, new AsyncCallback<Leader>() {
             @Override
             public void handleResponse(Leader leader) {
-                adapter = new QuoteListAdapter(leader.getQuotes(), customResourcesProvider.getResources());
-                for (Quote quote: leader.getQuotes()) {
-                    Uri uri = Uri.parse(AppStrings.DRAWABLE_PATH_PREFIX + quote.getBgImageName());
-                    quote.setImage(createDrawableFromUri(uri));
+                compareServerLeaderWithDataManagerLeader(leader);
+                adapter = new QuoteListAdapter(DataManager.getInstance().getLeader().getQuotes(), customResourcesProvider.getResources());
+                model.setDataSet(DataManager.getInstance().getLeader().getQuotes());
+                if (view != null) {
+                    view.presentQuotesOnScreen(adapter);
                 }
-                leader.getQuotes().add(createLongMockQuote());
-                model.setDataSet(leader.getQuotes());
-                view.presentQuotesOnScreen(adapter);
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                view.showErrorMessage();
+                if (view != null) {
+                    if (DataManager.getInstance().getLeader() == null) {
+                        view.showNoInternetConnectionMessage();
+                    } else {
+                        view.showQuoteRefreshErrorMessage();
+                    }
+                }
             }
         });
     }
 
-    private Drawable createDrawableFromUri(Uri uri){
-            Drawable drawable;
+    private void compareServerLeaderWithDataManagerLeader(Leader serverLeader) {
+        if (DataManager.getInstance().getLeader() == null) {
+            updateDataManagerLeader(serverLeader);
+            return;
+        }
+
+        if (!serverLeader.getQuotes().equals(DataManager.getInstance().getLeader().getQuotes())) {
+            updateDataManagerLeader(serverLeader);
+        }
+    }
+
+    private void addNoQuotesMessageTorLeaderQuotes(Leader leader) {
+        Log.e(TAG, "Leader has no quotes");
+        List<Quote> quotes = new ArrayList<>();
+        quotes.add(Quote.newNoQuotesToPresentQuote(view.getResources()));
+        leader.setQuotes(quotes);
+    }
+
+    private void updateDataManagerLeader(Leader serverLeader) {
+        if (serverLeader.getQuotes().size() == 0) {
+            addNoQuotesMessageTorLeaderQuotes(serverLeader);
+        }
+        initLeaderImages(serverLeader);
+        DataManager.getInstance().setLeader(serverLeader);
+    }
+
+    private void initLeaderImages(Leader serverLeader) {
+        for (Quote quote : serverLeader.getQuotes()) {
+            Uri uri = Uri.parse(AppStrings.DRAWABLE_PATH_PREFIX + quote.getBgImageName()); //TODO: check for failures
+            quote.setImage(createDrawableFromUri(uri));
+        }
+    }
+
+    private Drawable createDrawableFromUri(Uri uri) {
+        Drawable drawable;
         try {
             InputStream inputStream = view.getContentResolver().openInputStream(uri);
             drawable = Drawable.createFromStream(inputStream, uri.toString());
@@ -91,15 +131,4 @@ public class QuoteListPresenterImpl implements QuoteListPresenter{
         view = null;
     }
 
-    private Quote createLongMockQuote(){
-        Quote quote = new Quote();
-        quote.setBgImageName(AppStrings.BLUE_YELLOW_BG);
-        Uri uri = Uri.parse(AppStrings.DRAWABLE_PATH_PREFIX + quote.getBgImageName());
-        quote.setImage(createDrawableFromUri(uri));
-        quote.setText("This is an extremely long quote it is soooooo long so I can test if it gets out of screen! I don't want an innocent user to come and read his quote but then find out during application's runtime that he cannot read it all because SOMEONE has messed up the coding and allowed too long quotes to disappear forever");
-        quote.setFontPath(FontsManager.Font.QUIRLYCUES.getPath());
-        quote.setTextSize(AppInts.FORTY);
-        quote.setTextColor(Color.BLACK);
-        return quote;
-    }
 }
