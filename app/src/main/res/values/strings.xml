@@ -11,9 +11,12 @@
     <string name="error_empty_quote">Cannot upload empty quote. Make sense doesn\'t it? :)</string>
     <string name="error_general_channel_registration">An error has occurred, you are not registered to the app\'s main messages channel. That\'s Ok, message can still be displayed.</string>
     <string name="error_no_quotes">There are no quotes to display, yet…</string>
-    <string name="error_no_connection">Oops, there are network connection problems. Please check your connection and try again</string>
+    <string name="error_no_connection">Oops, there seem to be a network problem. Please check your connection and try again</string>
     <string name="error_please_restart">Can\'t access that without network connection, please restart</string>
     <string name="please_wait">Please wait…</string>
-    <string name="error_quote_refresh">There was a error refreshing the quotes. Please try again later</string>
+    <string name="error_quote_refresh">There was a error refreshing the data. Please try again later</string>
     <string name="error_quote_upload">There was an error posting the quote, please try again</string>
+    <string name="error_quote_leader_relation_creation">Quote was correctly posted to users but there seem to be a table relation error (server problem), please contact your administrator.</string>
+    <string name="new_quote_push_notification">wants to share something with you</string>
+    <string name="push_notification_multiple_prefix">new posts from</string>
 </resources>

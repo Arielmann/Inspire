@@ -1,6 +1,5 @@
 package inspire.ariel.inspire.leader.quotescreator.presenter;
 
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,10 +10,14 @@ import com.backendless.Backendless;
 import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.messaging.MessageStatus;
+import com.backendless.messaging.PublishOptions;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,94 +48,54 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter, Discr
     ResourcesProvider customResourcesProvider;
 
     @Inject
-    Resources res;
-
-    @Inject
     @Named(AppStrings.BACKENDLESS_TABLE_QUOTE)
     IDataStore<Quote> quotesStorage;
 
     @Inject
     QuoteCreatorModel model;
 
-    private QuotesCreatorView quotesCreatorView;
+    private QuotesCreatorView view;
     private String TAG = QuoteListPresenterImpl.class.getName();
 
     private QuotesCreatorPresenterImpl(Builder builder) {
         builder.component.inject(this);
-        this.quotesCreatorView = builder.quoteCreatorActivityView;
-        initBgPicker(quotesCreatorView.getBgPicker());
+        this.view = builder.quoteCreatorActivityView;
+        initBgPicker(view.getBgPicker());
         initQuoteOptionsView(builder.quoteOptionsView);
     }
 
+    /**
+     Init
+     */
     private void initQuoteOptionsView(QuoteOptionsView quoteOptionsView) {
         quoteOptionsView.getFontsRV().setAdapter(new FontsAdapter(customResourcesProvider.getFonts(), font -> {
-            quotesCreatorView.setQuoteFont(font);
+            view.setQuoteFont(font);
             model.setFontPath(font.getPath());
-            quotesCreatorView.setBackground(customResourcesProvider.getResources().getDrawable(model.getBgDrawableIntValue())); //Required to prevent background changes bug
+            view.setBackground(customResourcesProvider.getResources().getDrawable(model.getBgDrawableIntValue())); //Required to prevent background changes bug
         }));
         quoteOptionsView.getQuoteTextSizesRV().setAdapter(new FontSizesAdapter(customResourcesProvider.getFontsSizes(), textSize -> {
-            quotesCreatorView.setQuoteTextSize(textSize.getSize());
-            quotesCreatorView.setBackground(customResourcesProvider.getResources().getDrawable(model.getBgDrawableIntValue())); //Required to prevent background changes bug
+            view.setQuoteTextSize(textSize.getSize());
+            view.setBackground(customResourcesProvider.getResources().getDrawable(model.getBgDrawableIntValue())); //Required to prevent background changes bug
         }));
-        quoteOptionsView.getQuoteTextColorRV().setAdapter(new TextColorsAdapter(customResourcesProvider.getColors(), color -> quotesCreatorView.setQuoteTextColor(color)));
+        quoteOptionsView.getQuoteTextColorRV().setAdapter(new TextColorsAdapter(customResourcesProvider.getColors(), color -> view.setQuoteTextColor(color)));
     }
 
-    @Override
-    public void onDestroy() {
-        quotesCreatorView = null;
+    private void initBgPicker(DiscreteScrollView bgPicker) {
+        SingleBitmapListAdapter adapter = new SingleBitmapListAdapter(customResourcesProvider.getBackgroundImages(), R.layout.vh_quote_bg_img);
+        bgPicker.setSlideOnFling(false);
+        bgPicker.setAdapter(adapter);
+        bgPicker.addOnItemChangedListener(this);
+        bgPicker.addScrollStateChangeListener(this);
+        bgPicker.setItemTransitionTimeMillis(AppTimeMillis.QUARTER_SECOND);
+        bgPicker.setOffscreenItems(0);
+        bgPicker.setItemTransformer(new ScaleTransformer.Builder()
+                .setMinScale(AppInts.FLOAT_EIGHT_TENTHS)
+                .build());
     }
 
-    //TODO: Protect from using the app id to post_btn as this leader from a rouge device
-    @Override
-    public void postQuote(Quote quote) {
-        quotesCreatorView.showProgressDialog();
-        quotesStorage.save(quote, new AsyncCallback<Quote>() {
-            @Override
-            public void handleResponse(Quote response) {
-                List<Quote> quoteInList = new ArrayList<>();
-                quoteInList.add(response);
-                setLeaderQuoteRelation(DataManager.getInstance().getLeader(), quoteInList);
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                quotesCreatorView.showUploadErrorMessage(quotesCreatorView.getResources().getString(R.string.error_no_connection));
-                Log.e(TAG, "Error saving quote to server: " + fault.toString());
-            }
-        });
-    }
-
-    @Override
-    public boolean validateQuote(String text) {
-        if (text.replaceAll(AppStrings.FIND_WHITESPACES_REGEX, AppStrings.EMPTY_STRING).isEmpty()) {
-            quotesCreatorView.showUploadErrorMessage(quotesCreatorView.getResources().getString(R.string.error_empty_quote));
-            return false;
-        }
-
-        if(!NetworkHelper.getInstance().hasNetworkAccess(quotesCreatorView.getContext())){
-            quotesCreatorView.showUploadErrorMessage(quotesCreatorView.getResources().getString(R.string.error_no_connection));
-            return false;
-        }
-
-        return true;
-    }
-
-    private void setLeaderQuoteRelation(Leader leader, List<Quote> singleQuoteInsideList) {
-        Backendless.Data.of(Leader.class).addRelation(leader, AppStrings.BACKENDLESS_TABLE_LEADER_COLUMN_QUOTES, singleQuoteInsideList,
-                new AsyncCallback<Integer>() {
-                    @Override
-                    public void handleResponse(Integer response) {
-                        Log.i(TAG, "Relation has been set with quote: " + singleQuoteInsideList.get(0).getText() + " and leader: " + leader.getName());
-                        quotesCreatorView.goToQuoteListActivity();
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault fault) {
-                        Log.e(TAG, "Server reported an error: " + fault.getMessage());
-                        quotesCreatorView.showUploadErrorMessage(quotesCreatorView.getResources().getString(R.string.error_no_connection));
-                    }
-                });
-    }
+    /**
+     Getters
+     */
 
     @Override
     public String getBgImgName() {
@@ -149,41 +112,152 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter, Discr
         return customResourcesProvider.getResources().getDrawable(model.getBgDrawableIntValue());
     }
 
-    private void initBgPicker(DiscreteScrollView bgPicker) {
-        SingleBitmapListAdapter adapter = new SingleBitmapListAdapter(customResourcesProvider.getBackgroundImages(), R.layout.vh_quote_bg_img);
-        bgPicker.setSlideOnFling(false);
-        bgPicker.setAdapter(adapter);
-        bgPicker.addOnItemChangedListener(this);
-        bgPicker.addScrollStateChangeListener(this);
-        bgPicker.setItemTransitionTimeMillis(AppTimeMillis.QUARTER_SECOND);
-        bgPicker.setOffscreenItems(0);
-        bgPicker.setItemTransformer(new ScaleTransformer.Builder()
-                .setMinScale(AppInts.FLOAT_EIGHT_TENTHS)
-                .build());
-    }
+    /**
+     *Background Image changes
+     */
 
     @Override
     public void onCurrentItemChanged(@Nullable RecyclerView.ViewHolder viewHolder, int adapterPosition) {
-       willSetBackgroundImage(adapterPosition);
+        willSetBackgroundImage(adapterPosition);
     }
 
-    private void willSetBackgroundImage(int position){
+    private void willSetBackgroundImage(int position) {
         model.setBgDrawableIntValue(customResourcesProvider.getBackgroundImages().get(position).getDrawableIntValue());
         model.setBgImageName(customResourcesProvider.getBackgroundImages().get(position).getName());
         if (customResourcesProvider.getBackgroundImages().get(position).getDrawable() != null) {
-            quotesCreatorView.setBackground(customResourcesProvider.getBackgroundImages().get(position).getDrawable()); //The Only method call that is not made in order to prevent the background bug but actually meant to change the color upon user interaction
+            view.setBackground(customResourcesProvider.getBackgroundImages().get(position).getDrawable()); //The Only method call that is not made in order to prevent the background bug but actually meant to change the color upon user interaction
         }
     }
 
     @Override
-    public void onScrollStart(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {}
+    public void onScrollStart(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
+    }
 
     @Override
-    public void onScrollEnd(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {}
+    public void onScrollEnd(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
+    }
 
     @Override
-    public void onScroll(float scrollPosition, int currentPosition, int newPosition, @Nullable RecyclerView.ViewHolder currentHolder, @Nullable RecyclerView.ViewHolder newCurrent) {}
+    public void onScroll(float scrollPosition, int currentPosition, int newPosition, @Nullable RecyclerView.ViewHolder currentHolder, @Nullable RecyclerView.ViewHolder newCurrent) {
+    }
 
+    /**
+     * Quote Validation
+     */
+
+    @Override
+    public boolean validateQuote(String text) {
+        if (text.replaceAll(AppStrings.REGEX_FIND_WHITESPACES, AppStrings.EMPTY_STRING).isEmpty()) {
+            view.dismissProgressDialogAndShowUploadErrorMessage(view.getResources().getString(R.string.error_empty_quote));
+            return false;
+        }
+
+        if (!NetworkHelper.getInstance().hasNetworkAccess(view.getContext())) {
+            view.dismissProgressDialogAndShowUploadErrorMessage(view.getResources().getString(R.string.error_no_connection));
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     Server Communication
+    */
+
+    //TODO: Protect from using the app id to post_btn as this leader from a rouge device
+    @Override
+    public void postQuote(Quote quote) {
+        view.showProgressDialog();
+        quotesStorage.save(quote, new AsyncCallback<Quote>() {
+            @Override
+            public void handleResponse(Quote quote) {
+                sendPushNotification(DataManager.getInstance().getLeader(), quote);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                view.dismissProgressDialogAndShowUploadErrorMessage(view.getResources().getString(R.string.error_quote_upload));
+                Log.e(TAG, "Error saving quote to server: " + fault.toString());
+            }
+        });
+    }
+
+    private void sendPushNotification(Leader leader, Quote quote) {
+        PublishOptions publishOptions = new PublishOptions();
+        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_TICKER_TEXT, leader.getName());
+        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_CONTENT_TITLE, leader.getName());
+        //Content_Text - For presenting in notification | Quote_Text - The actual quote for the app
+        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_CONTENT_TEXT, view.getResources().getString(R.string.new_quote_push_notification));
+        publishOptions.putHeader(AppStrings.KEY_OBJECT_ID, quote.getObjectId());
+        publishOptions.putHeader(AppStrings.KEY_LEADER_ID, quote.getLeaderId());
+        publishOptions.putHeader(AppStrings.KEY_TEXT, quote.getText());
+        publishOptions.putHeader(AppStrings.KEY_FONT_PATH, quote.getFontPath());
+        publishOptions.putHeader(AppStrings.KEY_TEXT_SIZE, String.valueOf(quote.getTextSize()));
+        publishOptions.putHeader(AppStrings.KEY_TEXT_COLOR, String.valueOf(quote.getTextColor()));
+        publishOptions.putHeader(AppStrings.KEY_BG_IMAGE_NAME, quote.getBgImageName());
+
+        Backendless.Messaging.publish(AppStrings.VAL_LEADER_NAME, AppStrings.SPACE_STRING,
+                publishOptions, new AsyncCallback<MessageStatus>() {
+                    @Override
+                    public void handleResponse(MessageStatus response) {
+                        Log.i(TAG, "Message sent");
+                        view.dismissProgressDialog();
+                        quote.setCreated(new Date());
+                        view.goToQuoteListActivity(quote);
+                        setLeaderQuoteRelation(leader, new ArrayList<Quote>(){{add(quote);}});
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+                        Log.e(TAG, "Push notification sending error: " + fault.getMessage());
+                        view.dismissProgressDialogAndShowUploadErrorMessage(view.getResources().getString(R.string.error_quote_upload));
+                        removeQuoteFromServe(quote);
+                    }
+                });
+    }
+
+
+    private void setLeaderQuoteRelation(Leader leader, List<Quote> singleQuoteInsideList) {
+        Backendless.Data.of(Leader.class).addRelation(leader, AppStrings.BACKENDLESS_TABLE_LEADER_COLUMN_QUOTES, singleQuoteInsideList,
+                new AsyncCallback<Integer>() {
+                    @Override
+                    public void handleResponse(Integer response) {
+                        Log.i(TAG, "Relation has been set with quote: " + singleQuoteInsideList.get(0).getText() + " and leader: " + leader.getName());
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+                        Log.e(TAG, "Server reported an error: " + fault.getMessage());
+                        view.dismissProgressDialogAndShowUploadErrorMessage(view.getResources().getString(R.string.error_quote_leader_relation_creation));
+                    }
+                });
+    }
+
+    private void removeQuoteFromServe(Quote quote) {
+        quotesStorage.remove(quote, new AsyncCallback<Long>() {
+            @Override
+            public void handleResponse(Long response) {
+                Log.i(TAG, "quote removed from server. Quote details: " + quote.toString());
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e(TAG, "Quote removal failed for quote: " + quote.toString() + " consider manual removing in data base");
+            }
+        });
+    }
+
+    /**
+     * Lifecycle Methods
+     */
+    @Override
+    public void onDestroy() {
+        view = null;
+    }
+
+    /**
+     Builder
+     */
     public static class Builder {
         // Required parameters
         private final QuotesCreatorView quoteCreatorActivityView;

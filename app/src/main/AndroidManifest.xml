@@ -38,27 +38,18 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
 
         <service
-            android:name=".common.quoteslist.services.QuoteRetrievalService"
-            android:exported="false" />
-        <service
-            android:name=".common.quoteslist.services.QuoteUploadService"
-            android:exported="false" />
-        <service
-            android:name="com.backendless.push.BackendlessPushService"
+            android:name=".common.quoteslist.services.PushNotificationService"
             android:exported="false" />
 
-        <receiver
-            android:name="com.backendless.push.BackendlessBroadcastReceiver"
+        <receiver android:name=".common.quoteslist.broadcastrecievers.PushNotificationReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="inspire.ariel.inspire" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <category android:name="inspire.ariel.inspire"/>
             </intent-filter>
         </receiver>
 
-        <activity android:name=".common.app.launchfailed.LaunchFailedActivity"></activity>
     </application>
 
 </manifest>

@@ -7,11 +7,12 @@
         android:background="@drawable/pink_grey_bg"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <com.yarolegovich.discretescrollview.DiscreteScrollView
+            android:id="@+id/quotesRv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:transcriptMode="normal" />
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical" />
 
         <TextView
             android:id="@+id/criticalErrorTV"

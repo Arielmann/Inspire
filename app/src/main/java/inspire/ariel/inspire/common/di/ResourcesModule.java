@@ -50,7 +50,7 @@ public class ResourcesModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.BG_IMAGES)
+    @Named(AppStrings.KEY_BG_IMAGES)
     List<InspireBackgroundImage> provideDefaultBackgroundBitmapsArray() {
         List<InspireBackgroundImage> bgImages = new ArrayList<>();
         bgImages.add(new InspireBackgroundImage(AppStrings.BLUE_YELLOW_BG, res.getDrawable(R.drawable.blue_yellow_bg), R.drawable.blue_yellow_bg));
@@ -62,7 +62,7 @@ public class ResourcesModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.BG_IMAGES)
+    @Named(AppStrings.KEY_BG_IMAGES)
     HashSet<InspireBackgroundImage> provideDefaultBackgroundBitmapsHashMap() {
         HashSet<InspireBackgroundImage> bgImages = new HashSet<>();
         return bgImages;
@@ -70,7 +70,7 @@ public class ResourcesModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.COLORS)
+    @Named(AppStrings.KEY_COLORS)
     List<Integer> provideColorBitmaps() {
         List<Integer> colors = new ArrayList<>();
         colors.add(Color.RED);
@@ -92,7 +92,7 @@ public class ResourcesModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.FONTS)
+    @Named(AppStrings.KEY_FONTS)
     List<FontsManager.Font> provideFonts() {
         List<FontsManager.Font> fonts = new ArrayList<>();
         fonts.add(FontsManager.Font.ARIAL);
@@ -108,7 +108,7 @@ public class ResourcesModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.FONT_SIZES)
+    @Named(AppStrings.KEY_FONT_SIZES)
     List<Size> provideFontsSizes() {
         List<Size> sizes = new ArrayList<>();
         sizes.add(Size.SIXTEEN);

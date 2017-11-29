@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import inspire.ariel.inspire.common.constants.AppInts;
 import inspire.ariel.inspire.leader.Leader;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.constants.AppStrings;
@@ -37,17 +38,20 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    DataQueryBuilder provideDataQueryBuilder() {
-        return DataQueryBuilder.create();
+    @Named(AppStrings.BACKENDLESS_TABLE_LEADER)
+    IDataStore<Quote> provideQuotesStorage() {
+        return Backendless.Data.of(Quote.class);
     }
 
-
-  /*  @Provides
     @Singleton
-    Gson provideGson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        return gsonBuilder.create();
-    }*/
+    @Provides
+    DataQueryBuilder provideQuoteRelationsQueryBuilder() {
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+        queryBuilder.setSortBy(AppStrings.BACKENDLESS_SORT_CLAUSE_CREATED_DSC);
+        queryBuilder.setWhereClause(AppStrings.BACKENDLESS_LEADER_ID_WHERE_CLAUSE);
+        queryBuilder.setPageSize(AppInts.QUOTES_QUERY_PAGE_SIZE).setOffset(AppInts.QUOTES_QUERY_STARTING_OFFSET);
+        return queryBuilder;
+    }
 
     @Provides
     @Singleton

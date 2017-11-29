@@ -42,7 +42,7 @@ public class FontsManager  {
         MONTSERRAT_REG(AppStrings.MONTSERRAT_REG, AppStrings.MONTSERRAT_REG_PATH),
         QUIRLYCUES(AppStrings.QUIRLYCUES, AppStrings.QUIRLYCUES_PATH),
         MYRIAD_PRO_REG(AppStrings.MYRIAD_PRO_REG, AppStrings.MYRIAD_PRO_REG_PATH),
-        LATO_REGULAR(AppStrings.LARO_REG, AppStrings.LATO_REG_PATH);
+        LATO_REGULAR(AppStrings.LATO_REG, AppStrings.LATO_REG_PATH);
 
         @Getter private final String name;
         @Getter private final String path;

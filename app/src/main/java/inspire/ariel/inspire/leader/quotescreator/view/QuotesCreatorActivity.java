@@ -1,6 +1,7 @@
 package inspire.ariel.inspire.leader.quotescreator.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,11 +22,11 @@ import java.util.List;
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppInts;
+import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.constants.Percentages;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivity;
-import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.animationutils.AnimatedSlidingView;
 import inspire.ariel.inspire.databinding.ActivityQuoteCreatorBinding;
@@ -39,7 +40,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     private KProgressHUD progressHUD;
     private ActivityQuoteCreatorBinding binding;
     private Handler backgroundChangeHandler;
-    List<AnimatedSlidingView> disappearingViews;
+    private List<AnimatedSlidingView> disappearingViews;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,6 +130,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
                         .fontPath(presenter.getFontPath())
                         .textColor(textColor)
                         .textSize(textSize)
+                        .leaderId(AppStrings.VAL_LEADER_OBJECT_ID)
                         .bgImageName(presenter.getBgImgName())
                         .build();
                 presenter.postQuote(quote);
@@ -138,7 +140,6 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
 
     @Override
     public void setBackground(Drawable background) {
-        //binding.creatorLayout.setBackground(background);
         binding.quoteEditText.setBackground(background);
     }
 
@@ -165,15 +166,19 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     }
 
     @Override
-    public void showUploadErrorMessage(String message) {
+    public void dismissProgressDialogAndShowUploadErrorMessage(String message) {
         dismissProgressDialog();
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void goToQuoteListActivity() {
-        dismissProgressDialog();
-        ActivityStarter.startActivity(this, QuotesListActivity.class);
+    public void goToQuoteListActivity(Quote newQuote) {
+        Intent intent = new Intent(this, QuotesListActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AppStrings.KEY_QUOTE, newQuote);
+        intent.putExtras(bundle);
+        startActivity(intent);
         presenter.onDestroy();
         finish();
     }
@@ -194,7 +199,8 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         super.onDestroy();
     }
 
-    private void dismissProgressDialog() {
+    @Override
+    public void dismissProgressDialog() {
         if (progressHUD != null) {
             progressHUD.dismiss();
         }
@@ -211,6 +217,4 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
                 .setDimAmount(0.5f)
                 .show();
     }
-
-
 }

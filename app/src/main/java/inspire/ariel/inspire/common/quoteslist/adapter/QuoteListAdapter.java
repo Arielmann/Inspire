@@ -1,6 +1,7 @@
 package inspire.ariel.inspire.common.quoteslist.adapter;
 
 import android.content.res.Resources;
+import android.support.v4.view.NestedScrollingChild;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;

@@ -21,19 +21,19 @@ public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitia
     */
 
     @Inject
-    @Named(AppStrings.BG_IMAGES)
+    @Named(AppStrings.KEY_BG_IMAGES)
     List<InspireBackgroundImage> bgImages;
 
     @Inject
-    @Named(AppStrings.COLORS)
+    @Named(AppStrings.KEY_COLORS)
     List<Integer> colors;
 
     @Inject
-    @Named(AppStrings.FONTS)
+    @Named(AppStrings.KEY_FONTS)
     List<FontsManager.Font> fonts;
 
     @Inject
-    @Named(AppStrings.FONT_SIZES)
+    @Named(AppStrings.KEY_FONT_SIZES)
     List<ResourcesModule.Size> fontSizes;
 
     @Inject

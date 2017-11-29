@@ -47,7 +47,7 @@ public class InspireApplication extends Application {
         super.onCreate();
         appComponent = DaggerAppComponent.builder().appModule(new AppModule(this))
                 .networkModule(new NetworkModule()).modelsModule(new ModelsModule()).resourcesModule(new ResourcesModule(getResources(), getAssets())).build();
-       //registerDummyUser();
+        //registerDummyUser();
     }
 
     public AppComponent getAppComponent() {
@@ -57,9 +57,9 @@ public class InspireApplication extends Application {
     public void registerDummyUser() {
         Random rand = new Random();
         BackendlessUser user = new BackendlessUser();
-        user.setProperty(AppStrings.NAME, "Ariel" + rand.nextInt(1000-2) + 2);
-        user.setProperty(AppStrings.DESCRIPTION, "I am a nice user");
-        user.setEmail("arielmann" +  rand.nextInt(1000-2) + 2 + "@gmail.com");
+        user.setProperty(AppStrings.KEY_NAME, "Ariel" + rand.nextInt(1000 - 2) + 2);
+        user.setProperty(AppStrings.KEY_DESCRIPTION, "I am a nice user");
+        user.setEmail("arielmann" + rand.nextInt(1000 - 2) + 2 + "@gmail.com");
         user.setPassword("iAmWatchingU");
 
         Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
@@ -73,21 +73,22 @@ public class InspireApplication extends Application {
         });
     }
 
-    public void initApp(ContinuousOperationCallback operationCallback){
-        if(NetworkHelper.getInstance().hasNetworkAccess(this)) {
+    public void initApp(ContinuousOperationCallback operationCallback) {
+        if (NetworkHelper.getInstance().hasNetworkAccess(this)) {
             this.getAppComponent().inject(this);
-            Backendless.initApp(this, AppStrings.BACKENDLESS_APPLICATION_ID, AppStrings.BACKENDLESS_API_KEY);
+            Backendless.initApp(this, AppStrings.BACKENDLESS_VAL_APPLICATION_ID, AppStrings.BACKENDLESS_VAL_API_KEY);
             resourcesInitializer.init(this);
             FontsManager.getInstance().init(this);
-            registerDeviceToBackendless(AppStrings.EMPTY_STRING, () -> Toast.makeText(InspireApplication.this, getResources().getString(R.string.error_general_channel_registration), Toast.LENGTH_LONG).show());
-            registerDeviceToBackendless(AppStrings.LEADER_NAME, operationCallback);
-        }else{
+            registerDeviceToBackendless(AppStrings.BACKENDLESS_DEFAULT_CHANNEL, () -> Toast.makeText(InspireApplication.this, getResources().getString(R.string.error_general_channel_registration), Toast.LENGTH_LONG).show());
+            registerDeviceToBackendless(AppStrings.VAL_LEADER_NAME, operationCallback);
+        } else {
             operationCallback.onFailure();
         }
     }
 
+    //TODO: Register without expire dates
     private void registerDeviceToBackendless(String channel, ContinuousOperationCallback operationCallback) {
-        Backendless.Messaging.registerDevice(AppStrings.SENDER_ID, channel, new AsyncCallback<Void>() {
+        Backendless.Messaging.registerDevice(AppStrings.VAL_SENDER_ID, channel, new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void response) {
                 operationCallback.onSuccess();

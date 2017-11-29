@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inspire.ariel.inspire.common.quoteslist.Quote;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 public class QuotesListModelImpl implements QuoteListModel {
 
@@ -13,27 +16,17 @@ public class QuotesListModelImpl implements QuoteListModel {
     */
 
     private static QuotesListModelImpl model;
-    private static List<Quote> quotes;
+    @Getter @Setter private List<Quote> quotes;
 
     public static QuotesListModelImpl getInstance() {
         if (model == null) {
             model = new QuotesListModelImpl();
-            quotes = new ArrayList<>();
+            model.quotes = new ArrayList<>();
         }
         return model;
     }
 
     private QuotesListModelImpl() {
-    }
-
-    @Override
-    public void setDataSet(List<Quote> dataSet) {
-        QuotesListModelImpl.quotes = dataSet;
-    }
-
-    @Override
-    public List<Quote> getDataSet() {
-        return quotes;
     }
 }
 

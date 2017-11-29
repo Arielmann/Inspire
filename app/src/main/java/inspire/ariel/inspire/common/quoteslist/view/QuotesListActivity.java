@@ -1,21 +1,22 @@
 package inspire.ariel.inspire.common.quoteslist.view;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
-import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
+import inspire.ariel.inspire.common.constants.AppInts;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
 import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.databinding.ActivityQuoteListBinding;
@@ -25,16 +26,15 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
 
     private String TAG = QuotesListActivity.class.getName();
     private QuoteListPresenterImpl presenter;
-    private RecyclerView rv;
-    private KProgressHUD progressHUD;
+    private KProgressHUD mainProgressDialog;
+    private KProgressHUD pagingProgressDialog;
     private ActivityQuoteListBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_list);
-        presenter = new QuoteListPresenterImpl(this, ((InspireApplication) getApplication()).getAppComponent());
-        showProgressDialog();
+        showMainProgressDialog();
         InspireApplication application = (InspireApplication) getApplication();
         application.initApp(new ContinuousOperationCallback() {
             @Override
@@ -51,25 +51,23 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
         });
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        presenter.OnNewIntent(intent);
+        super.onNewIntent(intent);
+    }
+
     private void initActivity() {
-        rv = binding.recyclerView;
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(this);
-        rv.setLayoutManager(lm);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rv.getContext(),
-                OrientationHelper.VERTICAL);
-        rv.addItemDecoration(dividerItemDecoration);
-        rv.setHasFixedSize(true);
+        initQuotesRecyclerView();
+        presenter = new QuoteListPresenterImpl(this, ((InspireApplication) getApplication()).getAppComponent());
         binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(QuotesListActivity.this, QuotesCreatorActivity.class));
-        presenter.retrieveLeaderQuotesFromServer();
         Log.d(TAG, TAG + " onCreate() method completed");
     }
 
-    @Override
-    protected void onStart() {
-        if (rv != null) {
-            presenter.retrieveLeaderQuotesFromServer();
-        }
-        super.onStart();
+    private void initQuotesRecyclerView(){
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.quotesRv.getContext(), OrientationHelper.VERTICAL);
+        binding.quotesRv.addItemDecoration(dividerItemDecoration);
+        binding.quotesRv.setHasFixedSize(true);
     }
 
     @Override
@@ -81,37 +79,60 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
     }
 
     @Override
-    public void presentQuotesOnScreen(QuoteListAdapter adapter) {
-        rv.setAdapter(adapter);
-        dismissProgressDialog();
-    }
-
-    @Override
     public void showQuoteRefreshErrorMessage() {
         Toast.makeText(this, R.string.error_quote_refresh, Toast.LENGTH_LONG).show();
     }
 
-    private void dismissProgressDialog() {
-        if (progressHUD != null) {
-            progressHUD.dismiss();
-        }
-    }
-
     @Override
-    public void showProgressDialog() {
-        progressHUD = KProgressHUD.create(this)
+    public void showMainProgressDialog() {
+    //TODO: find a more UX friendly solution
+        mainProgressDialog = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel(getString(R.string.please_wait))
                 .setCancellable(false)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f)
+                .setAnimationSpeed(AppInts.PROGRESS_DIALOG_DIM_ANIMATION_SPEED)
+                .setDimAmount(AppInts.MAIN_PROGRESS_DIALOG_DIM_AMOUNT)
                 .show();
     }
 
     @Override
+    public void showPagingProgressDialog() {
+        pagingProgressDialog = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setDimAmount(AppInts.PAGING_PROGRESS_DIALOG_DIM_AMOUNT)
+                .setCancellable(true)
+                .setAnimationSpeed(AppInts.PROGRESS_DIALOG_DIM_ANIMATION_SPEED)
+                .show();
+    }
+
+    @Override
+    public void dismissMainProgressDialog() {
+        if (mainProgressDialog != null) {
+            mainProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void dismissPagingProgressDialog() {
+        if (pagingProgressDialog != null) {
+            pagingProgressDialog.dismiss();
+        }
+    }
+
+    @Override
     public void showNoInternetConnectionMessage() {
-        dismissProgressDialog();
+        dismissMainProgressDialog();
         binding.criticalErrorTV.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public DiscreteScrollView getQuotesListRv() {
+        return binding.quotesRv;
+    }
+
+    @Override
+    public void scrollQuoteListToTop() {
+        binding.quotesRv.scrollToPosition(AppInts.ZERO);
     }
 }
 

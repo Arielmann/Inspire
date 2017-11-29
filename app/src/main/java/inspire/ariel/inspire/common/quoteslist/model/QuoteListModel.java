@@ -5,6 +5,6 @@ import java.util.List;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 
 public interface QuoteListModel {
-    void setDataSet(List<Quote> dataSet);
-    List<Quote> getDataSet();
+    List<Quote> getQuotes();
+    void setQuotes(List<Quote> quotes);
 }

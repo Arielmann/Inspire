@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppInts;
+import inspire.ariel.inspire.common.quoteslist.services.PushNotificationService;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
 import inspire.ariel.inspire.common.resources.ResourcesProviderImpl;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
@@ -20,4 +21,5 @@ public interface AppComponent {
     void inject(AppInts appInts);
     void inject(FontsManager fontsManager);
     void inject(InspireApplication application);
+    void inject(PushNotificationService pushNotificationService);
 }
