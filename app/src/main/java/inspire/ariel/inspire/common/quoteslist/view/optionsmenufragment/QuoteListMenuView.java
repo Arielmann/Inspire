@@ -1,8 +1,8 @@
-package inspire.ariel.inspire.common.quoteslist.view.optionsmenu;
+package inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment;
 
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
 
-interface QuoteListMenuView {
+public interface QuoteListMenuView {
 
     void setQuoteListPresenter(QuoteListPresenter presenter);
 }

@@ -1,5 +1,6 @@
 package inspire.ariel.inspire.leader.quotescreator.presenter;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,11 +28,12 @@ import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
+import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivity;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 import inspire.ariel.inspire.leader.Leader;
 import inspire.ariel.inspire.leader.quotescreator.model.QuoteCreatorModel;
-import inspire.ariel.inspire.leader.quotescreator.view.QuotesCreatorView;
+import inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity.QuotesCreatorViewController;
 import lombok.Getter;
 
 public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
@@ -49,12 +51,12 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
     @Inject
     NetworkHelper networkHelper;
 
-    private QuotesCreatorView creatorView;
     private String TAG = QuoteListPresenterImpl.class.getName();
+    private QuotesCreatorViewController quoteCreatorViewController;
 
-    public QuotesCreatorPresenterImpl(AppComponent component, QuotesCreatorView view) {
+    @Inject public QuotesCreatorPresenterImpl(AppComponent component, QuotesCreatorViewController quoteCreatorViewController) {
         component.inject(this);
-        this.creatorView = view;
+        this.quoteCreatorViewController = quoteCreatorViewController;
     }
 
     /**
@@ -63,7 +65,7 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
 
     @Override
     public void onDestroy() {
-        creatorView = null;
+        quoteCreatorViewController = null;
     }
 
     /**
@@ -84,11 +86,6 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
         return customResourcesProvider.getResources().getDrawable(model.getBgDrawableIntValue());
     }
 
-    @Override
-    public int getBgDrawableIntValue() {
-        return model.getBgDrawableIntValue();
-    }
-
     /**
      * Background Image Methods
      */
@@ -99,7 +96,7 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
         model.setBgDrawableIntValue(customResourcesProvider.getBackgroundImages().get(position).getDrawableIntValue());
         model.setBgImageName(customResourcesProvider.getBackgroundImages().get(position).getName());
         if (customResourcesProvider.getBackgroundImages().get(position).getDrawable() != null) {
-            creatorView.setBackground(customResourcesProvider.getBackgroundImages().get(position).getDrawable()); //The Only method call that is not made in order to prevent the background bug but actually meant to change the color upon user interaction
+            quoteCreatorViewController.setBackground(customResourcesProvider.getBackgroundImages().get(position).getDrawable()); //The Only method call that is not made in order to prevent the background bug but actually meant to change the color upon user interaction
         }
     }
 
@@ -127,12 +124,12 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
     @Override
     public boolean validateQuote(String text) {
         if (text.replaceAll(AppStrings.REGEX_FIND_WHITESPACES, AppStrings.EMPTY_STRING).isEmpty()) {
-            creatorView.dismissProgressDialogAndShowUploadErrorMessage(creatorView.getResources().getString(R.string.error_empty_quote));
+            quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_empty_quote));
             return false;
         }
 
-        if (!NetworkHelper.getInstance().hasNetworkAccess(creatorView.getContext())) {
-            creatorView.dismissProgressDialogAndShowUploadErrorMessage(creatorView.getResources().getString(R.string.error_no_connection));
+        if (!NetworkHelper.getInstance().hasNetworkAccess(quoteCreatorViewController.getContext())) {
+            quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_no_connection));
             return false;
         }
 
@@ -146,8 +143,8 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
     //TODO: Protect from using the app id to post as this leader from a rouge device
     @Override
     public void postQuote(Quote quote) {
-        if (networkHelper.hasNetworkAccess(creatorView.getContext())) {
-            creatorView.showProgressDialog();
+        if (networkHelper.hasNetworkAccess(quoteCreatorViewController.getContext())) {
+            quoteCreatorViewController.showProgressDialog();
             quotesStorage.save(quote, new AsyncCallback<Quote>() {
                 @Override
                 public void handleResponse(Quote quote) {
@@ -156,12 +153,12 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
 
                 @Override
                 public void handleFault(BackendlessFault fault) {
-                    creatorView.dismissProgressDialogAndShowUploadErrorMessage(creatorView.getResources().getString(R.string.error_quote_upload));
+                    quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_quote_upload));
                     Log.e(TAG, "Error saving quote to server: " + fault.getDetail());
                 }
             });
         } else {
-            creatorView.dismissProgressDialogAndShowUploadErrorMessage(creatorView.getResources().getString(R.string.error_quote_upload));
+            quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_quote_upload));
         }
     }
 
@@ -184,7 +181,7 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
         PublishOptions publishOptions = new PublishOptions();
         publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_TICKER_TEXT, leader.getName());
         publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_CONTENT_TITLE, leader.getName());
-        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_CONTENT_TEXT, creatorView.getResources().getString(R.string.new_quote_push_notification));
+        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_CONTENT_TEXT, customResourcesProvider.getResources().getString(R.string.new_quote_push_notification));
         publishOptions.putHeader(AppStrings.KEY_OBJECT_ID, quote.getObjectId());
         publishOptions.putHeader(AppStrings.KEY_LEADER_ID, quote.getLeaderId());
         publishOptions.putHeader(AppStrings.KEY_TEXT, quote.getText());
@@ -198,9 +195,11 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
                     @Override
                     public void handleResponse(MessageStatus response) {
                         Log.i(TAG, "Message sent");
-                        creatorView.dismissProgressDialog();
+                        quoteCreatorViewController.dismissProgressDialog();
                         quote.setCreated(new Date());
-                        creatorView.goToQuoteListActivity(quote);
+                        Intent intent = new Intent().putExtra(AppStrings.KEY_QUOTE, quote);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        quoteCreatorViewController.goToOtherActivity(QuotesListActivity.class, intent);
                         setLeaderQuoteRelation(leader, new ArrayList<Quote>() {{
                             add(quote);
                         }});
@@ -210,8 +209,10 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
                     public void handleFault(BackendlessFault fault) {
                         Log.e(TAG, "Push notification sending error: " + fault.getDetail());
                         quote.setCreated(new Date());
-                        creatorView.dismissProgressDialogAndShowUploadErrorMessage(creatorView.getResources().getString(R.string.push_notification_send_error));
-                        creatorView.goToQuoteListActivity(quote);
+                        quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.push_notification_send_error));
+                        Intent intent = new Intent().putExtra(AppStrings.KEY_QUOTE, quote);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        quoteCreatorViewController.goToOtherActivity(QuotesListActivity.class, intent);
                         setLeaderQuoteRelation(leader, new ArrayList<Quote>() {{
                             add(quote);
                         }});
@@ -230,7 +231,7 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
                     @Override
                     public void handleFault(BackendlessFault fault) {
                         Log.e(TAG, "Server reported an error: " + fault.getDetail());
-                        //creatorView.dismissProgressDialogAndShowUploadErrorMessage(creatorView.getResources().getString(R.string.error_quote_leader_relation_creation));
+                        //quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(quoteCreatorViewController.getResources().getString(R.string.error_quote_leader_relation_creation));
                     }
                 });
     }

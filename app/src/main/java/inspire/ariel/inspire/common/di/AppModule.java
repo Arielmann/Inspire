@@ -15,6 +15,7 @@ import dagger.Provides;
 import inspire.ariel.inspire.common.app.InspireApplication;
 
 @Module
+
 public class AppModule {
 
     private InspireApplication application;
@@ -51,7 +52,6 @@ public class AppModule {
     }
 
     @Provides
-    @Singleton
     Handler provideHandler(){
         return new Handler();
     }

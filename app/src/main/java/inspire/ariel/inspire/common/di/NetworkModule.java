@@ -18,10 +18,6 @@ import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 @Module
 public class NetworkModule {
 
-    public NetworkModule() {
-
-    }
-
     @Singleton
     @Provides
     @Named(AppStrings.BACKENDLESS_TABLE_LEADER)

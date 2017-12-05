@@ -8,6 +8,6 @@ public interface QuoteListAdapterPresenter {
 
     void notifyDataSetChanged();
 
-    void setDataSet(List<Quote> quotes);
+    void setQuotes(List<Quote> quotes);
 
 }

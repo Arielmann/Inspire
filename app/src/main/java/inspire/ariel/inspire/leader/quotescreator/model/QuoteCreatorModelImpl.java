@@ -13,6 +13,6 @@ public class QuoteCreatorModelImpl implements QuoteCreatorModel{
 
    @NonNull String fontPath;
    @NonNull String bgImageName;
-   @NonNull int bgDrawableIntValue;
+   int bgDrawableIntValue;
 
 }

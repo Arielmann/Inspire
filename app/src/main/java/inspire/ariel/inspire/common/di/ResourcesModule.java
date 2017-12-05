@@ -16,6 +16,9 @@ import dagger.Provides;
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
+import inspire.ariel.inspire.common.resources.ResourcesInitializer;
+import inspire.ariel.inspire.common.resources.ResourcesProvider;
+import inspire.ariel.inspire.common.resources.ResourcesProviderImpl;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
 import lombok.Getter;
@@ -132,4 +135,16 @@ public class ResourcesModule {
     @Singleton
     @Provides
     AssetManager provideAssetManager() {return assetManager;}
+
+    @Singleton
+    @Provides
+    ResourcesProvider provideResourcesProvider(){
+        return ResourcesProviderImpl.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    ResourcesInitializer provideResourcesInitializer(){
+        return ResourcesProviderImpl.getInstance();
+    }
 }

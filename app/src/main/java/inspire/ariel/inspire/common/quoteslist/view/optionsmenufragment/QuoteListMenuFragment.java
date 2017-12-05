@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.common.quoteslist.view.optionsmenu;
+package inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -11,11 +11,12 @@ import android.view.ViewGroup;
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
 import inspire.ariel.inspire.databinding.FragmentQuoteListOptionsMenuBinding;
+import lombok.Setter;
 
 public class QuoteListMenuFragment extends Fragment implements QuoteListMenuView {
 
     private FragmentQuoteListOptionsMenuBinding binding;
-    private QuoteListPresenter presenter;
+    @Setter private QuoteListPresenter quoteListPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class QuoteListMenuFragment extends Fragment implements QuoteListMenuView
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_quote_creator_menu, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_quote_list_options_menu, container, false);
         return binding.getRoot();
     }
 
@@ -34,9 +35,4 @@ public class QuoteListMenuFragment extends Fragment implements QuoteListMenuView
 
         }
     };
-
-    @Override
-    public void setQuoteListPresenter(QuoteListPresenter presenter) {
-        this.presenter = presenter;
-    }
 }

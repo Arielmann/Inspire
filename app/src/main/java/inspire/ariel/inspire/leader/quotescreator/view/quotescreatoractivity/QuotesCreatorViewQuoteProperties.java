@@ -1,10 +1,10 @@
-package inspire.ariel.inspire.leader.quotescreator.view;
+package inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity;
 
 import android.graphics.drawable.Drawable;
 
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 
-public interface QuotesCreatorViewForFragments {
+public interface QuotesCreatorViewQuoteProperties {
 
     void refreshCurrentBackground();
 

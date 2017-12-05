@@ -17,6 +17,8 @@ import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
 
 public interface QuoteListPresenter {
 
+    void init(QuoteListAdapterPresenter adapterPresenter);
+
     void onDestroy();
 
     void OnNewIntent(Intent intent);
@@ -24,4 +26,5 @@ public interface QuoteListPresenter {
     List<Quote> getQuotes();
 
     DiscreteScrollView.ScrollStateChangeListener<?> getOnScrollChangedListener();
+
 }

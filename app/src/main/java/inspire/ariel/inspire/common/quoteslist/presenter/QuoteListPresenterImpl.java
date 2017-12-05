@@ -32,7 +32,7 @@ import inspire.ariel.inspire.common.utils.imageutils.ImageUtils;
 import inspire.ariel.inspire.leader.Leader;
 import lombok.Getter;
 
-public class QuoteListPresenterImpl implements QuoteListPresenter{
+public class QuoteListPresenterImpl implements QuoteListPresenter {
 
     private static final String TAG = QuoteListPresenterImpl.class.getName();
 
@@ -58,19 +58,24 @@ public class QuoteListPresenterImpl implements QuoteListPresenter{
 
     private QuoteListAdapterPresenter quoteListAdapterPresenter;
     private QuotesListView view;
-    private boolean isFetchingMethodUnlocked = true;
+    private boolean isFetchingMethodUnlocked;
 
-    public QuoteListPresenterImpl(AppComponent appComponent, QuotesListView view, QuoteListAdapterPresenter quoteListAdapterPresenter) {
+    public QuoteListPresenterImpl(AppComponent appComponent, QuotesListView view) {
         appComponent.inject(this);
+        isFetchingMethodUnlocked = true;
         this.view = view;
-        this.quoteListAdapterPresenter = quoteListAdapterPresenter;
-        this.quoteListAdapterPresenter.setDataSet(model.getQuotes());
-        fetchInitialQuotes(initialQuotesDownloadCallback);
     }
 
     /**
      * Init
      **/
+
+    @Override
+    public void init(QuoteListAdapterPresenter adapterPresenter) {
+        this.quoteListAdapterPresenter = adapterPresenter;
+        this.quoteListAdapterPresenter.setQuotes(model.getQuotes());
+        fetchInitialQuotes(initialQuotesDownloadCallback);
+    }
 
     private void initQuotesImages(List<Quote> quotes) {
         for (Quote quote : quotes) {
@@ -137,6 +142,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter{
         public void handleFault(BackendlessFault fault) {
             Log.e(TAG, "Quotes retrieval error: " + fault.getDetail());
             view.showNoInternetConnectionMessage();
+            view.dismissMainProgressDialog();
         }
     };
 
@@ -155,16 +161,12 @@ public class QuoteListPresenterImpl implements QuoteListPresenter{
         public void handleFault(BackendlessFault fault) {
             Log.e(TAG, "Quotes retrieval error: " + fault.getDetail());
             isFetchingMethodUnlocked = true;
-            view.dismissMainProgressDialog();
-            if (view != null) {
+                view.dismissMainProgressDialog();
                 view.showNoInternetConnectionMessage();
-            }
         }
     };
 
     private void onFullQuotesResponseReceive(List<Quote> serverQuotes) {
-        //Todo: if serverQuotes list in data manager != 0, refresh so the quote in the current position will still be presented
-        //Todo: Another option: Cancel quote download when pressing the back button from quote creator activity
         model.getQuotes().addAll(serverQuotes);
         quotesQueryBuilder.prepareNextPage();
         initQuotesImages(serverQuotes);
@@ -176,7 +178,8 @@ public class QuoteListPresenterImpl implements QuoteListPresenter{
      * Scrolling Methods
      **/
 
-    @Getter private DiscreteScrollView.ScrollStateChangeListener<?> onScrollChangedListener = new DiscreteScrollView.ScrollStateChangeListener() {
+    @Getter
+    private DiscreteScrollView.ScrollStateChangeListener<?> onScrollChangedListener = new DiscreteScrollView.ScrollStateChangeListener() {
         @Override
         public void onScrollStart(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
 
@@ -195,11 +198,22 @@ public class QuoteListPresenterImpl implements QuoteListPresenter{
         }
     };
 
-    /**Getters*/
+    /**
+     * Getters
+     */
 
     @Override
     public List<Quote> getQuotes() {
         return model.getQuotes();
     }
 
+
+    /**
+     * Setters
+     */
+
+    public void setQuoteListAdapterPresenter(QuoteListAdapterPresenter quoteListAdapterPresenter) {
+        this.quoteListAdapterPresenter = quoteListAdapterPresenter;
+        this.quoteListAdapterPresenter.setQuotes(model.getQuotes());
+    }
 }

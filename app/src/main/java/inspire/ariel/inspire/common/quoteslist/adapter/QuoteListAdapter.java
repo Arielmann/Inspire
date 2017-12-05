@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import inspire.ariel.inspire.R;
@@ -13,10 +14,10 @@ import lombok.Setter;
 
 public class QuoteListAdapter extends RecyclerView.Adapter<QuoteVH> implements QuoteListAdapterPresenter {
 
-    @Setter private List<Quote> dataSet;
+    @Setter private List<Quote> quotes;
 
     public QuoteListAdapter() {
-        super();
+        quotes = new ArrayList<>();
     }
 
     @Override
@@ -27,11 +28,11 @@ public class QuoteListAdapter extends RecyclerView.Adapter<QuoteVH> implements Q
 
     @Override
     public void onBindViewHolder(QuoteVH holder, int position) {
-        holder.setUIDataOnView(dataSet.get(position));
+        holder.setUIDataOnView(quotes.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return dataSet.size();
+        return quotes.size();
     }
 }

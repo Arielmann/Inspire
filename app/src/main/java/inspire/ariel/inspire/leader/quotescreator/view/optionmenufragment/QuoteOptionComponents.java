@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.leader.quotescreator.view;
+package inspire.ariel.inspire.leader.quotescreator.view.optionmenufragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageButton;

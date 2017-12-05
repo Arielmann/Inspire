@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.leader.quotescreator.view;
+package inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,17 +26,24 @@ import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.constants.Percentages;
+import inspire.ariel.inspire.common.di.AppModule;
+import inspire.ariel.inspire.common.di.DaggerViewComponent;
+import inspire.ariel.inspire.common.di.ListsModule;
+import inspire.ariel.inspire.common.di.PresentersModule;
+import inspire.ariel.inspire.common.di.ResourcesModule;
+import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.quoteslist.Quote;
-import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivity;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
+import inspire.ariel.inspire.common.utils.animationutils.AnimatedSlidingView;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
 import inspire.ariel.inspire.common.utils.listutils.SingleBitmapListAdapter;
 import inspire.ariel.inspire.databinding.ActivityQuoteCreatorBinding;
 import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenter;
-import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenterImpl;
+import inspire.ariel.inspire.leader.quotescreator.view.optionmenufragment.QuoteCreatorMenuView;
+import lombok.Getter;
 
-public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCreatorView, QuotesCreatorViewForFragments {
+public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCreatorViewController, QuotesCreatorViewQuoteProperties, QuotesCreatorActivityInjector {
 
     @Inject
     Handler backgroundChangeHandler;
@@ -50,30 +56,56 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     DiscreteScrollViewData discreteScrollViewData;
 
     @Inject
-    int quoteVhLayoutNumber;
+    int quoteVhLayoutInt;
+
+    @Inject
+    QuotesCreatorPresenter presenter;
+
+    @Inject
+    @Named(AppStrings.QUOTES_CREATOR_PROGRESS_DIALOG)
+    KProgressHUD progressHUD;
+
+    @Inject
+    List<AnimatedSlidingView> disappearingViews;
+
+    @Inject
+    QuoteCreatorMenuView quoteCreatorMenuView;
 
     private String TAG = QuotesCreatorActivity.class.getName();
-    private QuotesCreatorPresenter presenter;
-    private KProgressHUD progressHUD;
-    private ActivityQuoteCreatorBinding binding;
-    private List<AnimatedSlidingView> disappearingViews;
-    private QuoteCreatorMenuView quoteOptionsView;
+    @Getter private ActivityQuoteCreatorBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_creator);
+        inject();
         binding.postImageView.setOnClickListener(onPostQuoteClicked);
-        ((InspireApplication) getApplication()).getAppComponent().inject(this);
         setQuoteFont(FontsManager.Font.ALEF_BOLD);
-        presenter = new QuotesCreatorPresenterImpl(((InspireApplication) getApplication()).getAppComponent(), this);
         initBgPicker();
         initKeyboardChangeBehaviours();
-        quoteOptionsView = (QuoteCreatorMenuView) getSupportFragmentManager().findFragmentById(R.id.quoteOptionsFrag);
-        quoteOptionsView.setQuotesCreatorActivityView(this);
+        initQuoteOptionsView();
     }
 
-    /**Required to prevent background changes bug*/
+    private void initQuoteOptionsView() {
+        quoteCreatorMenuView.setQuotesCreatorActivityViewProperties(this);
+        quoteCreatorMenuView.willInject(((InspireApplication) getApplication()).getAppComponent(), this, getAssets());
+        quoteCreatorMenuView.initView();
+    }
+
+    private void inject() {
+        DaggerViewComponent.builder()
+                .appModule(new AppModule(((InspireApplication) getApplication())))
+                .listsModule(new ListsModule())
+                .presentersModule(PresentersModule.builder().appComponent(((InspireApplication) getApplication()).getAppComponent()).quotesCreatorViewController(this).build())
+                .resourcesModule(new ResourcesModule(getResources(), getAssets()))
+                .viewsModule(ViewsModule.builder().quotesCreatorViewInjector(this).build())
+                .build()
+                .inject(this);
+    }
+
+    /**
+     * Required to prevent background changes bug
+     */
     private void setBackgroundWithDelay(long delay) {
         backgroundChangeHandler.postDelayed(() -> {
             setBackground(presenter.getChosenBgImage());
@@ -83,10 +115,10 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     @Override
     public void onBackPressed() {
 
-        if(quoteOptionsView.areAllOptionLayoutsCollapsed()){
+        if (quoteCreatorMenuView.areAllOptionLayoutsCollapsed()) {
             super.onBackPressed();
-        } else{
-            quoteOptionsView.collapseAllOptionLayouts();
+        } else {
+            quoteCreatorMenuView.collapseAllOptionLayouts();
         }
     }
 
@@ -103,27 +135,8 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         super.onStop();
     }
 
-    private void initAgPickerAnimationListeners() {
-        AnimatedSlidingView slidingBgPicker = AnimatedSlidingView.builder()
-                .view(binding.bgPicker)
-                .initialYPos(binding.bgPicker.getTranslationY())
-                .endAnimatedYPos(binding.bgPicker.getTranslationY() * Percentages.FIVE_HUNDRED)
-                .build();
-
-        AnimatedSlidingView slidingPostImageView = (AnimatedSlidingView.builder()
-                .view(binding.postImageView)
-                .initialYPos(binding.postImageView.getTranslationY())
-                .endAnimatedYPos(binding.postImageView.getTranslationY() * Percentages.FIVE_HUNDRED)
-                .build());
-
-        disappearingViews = new ArrayList<AnimatedSlidingView>() {{
-            add(slidingBgPicker);
-            add(slidingPostImageView);
-        }};
-    }
-
     private void initBgPicker() {
-        SingleBitmapListAdapter adapter = new SingleBitmapListAdapter(customResourcesProvider.getBackgroundImages(), quoteVhLayoutNumber);
+        SingleBitmapListAdapter adapter = new SingleBitmapListAdapter(customResourcesProvider.getBackgroundImages(), quoteVhLayoutInt);
         DiscreteScrollView bgPicker = binding.bgPicker;
         bgPicker.setSlideOnFling(discreteScrollViewData.isSetSlideOnFling());
         bgPicker.setAdapter(adapter);
@@ -132,8 +145,6 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         bgPicker.setItemTransitionTimeMillis(discreteScrollViewData.getTimeMillis());
         bgPicker.setOffscreenItems(discreteScrollViewData.getOffScreenItems());
         bgPicker.setItemTransformer(discreteScrollViewData.getScaleTransformer());
-
-        initAgPickerAnimationListeners();
     }
 
     private void initKeyboardChangeBehaviours() {
@@ -147,7 +158,8 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
                 setBackground(presenter.getChosenBgImage()); //Required to prevent background changes bug
             } else {
                 for (AnimatedSlidingView disappearingView : disappearingViews) {
-                    disappearingView.getView().animate().alpha(1).setDuration(AppTimeMillis.HALF_SECOND);;
+                    disappearingView.getView().animate().alpha(1).setDuration(AppTimeMillis.HALF_SECOND);
+                    ;
                     disappearingView.getView().animate().translationY(disappearingView.getInitialYPos());
                 }
                 binding.postImageView.setClickable(true);
@@ -182,7 +194,9 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         binding.quoteEditText.setBackground(background);
     }
 
-    /**Note: Never call from QuoteCreatorPresenter, will create StackOverFlow due to recursive method call*/
+    /**
+     * Note: Never call from QuoteCreatorPresenter, will create StackOverFlow due to recursive method call
+     */
     @Override
     public void refreshCurrentBackground() {
         setBackground(presenter.getChosenBgImage()); //Required to prevent keyboard show/hide unexpected bugs
@@ -205,16 +219,13 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     }
 
     @Override
-    public void dismissProgressDialogAndShowUploadErrorMessage(String message) {
+    public void dismissProgressDialogAndShowErrorMessage(String message) {
         dismissProgressDialog();
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void goToQuoteListActivity(Quote newQuote) {
-        Intent intent = new Intent(this, QuotesListActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(AppStrings.KEY_QUOTE, newQuote);
+    public void goToOtherActivity(Class newActivity, Intent intent) {
         startActivity(intent);
         presenter.onDestroy();
         finish();
@@ -241,12 +252,6 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     //TODO: Allow cancellation
     @Override
     public void showProgressDialog() {
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel(getString(R.string.please_wait))
-                .setCancellable(true)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f)
-                .show();
+        progressHUD.show();
     }
 }

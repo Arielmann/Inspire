@@ -7,6 +7,13 @@
         android:background="@drawable/pink_grey_bg"
         android:orientation="vertical">
 
+        <fragment
+            android:id="@+id/quoteListMenuFragment"
+            android:name="inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuoteListMenuFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
         <com.yarolegovich.discretescrollview.DiscreteScrollView
             android:id="@+id/quotesRv"
             android:layout_width="match_parent"

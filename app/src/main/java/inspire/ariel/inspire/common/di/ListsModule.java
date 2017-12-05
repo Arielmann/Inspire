@@ -30,7 +30,7 @@ public class ListsModule {
     @Provides
     @Singleton
     @Named(AppStrings.QUOTE_LIST_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
-    DiscreteScrollViewData provideQuoteListActivityDescreteScrollViewData(){
+    DiscreteScrollViewData provideQuoteListActivityDiscreteScrollViewData(){
         return DiscreteScrollViewData.builder()
                 .hasFixedSize(true)
                 .setSlideOnFling(true)
@@ -44,7 +44,7 @@ public class ListsModule {
     @Provides
     @Singleton
     @Named(AppStrings.QUOTE_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
-    DiscreteScrollViewData provideQuoteCreatorActivityDescreteScrollViewData(){
+    DiscreteScrollViewData provideQuoteCreatorActivityDiscreteScrollViewData(){
         return DiscreteScrollViewData.builder()
                 .hasFixedSize(true)
                 .setSlideOnFling(false)

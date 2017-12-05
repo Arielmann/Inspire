@@ -100,6 +100,9 @@ public class AppStrings {
     //View Di Names
     public static final String QUOTE_LIST_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "quoteListActivityDiscreteScrollViewData";
     public static final String QUOTE_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "quoteCreatorActivityDiscreteScrollViewData";
+    public static final String QUOTES_CREATOR_PROGRESS_DIALOG = "progressHudQuotesCreator";
+    public static final String PAGING_QUOTES_LIST_PROGRESS_DIALOG = "progressHudQuotesListPaging";
+    public static final String MAIN_QUOTES_LIST_PROGRESS_DIALOG = "progressHudQuotesListMain";
 
     //Other
     public static final String ACCOUNT_INFO = "Account Info";

@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".leader.quotescreator.view.QuotesCreatorActivity"
+            android:name=".leader.quotescreator.view.quotescreatoractivity.QuotesCreatorActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />

@@ -19,10 +19,10 @@ import javax.inject.Named;
 
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.common.di.ListsModule;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerAppComponent;
+import inspire.ariel.inspire.common.di.ListsModule;
 import inspire.ariel.inspire.common.di.ModelsModule;
 import inspire.ariel.inspire.common.di.NetworkModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
@@ -50,11 +50,19 @@ public class InspireApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this))
-                .networkModule(new NetworkModule()).modelsModule(new ModelsModule()).resourcesModule(new ResourcesModule(getResources(), getAssets())).listsModule(new ListsModule()).build();
-        //registerDummyUser();
+        appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .networkModule(new NetworkModule())
+                .modelsModule(new ModelsModule())
+                .resourcesModule(new ResourcesModule(getResources(), getAssets()))
+                .listsModule(new ListsModule())
+                .build();
     }
 
+    /**
+     * Warning: do not willInject with this component from:
+     * QuoteCreatorActivity
+     */
     public AppComponent getAppComponent() {
         return appComponent;
     }

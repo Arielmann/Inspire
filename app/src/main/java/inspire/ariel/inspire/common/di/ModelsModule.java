@@ -29,16 +29,4 @@ public class ModelsModule {
     QuoteCreatorModel provideQuotesCreatorModel(){
         return QuoteCreatorModelImpl.builder().bgImageName(AppStrings.BLUE_YELLOW_BG).fontPath(FontsManager.Font.ALEF_BOLD.getPath()).bgDrawableIntValue(R.drawable.blue_yellow_bg).build();
     }
-
-    @Singleton
-    @Provides
-    ResourcesProvider provideResourcesProvider(){
-        return ResourcesProviderImpl.getInstance();
-    }
-
-    @Singleton
-    @Provides
-    ResourcesInitializer provideResourcesInitializer(){
-        return ResourcesProviderImpl.getInstance();
-    }
 }

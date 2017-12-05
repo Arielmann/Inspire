@@ -19,8 +19,8 @@ public class Quote implements Parcelable {
 
     @NonNull private String text;
     @NonNull private String leaderId;
-    @NonNull private int textColor;
-    @NonNull private int textSize;
+    private int textColor;
+    private int textSize;
     @NonNull private String fontPath;
     @NonNull private String bgImageName;
 

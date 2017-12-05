@@ -1,5 +1,6 @@
-package inspire.ariel.inspire.leader.quotescreator.view;
+package inspire.ariel.inspire.leader.quotescreator.view.optionmenufragment;
 
+import android.content.res.AssetManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,31 +12,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppNumbers;
+import inspire.ariel.inspire.common.di.AppComponent;
+import inspire.ariel.inspire.common.di.AppModule;
+import inspire.ariel.inspire.common.di.DaggerViewComponent;
+import inspire.ariel.inspire.common.di.ListsModule;
+import inspire.ariel.inspire.common.di.PresentersModule;
+import inspire.ariel.inspire.common.di.ResourcesModule;
+import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.databinding.FragmentQuoteCreatorMenuBinding;
 import inspire.ariel.inspire.leader.quotescreator.adapters.FontsAdapter;
 import inspire.ariel.inspire.leader.quotescreator.adapters.TextColorsAdapter;
 import inspire.ariel.inspire.leader.quotescreator.adapters.TextSizesAdapter;
 import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenter;
+import inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity.QuotesCreatorViewController;
+import inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity.QuotesCreatorViewQuoteProperties;
+import lombok.Getter;
+import lombok.Setter;
 
-public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMenuView {
+public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMenuView, QuoteCreatorMenuFragmentInjector {
 
-    @Inject
+    @Inject //ResourcesModule
     ResourcesProvider customResourcesProvider;
 
+    @Inject //PresentersModule
+    QuotesCreatorPresenter presenter;
+
+    @Inject //ViewsModule
+    List<QuoteOptionComponents> quoteOptionComponents;
+
     private static final String TAG = QuoteCreatorMenuFragment.class.getSimpleName();
-    private FragmentQuoteCreatorMenuBinding binding;
-    private QuotesCreatorViewForFragments quotesCreatorActivityView;
-    private List<QuoteOptionComponents> quoteOptionComponents;
-    private QuotesCreatorPresenter presenter;
+    @Getter private FragmentQuoteCreatorMenuBinding binding;
+    @Setter private QuotesCreatorViewQuoteProperties quotesCreatorActivityViewProperties;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,28 +59,42 @@ public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMe
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_quote_creator_menu, container, false);
-        ((InspireApplication) getActivity().getApplication()).getAppComponent().inject(this);
-        initQuoteOptionComponents();
+        return binding.getRoot();
+    }
+
+    @Override
+    public void willInject(AppComponent component, QuotesCreatorViewController controller, AssetManager assetManager){
+        DaggerViewComponent.builder()
+                .appModule(new AppModule(null))
+                .listsModule(new ListsModule())
+                .presentersModule(PresentersModule.builder().appComponent(component).quotesCreatorViewController(controller).build())
+                .resourcesModule(new ResourcesModule(getResources(), assetManager))
+                .viewsModule(ViewsModule.builder().quoteCreatorMenuFragmentInjector(this).build())
+                .build()
+                .inject(this);
+    }
+
+    @Override
+    public void initView(){
         initExpandableLayouts();
         initImgButtons();
         initRecyclerViews();
-        return binding.getRoot();
     }
 
     private void initRecyclerViews() {
 
        FontsAdapter fontsAdapter = new FontsAdapter(customResourcesProvider.getFonts(), font -> {
-            quotesCreatorActivityView.setQuoteFont(font);
-            quotesCreatorActivityView.setBackground(customResourcesProvider.getResources().getDrawable(presenter.getBgDrawableIntValue())); //Required to prevent background changes bug
+            quotesCreatorActivityViewProperties.setQuoteFont(font);
+            quotesCreatorActivityViewProperties.refreshCurrentBackground(); //Required to prevent background changes bug
             presenter.onQuoteFontClicked(font.getPath());
         });
 
        TextSizesAdapter textSizeAdapter = new TextSizesAdapter(customResourcesProvider.getFontsSizes(), textSize -> {
-            quotesCreatorActivityView.setQuoteTextSize(textSize.getSize());
-            quotesCreatorActivityView.setBackground(customResourcesProvider.getResources().getDrawable(presenter.getBgDrawableIntValue())); //Required to prevent background changes bug
+            quotesCreatorActivityViewProperties.setQuoteTextSize(textSize.getSize());
+            quotesCreatorActivityViewProperties.refreshCurrentBackground(); //Required to prevent background changes bug
         });
 
-       TextColorsAdapter textColorsAdapter = new TextColorsAdapter(customResourcesProvider.getColors(), color -> quotesCreatorActivityView.setQuoteTextColor(color));
+       TextColorsAdapter textColorsAdapter = new TextColorsAdapter(customResourcesProvider.getColors(), color -> quotesCreatorActivityViewProperties.setQuoteTextColor(color));
 
         initRecyclerView(binding.quoteFontRv, AppNumbers.THREE_SPAN_COUNT, fontsAdapter);
         initRecyclerView(binding.quoteTextSizeRv, AppNumbers.SEVEN_SPAN_COUNT, textSizeAdapter);
@@ -77,15 +105,6 @@ public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMe
         for (QuoteOptionComponents components : quoteOptionComponents) {
             components.getExpandableLayout().collapse();
         }
-    }
-
-    private void initQuoteOptionComponents() {
-        quoteOptionComponents = new ArrayList<QuoteOptionComponents>() {{
-            add(new QuoteOptionComponents(binding.quoteFontImgBtn, binding.quoteFontExpandingLayout, binding.quoteFontRv));
-            add(new QuoteOptionComponents(binding.quoteTextSizeImgBtn, binding.quoteTextSizeExpandingLayout, binding.quoteTextSizeRv));
-            add(new QuoteOptionComponents(binding.quoteTextColorImgBtn, binding.quoteTextColorExpandingLayout, binding.quoteTextColorRv));
-        }};
-
     }
 
     private final View.OnClickListener onOptionImageClickedClicked = new View.OnClickListener() {
@@ -99,29 +118,9 @@ public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMe
                     components.getExpandableLayout().collapse();
                 }
             }
-            quotesCreatorActivityView.refreshCurrentBackground(); //Required to prevent keyboard show/hide unexpected bugs after option button clicked
+            quotesCreatorActivityViewProperties.refreshCurrentBackground(); //Required to prevent keyboard show/hide unexpected bugs after option button clicked
         }
     };
-
-    @Override
-    public RecyclerView getFontsRv() {
-        return binding.quoteFontRv;
-    }
-
-    @Override
-    public RecyclerView getTextColorRv() {
-        return binding.quoteTextColorRv;
-    }
-
-    @Override
-    public RecyclerView getTextSizesRv() {
-        return binding.quoteTextSizeRv;
-    }
-
-    @Override
-    public void setQuotesCreatorActivityView(QuotesCreatorViewForFragments quotesCreatorActivityView) {
-        this.quotesCreatorActivityView = quotesCreatorActivityView;
-    }
 
     private void initImgButtons() {
         binding.quoteFontImgBtn.setOnClickListener(onOptionImageClickedClicked);
@@ -141,7 +140,7 @@ public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMe
         for (QuoteOptionComponents components : quoteOptionComponents) {
             components.getExpandableLayout().collapse();
         }
-        quotesCreatorActivityView.refreshCurrentBackground(); //Required to prevent unexpected background disappearing bug after option button clicked
+        quotesCreatorActivityViewProperties.refreshCurrentBackground(); //Required to prevent unexpected background disappearing bug after option button clicked
     }
 
 
