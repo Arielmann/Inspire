@@ -10,7 +10,7 @@
 
         <fragment
             android:id="@+id/quoteOptionsFrag"
-            android:name="inspire.ariel.inspire.leader.quotescreator.view.QuoteOptionsFrag"
+            android:name="inspire.ariel.inspire.leader.quotescreator.view.QuoteCreatorMenuFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true" />

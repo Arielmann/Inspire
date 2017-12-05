@@ -61,7 +61,6 @@ public class SharedPrefManager {
         thread.run();
     }
 
-
     public void saveIntInfoToSharedPreferences(final SharedPrefProperty property, final int value) {
         Thread thread = new Thread(() -> {
             SharedPreferences.Editor editor = insideSharedPref.edit()

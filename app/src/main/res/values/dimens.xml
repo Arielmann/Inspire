@@ -3,7 +3,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="quote_small_text_size">30sp</dimen>
-    <dimen name="quote_large_text_size">45sp</dimen>
+    <dimen name="quote_large_text_size">25sp</dimen>
     <dimen name="bg_item_layout_width">150dp</dimen>
     <dimen name="bg_item_width">95dp</dimen>
     <dimen name="bg_item_height">95dp</dimen>
@@ -16,10 +16,13 @@
     <dimen name="quote_creator_option_frag_top_margin">20dp</dimen>
     <dimen name="quote_option_expandable_layout_top_and_bottom_margin">10dp</dimen>
     <dimen name="quote_option_item_top_and_bottom_margin">15dp</dimen>
+    <dimen name="quote_list_menu_item_top_bottom_left_margin">5dp</dimen>
     <dimen name="quote_top_margin">275dp</dimen>
     <dimen name="quote_option_img_item_side_margin">10dp</dimen>
     <dimen name="quote_option_img_item_top_margin">10dp</dimen>
     <dimen name="single_tv_vh_text_size">25sp</dimen>
     <dimen name="single_line">1</dimen>
     <dimen name="error_msg_text_size">35sp</dimen>
+    <dimen name="continue_reading_size">22sp</dimen>
+    <dimen name="quote_creator_option_frag_bottom_margin">10dp</dimen>
 </resources>

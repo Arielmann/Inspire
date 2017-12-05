@@ -19,4 +19,10 @@
     <string name="error_quote_leader_relation_creation">Quote was correctly posted to users but there seem to be a table relation error (server problem), please contact your administrator.</string>
     <string name="new_quote_push_notification">wants to share something with you</string>
     <string name="push_notification_multiple_prefix">new posts from</string>
+    <string name="continue_reading">Continue reading…</string>
+    <string name="press_again_to_exit">Press back again to leave screen. Data will be lost.</string>
+    <string name="push_notification_send_error">Quote was uploaded but notification was not sent. Users will see it when they open the app.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

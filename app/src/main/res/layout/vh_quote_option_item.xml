@@ -11,6 +11,7 @@
         android:layout_height="@dimen/quote_option_img_item_height"
         android:layout_width="@dimen/quote_option_img_item_width"
         android:layout_marginTop="@dimen/quote_creator_option_frag_top_margin"
+        android:layout_marginBottom="@dimen/quote_creator_option_frag_bottom_margin"
         android:scaleType="fitXY"
         />
 </RelativeLayout>

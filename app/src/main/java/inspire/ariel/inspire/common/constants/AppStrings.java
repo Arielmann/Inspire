@@ -28,6 +28,7 @@ public class AppStrings {
 
     //Regex
     public static final String REGEX_FIND_WHITESPACES = "\\s";
+    public static final java.lang.String REGEX_ELIPSIZING_TEXT_VIEW_DEFAULT_END_PUNCTUATION = "[\\.,\u2026;\\:\\s]*$";
 
     //Prefixes
     public static String PREFIX_DRAWABLE_PATH = "android.resource://" + BuildConfig.APPLICATION_ID + "/drawable/";
@@ -95,6 +96,10 @@ public class AppStrings {
     public static final String QUIRLYCUES_PATH = "fonts/Quirlycues.ttf";
     public static final String MYRIAD_PRO_REG_PATH = "fonts/Myriad_Pro-Regular.ttf";
     public static final String LATO_REG_PATH = "fonts/Lato-Regular.ttf";
+
+    //View Di Names
+    public static final String QUOTE_LIST_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "quoteListActivityDiscreteScrollViewData";
+    public static final String QUOTE_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "quoteCreatorActivityDiscreteScrollViewData";
 
     //Other
     public static final String ACCOUNT_INFO = "Account Info";

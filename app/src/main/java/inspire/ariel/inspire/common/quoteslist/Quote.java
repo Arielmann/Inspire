@@ -1,20 +1,16 @@
 package inspire.ariel.inspire.common.quoteslist;
 
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
 
-import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Lombok;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -70,15 +66,15 @@ public class Quote implements Parcelable {
         }
     };
 
-    public static Quote newNoQuotesToPresentQuote(Resources res){
+    /*public static Quote newNoQuotesToPresentQuote(Resources res){
         return Quote.builder().text(res.getString(R.string.error_no_quotes))
                 .fontPath(FontsManager.Font.ALEF_BOLD.getPath())
                 .bgImageName(AppStrings.BLUE_YELLOW_BG)
                 .leaderId(AppStrings.VAL_LEADER_OBJECT_ID)
                 .textSize(Math.round(res.getDimension(R.dimen.error_msg_text_size)))
-                .textColor(Color.WHITE)
+                .textColor(Color.BLACK)
                 .build();
-    }
+    }*/
 }
 
 

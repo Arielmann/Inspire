@@ -9,7 +9,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import inspire.ariel.inspire.common.constants.AppInts;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.leader.Leader;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.constants.AppStrings;
@@ -24,13 +24,6 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.BACKENDLESS_TABLE_QUOTE)
-    IDataStore<Quote> provideActionGroups() {
-        return Backendless.Data.of(Quote.class);
-    }
-
-    @Singleton
-    @Provides
     @Named(AppStrings.BACKENDLESS_TABLE_LEADER)
     IDataStore<Leader> provideLeadersStorage() {
         return Backendless.Data.of(Leader.class);
@@ -38,7 +31,7 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.BACKENDLESS_TABLE_LEADER)
+    @Named(AppStrings.BACKENDLESS_TABLE_QUOTE)
     IDataStore<Quote> provideQuotesStorage() {
         return Backendless.Data.of(Quote.class);
     }
@@ -49,7 +42,7 @@ public class NetworkModule {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setSortBy(AppStrings.BACKENDLESS_SORT_CLAUSE_CREATED_DSC);
         queryBuilder.setWhereClause(AppStrings.BACKENDLESS_LEADER_ID_WHERE_CLAUSE);
-        queryBuilder.setPageSize(AppInts.QUOTES_QUERY_PAGE_SIZE).setOffset(AppInts.QUOTES_QUERY_STARTING_OFFSET);
+        queryBuilder.setPageSize(AppNumbers.QUOTES_QUERY_PAGE_SIZE).setOffset(AppNumbers.QUOTES_QUERY_STARTING_OFFSET);
         return queryBuilder;
     }
 

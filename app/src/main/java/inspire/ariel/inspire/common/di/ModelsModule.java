@@ -5,7 +5,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.constants.AppInts;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
 import inspire.ariel.inspire.common.quoteslist.model.QuotesListModelImpl;

@@ -1,6 +1,7 @@
 package inspire.ariel.inspire.common.quoteslist.view;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.res.Resources;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -26,6 +27,10 @@ public interface QuotesListView {
 
     DiscreteScrollView getQuotesListRv();
 
+    Context getContext();
+
     void scrollQuoteListToTop();
+
+    void showNoQuotesMessage();
 
 }

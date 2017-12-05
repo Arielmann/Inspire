@@ -1,23 +1,18 @@
 package inspire.ariel.inspire.common.constants;
 
-public class AppInts {
-
-    //ints
-    public static final int ZERO = 0;
-    public static final int ONE = 1;
+public class AppNumbers {
 
     //Ids
     public static final int NOTIFICATIONS_NE_QUOTE_ID = 1;
 
     //Request Codes, Flags..
     public static final int DEFAULT_REQUEST_CODE = 0;
-    public static final int DEFAULT_FLAGS = 0;
+    public static final int NO_HEIGHT = 0;
+    public static final int FIRST_LINE = 0;
 
     //floats
-    public static final float FLOAT_EIGHT_TENTHS = 0.8f;
-
-    //Lengths
-    public static int LONG_TEXT = 120;
+    public static final int BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT = 73000; //200 years registration to Backendless channels
+    public static final int ELLIPSIZING_TV_DEFAULT_LINE_HEIGHT_DIVIDER = 96;
 
     //Font Sizes
     public static int DEFAULT_TEXT_SIZE = 45;
@@ -28,6 +23,10 @@ public class AppInts {
     public static final int FIFTY = 50;
     public static final int SIXTY = 60;
     public static final int SEVENTY = 70;
+    public static final int EIGHTY = 80;
+    public static final int NINETY = 90;
+    public static final int ONE_HUNDRED = 100;
+    public static final int ONE_HUNDRED_TEN = 110;
 
     //LayoutManager data
     public static final int SEVEN_SPAN_COUNT = 7;
@@ -44,4 +43,9 @@ public class AppInts {
     public static final float PAGING_PROGRESS_DIALOG_DIM_AMOUNT = 0f;
     public static final int PROGRESS_DIALOG_DIM_ANIMATION_SPEED = 2;
     public static final float MAIN_PROGRESS_DIALOG_DIM_AMOUNT = 0.5f;
+
+    //Discrete Scroll View
+    public static final int DISCRETE_SCROLL_VIEW_OFF_SCREEN_ITEMS = 0;
+
+    public static int QUOTE_CREATOR_BG_PICKER_OFF_SCREEN_ITEMS = 0;
 }

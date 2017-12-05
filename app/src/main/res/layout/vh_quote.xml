@@ -2,23 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/quoteLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <ScrollView
-        android:id="@+id/quoteVhScrollView"
+    <inspire.ariel.inspire.common.quoteslist.adapter.EllipsizingTextView
+        android:id="@+id/quoteTv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_above="@id/continueReadingBtn"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="@color/md_black_1000"
+        android:textSize="@dimen/quote_large_text_size" />
+
+    <Button
+        android:id="@+id/continueReadingBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:clickable="false"
+        android:visibility="gone"
+        android:gravity="end"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/continue_reading"
+        android:textAlignment="viewEnd"
+        android:textAllCaps="false"
+        android:textColor="@color/md_grey_600"
+        android:background="@color/md_grey_200"
+        android:textSize="@dimen/continue_reading_size" />
 
-        <TextView
-            android:id="@+id/quoteTv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textColor="@color/md_black_1000"
-            android:textSize="@dimen/quote_large_text_size" />
-    </ScrollView>
 </RelativeLayout>

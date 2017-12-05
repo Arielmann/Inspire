@@ -10,14 +10,13 @@ import java.util.List;
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.leader.quotescreator.events.OnFontSizeClicked;
-import inspire.ariel.inspire.common.utils.listutils.vh.FontSizeVH;
 
-public class FontSizesAdapter extends RecyclerView.Adapter<FontSizeVH> {
+public class TextSizesAdapter extends RecyclerView.Adapter<FontSizeVH> {
 
     private List<ResourcesModule.Size> sizes;
     private OnFontSizeClicked onTextViewClicked;
 
-    public FontSizesAdapter(List<ResourcesModule.Size> sizes, OnFontSizeClicked onTextViewClicked) {
+    public TextSizesAdapter(List<ResourcesModule.Size> sizes, OnFontSizeClicked onTextViewClicked) {
         this.sizes = sizes;
         this.onTextViewClicked = onTextViewClicked;
     }

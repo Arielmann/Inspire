@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.common.utils.animationutils;
+package inspire.ariel.inspire.leader.quotescreator.view;
 
 import android.animation.Animator;
 import android.view.View;
@@ -8,11 +8,11 @@ import lombok.Data;
 import lombok.NonNull;
 
 @Data @Builder
-public class AnimatedSlidingView {
+class AnimatedSlidingView {
 
     @NonNull private View view;
-    @NonNull private float initialYPos;
-    @NonNull private float endAnimatedYPos;
+    private float initialYPos;
+    private float endAnimatedYPos;
 
     private void slideIn() {
         view.animate().y(initialYPos);

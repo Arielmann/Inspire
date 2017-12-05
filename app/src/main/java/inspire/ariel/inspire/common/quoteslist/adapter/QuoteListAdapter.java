@@ -1,7 +1,5 @@
 package inspire.ariel.inspire.common.quoteslist.adapter;
 
-import android.content.res.Resources;
-import android.support.v4.view.NestedScrollingChild;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +9,14 @@ import java.util.List;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.quoteslist.Quote;
+import lombok.Setter;
 
-public class QuoteListAdapter extends RecyclerView.Adapter<QuoteVH>{
+public class QuoteListAdapter extends RecyclerView.Adapter<QuoteVH> implements QuoteListAdapterPresenter {
 
-    private List<Quote> dataSet;
-    private Resources res;
+    @Setter private List<Quote> dataSet;
 
-    public QuoteListAdapter(List<Quote> dataSet, Resources res) {
+    public QuoteListAdapter() {
         super();
-        this.dataSet = dataSet;
-        this.res = res;
     }
 
     @Override
@@ -31,7 +27,7 @@ public class QuoteListAdapter extends RecyclerView.Adapter<QuoteVH>{
 
     @Override
     public void onBindViewHolder(QuoteVH holder, int position) {
-        holder.setUIDataOnView(dataSet.get(position), res);
+        holder.setUIDataOnView(dataSet.get(position));
     }
 
     @Override

@@ -14,7 +14,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.constants.AppInts;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
@@ -25,13 +25,17 @@ public class ResourcesModule {
 
     public enum Size {
 
-        SIXTEEN(AppInts.SIXTEEN),
-        TWENTY(AppInts.TWENTY),
-        THIRTY(AppInts.THIRTY),
-        FORTY(AppInts.FORTY),
-        FIFTY(AppInts.FIFTY),
-        SIXTY(AppInts.SIXTY),
-        SEVENTY(AppInts.SEVENTY);
+        SIXTEEN(AppNumbers.SIXTEEN),
+        TWENTY(AppNumbers.TWENTY),
+        THIRTY(AppNumbers.THIRTY),
+        FORTY(AppNumbers.FORTY),
+        FIFTY(AppNumbers.FIFTY),
+        SIXTY(AppNumbers.SIXTY),
+        SEVENTY(AppNumbers.SEVENTY),
+        EIGHTY(AppNumbers.EIGHTY),
+        NINETY(AppNumbers.NINETY),
+        ONE_HUNDRED(AppNumbers.ONE_HUNDRED),
+        ONE_HUNDRED_TEN(AppNumbers.ONE_HUNDRED_TEN);
 
         @Getter private final int size;
 
@@ -64,8 +68,7 @@ public class ResourcesModule {
     @Provides
     @Named(AppStrings.KEY_BG_IMAGES)
     HashSet<InspireBackgroundImage> provideDefaultBackgroundBitmapsHashMap() {
-        HashSet<InspireBackgroundImage> bgImages = new HashSet<>();
-        return bgImages;
+        return new HashSet<>();
     }
 
     @Singleton
@@ -82,11 +85,6 @@ public class ResourcesModule {
         colors.add(Color.GRAY);
         colors.add(Color.MAGENTA);
         colors.add(Color.CYAN);
-     /* colors.add(res.getColor(R.color.md_green_900));
-        colors.add(res.getColor(R.color.md_brown_700));
-        colors.add(res.getColor(R.color.md_grey_700));
-        colors.add(res.getColor(R.color.md_deep_purple_700));
-        colors.add(res.getColor(R.color.md_pink_300));*/
         return colors;
     }
 
@@ -118,6 +116,10 @@ public class ResourcesModule {
         sizes.add(Size.FIFTY);
         sizes.add(Size.SIXTY);
         sizes.add(Size.SEVENTY);
+        sizes.add(Size.EIGHTY);
+        sizes.add(Size.NINETY);
+        sizes.add(Size.ONE_HUNDRED);
+        sizes.add(Size.ONE_HUNDRED_TEN);
         return sizes;
     }
 

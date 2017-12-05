@@ -15,15 +15,15 @@
             android:orientation="vertical" />
 
         <TextView
-            android:id="@+id/criticalErrorTV"
+            android:id="@+id/criticalErrorTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:textColor="@color/md_black_1000"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:text="@string/error_app_init"
+            android:textColor="@color/md_black_1000"
             android:textSize="@dimen/error_msg_text_size"
             android:visibility="gone" />
 
@@ -32,6 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:text="+" />
 
     </RelativeLayout>

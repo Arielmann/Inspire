@@ -19,58 +19,81 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
-import inspire.ariel.inspire.common.constants.AppInts;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.constants.Percentages;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivity;
+import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
-import inspire.ariel.inspire.common.utils.animationutils.AnimatedSlidingView;
+import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
+import inspire.ariel.inspire.common.utils.listutils.SingleBitmapListAdapter;
 import inspire.ariel.inspire.databinding.ActivityQuoteCreatorBinding;
 import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenter;
 import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenterImpl;
 
 public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCreatorView, QuotesCreatorViewForFragments {
 
+    @Inject
+    Handler backgroundChangeHandler;
+
+    @Inject
+    ResourcesProvider customResourcesProvider;
+
+    @Inject
+    @Named(AppStrings.QUOTE_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
+    DiscreteScrollViewData discreteScrollViewData;
+
+    @Inject
+    int quoteVhLayoutNumber;
+
     private String TAG = QuotesCreatorActivity.class.getName();
     private QuotesCreatorPresenter presenter;
     private KProgressHUD progressHUD;
     private ActivityQuoteCreatorBinding binding;
-    private Handler backgroundChangeHandler;
     private List<AnimatedSlidingView> disappearingViews;
+    private QuoteCreatorMenuView quoteOptionsView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_creator);
         binding.postImageView.setOnClickListener(onPostQuoteClicked);
-        backgroundChangeHandler = new Handler();
+        ((InspireApplication) getApplication()).getAppComponent().inject(this);
         setQuoteFont(FontsManager.Font.ALEF_BOLD);
-        initAnimationListeners();
+        presenter = new QuotesCreatorPresenterImpl(((InspireApplication) getApplication()).getAppComponent(), this);
+        initBgPicker();
         initKeyboardChangeBehaviours();
-        QuoteOptionsView quoteOptionsView = (QuoteOptionsView) getSupportFragmentManager().findFragmentById(R.id.quoteOptionsFrag);
+        quoteOptionsView = (QuoteCreatorMenuView) getSupportFragmentManager().findFragmentById(R.id.quoteOptionsFrag);
         quoteOptionsView.setQuotesCreatorActivityView(this);
-        presenter = new QuotesCreatorPresenterImpl.Builder(this, ((InspireApplication) getApplication()).getAppComponent()).quoteOptionsView(quoteOptionsView).build();
     }
 
-    private void setBackgroundWithDelay() {
+    /**Required to prevent background changes bug*/
+    private void setBackgroundWithDelay(long delay) {
         backgroundChangeHandler.postDelayed(() -> {
-            setBackground(presenter.getChosenBgImage()); ///Required to prevent background changes bug
-        }, AppTimeMillis.QUARTER_SECOND);
+            setBackground(presenter.getChosenBgImage());
+        }, delay);
     }
 
     @Override
     public void onBackPressed() {
-        finish();
-        super.onBackPressed();
+
+        if(quoteOptionsView.areAllOptionLayoutsCollapsed()){
+            super.onBackPressed();
+        } else{
+            quoteOptionsView.collapseAllOptionLayouts();
+        }
     }
 
     @Override
     protected void onStart() {
-        setBackgroundWithDelay();
+        setBackgroundWithDelay(AppTimeMillis.QUARTER_SECOND); //Quick call for a clean user experience
+        setBackgroundWithDelay(AppTimeMillis.HALF_SECOND); //Slow call for eliminating bug's edge cases
         super.onStart();
     }
 
@@ -80,12 +103,15 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         super.onStop();
     }
 
-    private void initAnimationListeners() {
-        AnimatedSlidingView slidingBgPicker = AnimatedSlidingView.builder().view(binding.bgPicker).initialYPos(binding.bgPicker.getTranslationY())
+    private void initAgPickerAnimationListeners() {
+        AnimatedSlidingView slidingBgPicker = AnimatedSlidingView.builder()
+                .view(binding.bgPicker)
+                .initialYPos(binding.bgPicker.getTranslationY())
                 .endAnimatedYPos(binding.bgPicker.getTranslationY() * Percentages.FIVE_HUNDRED)
                 .build();
 
-        AnimatedSlidingView slidingPostImageView = (AnimatedSlidingView.builder().view(binding.postImageView)
+        AnimatedSlidingView slidingPostImageView = (AnimatedSlidingView.builder()
+                .view(binding.postImageView)
                 .initialYPos(binding.postImageView.getTranslationY())
                 .endAnimatedYPos(binding.postImageView.getTranslationY() * Percentages.FIVE_HUNDRED)
                 .build());
@@ -94,21 +120,34 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
             add(slidingBgPicker);
             add(slidingPostImageView);
         }};
+    }
 
+    private void initBgPicker() {
+        SingleBitmapListAdapter adapter = new SingleBitmapListAdapter(customResourcesProvider.getBackgroundImages(), quoteVhLayoutNumber);
+        DiscreteScrollView bgPicker = binding.bgPicker;
+        bgPicker.setSlideOnFling(discreteScrollViewData.isSetSlideOnFling());
+        bgPicker.setAdapter(adapter);
+        bgPicker.addOnItemChangedListener(presenter.getOnItemChangedListener());
+        bgPicker.addScrollStateChangeListener(presenter.getOnScrollStateChangedListener());
+        bgPicker.setItemTransitionTimeMillis(discreteScrollViewData.getTimeMillis());
+        bgPicker.setOffscreenItems(discreteScrollViewData.getOffScreenItems());
+        bgPicker.setItemTransformer(discreteScrollViewData.getScaleTransformer());
+
+        initAgPickerAnimationListeners();
     }
 
     private void initKeyboardChangeBehaviours() {
         KeyboardVisibilityEvent.setEventListener(this, isOpen -> {
             if (isOpen) {
                 for (AnimatedSlidingView disappearingView : disappearingViews) {
-                    disappearingView.getView().animate().alpha(AppInts.ZERO).setDuration(AppTimeMillis.HALF_SECOND);
+                    disappearingView.getView().animate().alpha(0).setDuration(AppTimeMillis.HALF_SECOND);
                     disappearingView.getView().animate().translationY(disappearingView.getEndAnimatedYPos());
                 }
                 binding.postImageView.setClickable(false);
                 setBackground(presenter.getChosenBgImage()); //Required to prevent background changes bug
             } else {
                 for (AnimatedSlidingView disappearingView : disappearingViews) {
-                    disappearingView.getView().animate().alpha(AppInts.ONE).setDuration(AppTimeMillis.HALF_SECOND);;
+                    disappearingView.getView().animate().alpha(1).setDuration(AppTimeMillis.HALF_SECOND);;
                     disappearingView.getView().animate().translationY(disappearingView.getInitialYPos());
                 }
                 binding.postImageView.setClickable(true);
@@ -122,7 +161,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         public void onClick(View view) {
             final String text = binding.quoteEditText.getText().toString();
             final int textColor = binding.quoteEditText.getCurrentTextColor();
-            final int textSize = Math.round(binding.quoteEditText.getTextSize());
+            final int textSize = Math.round(binding.quoteEditText.getTextSize() * Percentages.FIFTY_FIVE);
             boolean canUploadQuote = presenter.validateQuote(text);
 
             if (canUploadQuote) {
@@ -143,7 +182,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         binding.quoteEditText.setBackground(background);
     }
 
-    /*Note: Never call from QuoteCreatorPresenter, will create StackOverFlow due to recursive method call*/
+    /**Note: Never call from QuoteCreatorPresenter, will create StackOverFlow due to recursive method call*/
     @Override
     public void refreshCurrentBackground() {
         setBackground(presenter.getChosenBgImage()); //Required to prevent keyboard show/hide unexpected bugs
@@ -175,17 +214,10 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     public void goToQuoteListActivity(Quote newQuote) {
         Intent intent = new Intent(this, QuotesListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(AppStrings.KEY_QUOTE, newQuote);
-        intent.putExtras(bundle);
+        intent.putExtra(AppStrings.KEY_QUOTE, newQuote);
         startActivity(intent);
         presenter.onDestroy();
         finish();
-    }
-
-    @Override
-    public DiscreteScrollView getBgPicker() {
-        return binding.bgPicker;
     }
 
     @Override

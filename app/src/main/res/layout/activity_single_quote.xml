@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="inspire.ariel.inspire.common.singlequote.SingleQuoteActivity">
+
+    <RelativeLayout
+        android:id="@+id/singleQuoteLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/pink_grey_bg">
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"/>
+
+        <TextView
+            android:id="@+id/singleQuoteTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:scrollbars="vertical"
+            android:textColor="@color/md_black_1000"
+            android:textSize="@dimen/quote_large_text_size" />
+    </RelativeLayout>
+</layout>

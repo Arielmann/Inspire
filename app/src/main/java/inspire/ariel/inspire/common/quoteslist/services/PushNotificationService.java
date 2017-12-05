@@ -5,8 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -14,14 +12,13 @@ import android.widget.Toast;
 
 import com.backendless.push.BackendlessPushService;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
-import inspire.ariel.inspire.common.constants.AppInts;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.quoteslist.Quote;
@@ -50,14 +47,14 @@ public class PushNotificationService extends BackendlessPushService {
         String notificationContentText = getResources().getString(R.string.new_quote_push_notification);
         Quote newQuote = parseQuote(intent);
 
-        if (DataManager.getInstance().getMessagesSize() > AppInts.ONE) {
+        if (DataManager.getInstance().getMessagesSize() > 1) {
             notificationContentText = DataManager.getInstance().getMessagesSize() + AppStrings.SPACE_STRING + getResources().getString(R.string.push_notification_multiple_prefix) + AppStrings.SPACE_STRING + AppStrings.VAL_LEADER_NAME;
         }
 
         Notification newQuoteNotification = createNewQuoteNotification(notificationContentText, newQuote);
 
         if (notificationManager != null) {
-            notificationManager.notify(AppStrings.NOTIFICATION_NEW_QUOTE_CHANNEL, AppInts.NOTIFICATIONS_NE_QUOTE_ID, newQuoteNotification);
+            notificationManager.notify(AppStrings.NOTIFICATION_NEW_QUOTE_CHANNEL, AppNumbers.NOTIFICATIONS_NE_QUOTE_ID, newQuoteNotification);
         }
 
         // When returning 'true', default Backendless onMessage implementation will be executed.
@@ -76,8 +73,8 @@ public class PushNotificationService extends BackendlessPushService {
         int textSize;
         int textColor;
 
-        textSize = parseQuoteInteger(intent.getStringExtra(AppStrings.KEY_TEXT_SIZE), AppInts.DEFAULT_TEXT_SIZE);
-        textColor = parseQuoteInteger(intent.getStringExtra(AppStrings.KEY_TEXT_COLOR), AppInts.DEFAULT_TEXT_COLOR);
+        textSize = parseQuoteInteger(intent.getStringExtra(AppStrings.KEY_TEXT_SIZE), AppNumbers.DEFAULT_TEXT_SIZE);
+        textColor = parseQuoteInteger(intent.getStringExtra(AppStrings.KEY_TEXT_COLOR), AppNumbers.DEFAULT_TEXT_COLOR);
 
         Quote quote = Quote.builder().objectId(objectId)
                 .leaderId(leaderId)
@@ -107,10 +104,8 @@ public class PushNotificationService extends BackendlessPushService {
     private Notification createNewQuoteNotification(String contentText, Quote newQuote) {
         Intent intent = new Intent(this, QuotesListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(AppStrings.KEY_QUOTE, newQuote);
-        intent.putExtras(bundle);
-        PendingIntent quoteListPendingIntent = PendingIntent.getActivity(this, AppInts.DEFAULT_REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT);
+        intent.putExtra(AppStrings.KEY_QUOTE, newQuote);
+        PendingIntent quoteListPendingIntent = PendingIntent.getActivity(this, AppNumbers.DEFAULT_REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT);
         return new NotificationCompat.Builder(this, AppStrings.NOTIFICATION_NEW_QUOTE_CHANNEL)
                 .setSmallIcon(R.drawable.thumb_up_white_18dp)
                 .setContentTitle(AppStrings.VAL_LEADER_NAME)

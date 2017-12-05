@@ -28,11 +28,4 @@ public class DataManager {
 
     private DataManager() {
     }
-
-    public void setAllLeaderAttrsButQuotes(Leader leader){
-        this.leader.setObjectId(leader.getObjectId());
-        this.leader.setName(leader.getName());
-        this.leader.setDescription(leader.getDescription());
-        this.leader.setFollowers(leader.getFollowers());
-    }
 }

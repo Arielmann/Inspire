@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 
 public class NetworkHelper {
 
-    public static final String NO_NETWORK_MSG = "Network Not Available";
     private static NetworkHelper insideNetworkHelper;
 
 
@@ -24,7 +23,10 @@ public class NetworkHelper {
     public boolean hasNetworkAccess(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         try {
-            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+            NetworkInfo networkInfo = null;
+            if (manager != null) {
+                networkInfo = manager.getActiveNetworkInfo();
+            }
             return networkInfo != null && networkInfo.isConnected();
         }catch(Exception e){
             return false;

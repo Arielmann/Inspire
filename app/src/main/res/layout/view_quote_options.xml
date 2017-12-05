@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout android:id="@+id/fragmentLayout"
+<RelativeLayout android:id="@+id/quoteCreatorMenuFragmentLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/md_yellow_400"
@@ -33,7 +33,7 @@
         app:ael_orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/quoteTextColorRV"
+            android:id="@+id/quoteTextColorRv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:transcriptMode="normal" />
@@ -60,7 +60,7 @@
 
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/quoteFontRV"
+            android:id="@+id/quoteFontRv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/quoteFontExpandingLayout"
@@ -95,7 +95,7 @@
         app:ael_orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/quoteTextSizeRV"
+            android:id="@+id/quoteTextSizeRv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"

@@ -23,33 +23,36 @@
         <activity
             android:name=".common.quoteslist.view.QuotesListActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".leader.quotescreator.view.QuotesCreatorActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
 
         <service
             android:name=".common.quoteslist.services.PushNotificationService"
             android:exported="false" />
 
-        <receiver android:name=".common.quoteslist.broadcastrecievers.PushNotificationReceiver"
+        <receiver
+            android:name=".common.quoteslist.broadcastrecievers.PushNotificationReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <category android:name="inspire.ariel.inspire"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="inspire.ariel.inspire" />
             </intent-filter>
         </receiver>
 
+        <activity android:name=".common.singlequote.SingleQuoteActivity"></activity>
     </application>
 
 </manifest>
