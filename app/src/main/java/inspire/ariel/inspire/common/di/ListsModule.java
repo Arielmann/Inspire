@@ -22,7 +22,6 @@ public class ListsModule {
 
     @Provides
     @Singleton
-        //Also being provided to other modules
     QuoteListAdapter providesQuoteListAdapter() {
         return new QuoteListAdapter();
     }

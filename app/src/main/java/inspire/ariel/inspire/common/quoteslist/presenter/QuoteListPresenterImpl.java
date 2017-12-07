@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
@@ -19,6 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
@@ -27,18 +30,16 @@ import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapterPresenter
 import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
+import inspire.ariel.inspire.common.utils.backendutils.CheckLoggedInCallback;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 import inspire.ariel.inspire.common.utils.imageutils.ImageUtils;
-import inspire.ariel.inspire.leader.Leader;
+import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import lombok.Getter;
 
 public class QuoteListPresenterImpl implements QuoteListPresenter {
 
     private static final String TAG = QuoteListPresenterImpl.class.getName();
 
-    @Inject
-    @Named(AppStrings.BACKENDLESS_TABLE_LEADER)
-    IDataStore<Leader> leadersStorage;
 
     @Inject
     @Named(AppStrings.BACKENDLESS_TABLE_QUOTE)
@@ -80,7 +81,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     private void initQuotesImages(List<Quote> quotes) {
         for (Quote quote : quotes) {
             Uri uri = Uri.parse(AppStrings.PREFIX_DRAWABLE_PATH + quote.getBgImageName()); //TODO: try catch for failures
-            quote.setImage(ImageUtils.createDrawableFromUri(uri, view.getContentResolver(), view.getResources()));
+            quote.setImage(ImageUtils.createDrawableFromUri(uri, view.getContentResolver(), customResourcesProvider.getResources()));
         }
     }
 
@@ -103,7 +104,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
             quoteListAdapterPresenter.notifyDataSetChanged();
             view.scrollQuoteListToTop();
         } else {
-            view.showQuoteRefreshErrorMessage();
+            view.showToastErrorMessage(customResourcesProvider.getResources().getString(R.string.error_quote_refresh));
         }
         DataManager.getInstance().setMessagesSize(0);
     }
@@ -121,7 +122,11 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     }
 
     public void fetchInitialQuotes(AsyncCallback<List<Quote>> callback) {
-        quotesStorage.find(quotesQueryBuilder, callback);
+        try {
+            quotesStorage.find(quotesQueryBuilder, callback);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -131,8 +136,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         public void handleResponse(List<Quote> serverQuotes) {
             isFetchingMethodUnlocked = true;
             if (serverQuotes.size() == 0 && model.getQuotes().size() == 0) {
-                view.showNoQuotesMessage();
-                view.dismissMainProgressDialog();
+                view.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_quotes));
                 return;
             }
             onFullQuotesResponseReceive(serverQuotes);
@@ -141,8 +145,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         @Override
         public void handleFault(BackendlessFault fault) {
             Log.e(TAG, "Quotes retrieval error: " + fault.getDetail());
-            view.showNoInternetConnectionMessage();
-            view.dismissMainProgressDialog();
+            view.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_connection));
         }
     };
 
@@ -161,8 +164,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         public void handleFault(BackendlessFault fault) {
             Log.e(TAG, "Quotes retrieval error: " + fault.getDetail());
             isFetchingMethodUnlocked = true;
-                view.dismissMainProgressDialog();
-                view.showNoInternetConnectionMessage();
+            view.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_connection));
         }
     };
 
@@ -172,6 +174,70 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         initQuotesImages(serverQuotes);
         quoteListAdapterPresenter.notifyDataSetChanged();
         view.dismissMainProgressDialog();
+    }
+
+    @Override
+    public void login(CharSequence password, GenericOperationCallback callback) {
+
+        Backendless.UserService.login("james.bond@mi6.co.uk", String.valueOf(password), new AsyncCallback<BackendlessUser>() {
+            @Override
+            public void handleResponse(BackendlessUser user) {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                callback.onFailure(fault.getDetail());
+            }
+        }, true);
+    }
+
+    @Override
+    public void checkIfUserLoggedIn(CheckLoggedInCallback checkLoggedInCallback) {
+        try {
+            Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
+                @Override
+                public void handleResponse(Boolean response) {
+                    checkLoggedInCallback.onUserStatusReceived(response);
+                }
+
+                @Override
+                public void handleFault(BackendlessFault fault) {
+                    checkLoggedInCallback.onFailure(fault.getDetail());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void logout(GenericOperationCallback callback) {
+
+        Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
+            @Override
+            public void handleResponse(Boolean response) {
+                if (response) {
+                    Backendless.UserService.logout(new AsyncCallback<Void>() {
+                        public void handleResponse(Void response) {
+                            callback.onSuccess();
+                        }
+
+                        public void handleFault(BackendlessFault fault) {
+                            callback.onFailure(fault.getDetail());
+                        }
+                    });
+                } else {
+                    Log.i(TAG, "User was already logged out from server. operation auto-succeeds");
+                    callback.onSuccess();
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                callback.onFailure(fault.getDetail());
+            }
+        });
     }
 
     /**
@@ -188,7 +254,11 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         @Override
         public void onScrollEnd(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
             if (adapterPosition == (model.getQuotes().size() - 1) && networkHelper.hasNetworkAccess(view.getContext())) {
-                fetchPagingQuotes(pagingCallback);
+                try {
+                    fetchPagingQuotes(pagingCallback);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -207,13 +277,4 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         return model.getQuotes();
     }
 
-
-    /**
-     * Setters
-     */
-
-    public void setQuoteListAdapterPresenter(QuoteListAdapterPresenter quoteListAdapterPresenter) {
-        this.quoteListAdapterPresenter = quoteListAdapterPresenter;
-        this.quoteListAdapterPresenter.setQuotes(model.getQuotes());
-    }
 }

@@ -39,17 +39,16 @@ import lombok.Setter;
 public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMenuView, QuoteCreatorMenuFragmentInjector {
 
     @Inject //ResourcesModule
-    ResourcesProvider customResourcesProvider;
-
-    @Inject //PresentersModule
-    QuotesCreatorPresenter presenter;
+            ResourcesProvider customResourcesProvider;
 
     @Inject //ViewsModule
-    List<QuoteOptionComponents> quoteOptionComponents;
+            List<QuoteOptionComponents> quoteOptionComponents;
 
     private static final String TAG = QuoteCreatorMenuFragment.class.getSimpleName();
-    @Getter private FragmentQuoteCreatorMenuBinding binding;
-    @Setter private QuotesCreatorViewQuoteProperties quotesCreatorActivityViewProperties;
+    @Getter
+    private FragmentQuoteCreatorMenuBinding binding;
+    @Setter
+    private QuotesCreatorViewQuoteProperties quotesCreatorActivityViewProperties;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMe
     }
 
     @Override
-    public void willInject(AppComponent component, QuotesCreatorViewController controller, AssetManager assetManager){
+    public void willInject(AppComponent component, QuotesCreatorViewController controller, AssetManager assetManager) {
         DaggerViewComponent.builder()
                 .appModule(new AppModule(null))
                 .listsModule(new ListsModule())
@@ -75,7 +74,7 @@ public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMe
     }
 
     @Override
-    public void initView(){
+    public void initView() {
         initExpandableLayouts();
         initImgButtons();
         initRecyclerViews();
@@ -83,18 +82,18 @@ public class QuoteCreatorMenuFragment extends Fragment implements QuoteCreatorMe
 
     private void initRecyclerViews() {
 
-       FontsAdapter fontsAdapter = new FontsAdapter(customResourcesProvider.getFonts(), font -> {
+        FontsAdapter fontsAdapter = new FontsAdapter(customResourcesProvider.getFonts(), font -> {
             quotesCreatorActivityViewProperties.setQuoteFont(font);
             quotesCreatorActivityViewProperties.refreshCurrentBackground(); //Required to prevent background changes bug
-            presenter.onQuoteFontClicked(font.getPath());
+            quotesCreatorActivityViewProperties.getPresenter().onQuoteFontClicked(font.getPath());
         });
 
-       TextSizesAdapter textSizeAdapter = new TextSizesAdapter(customResourcesProvider.getFontsSizes(), textSize -> {
+        TextSizesAdapter textSizeAdapter = new TextSizesAdapter(customResourcesProvider.getFontsSizes(), textSize -> {
             quotesCreatorActivityViewProperties.setQuoteTextSize(textSize.getSize());
             quotesCreatorActivityViewProperties.refreshCurrentBackground(); //Required to prevent background changes bug
         });
 
-       TextColorsAdapter textColorsAdapter = new TextColorsAdapter(customResourcesProvider.getColors(), color -> quotesCreatorActivityViewProperties.setQuoteTextColor(color));
+        TextColorsAdapter textColorsAdapter = new TextColorsAdapter(customResourcesProvider.getColors(), color -> quotesCreatorActivityViewProperties.setQuoteTextColor(color));
 
         initRecyclerView(binding.quoteFontRv, AppNumbers.THREE_SPAN_COUNT, fontsAdapter);
         initRecyclerView(binding.quoteTextSizeRv, AppNumbers.SEVEN_SPAN_COUNT, textSizeAdapter);

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
@@ -31,7 +32,6 @@ import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivity;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
-import inspire.ariel.inspire.leader.Leader;
 import inspire.ariel.inspire.leader.quotescreator.model.QuoteCreatorModel;
 import inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity.QuotesCreatorViewController;
 import lombok.Getter;
@@ -44,6 +44,10 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
     @Inject
     @Named(AppStrings.BACKENDLESS_TABLE_QUOTE)
     IDataStore<Quote> quotesStorage;
+
+    @Inject
+    @Named(AppStrings.BACKENDLESS_TABLE_USERS)
+    IDataStore<BackendlessUser> usersStorage;
 
     @Inject
     QuoteCreatorModel model;
@@ -140,7 +144,7 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
      * Server Communication
      */
 
-    //TODO: Protect from using the app id to post as this leader from a rouge device
+    //TODO: Protect from using the app id to post as this user from a rouge device
     @Override
     public void postQuote(Quote quote) {
         if (networkHelper.hasNetworkAccess(quoteCreatorViewController.getContext())) {
@@ -148,7 +152,7 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
             quotesStorage.save(quote, new AsyncCallback<Quote>() {
                 @Override
                 public void handleResponse(Quote quote) {
-                    sendPushNotification(DataManager.getInstance().getLeader(), quote);
+                    sendPushNotification(DataManager.getInstance().getUser(), quote);
                 }
 
                 @Override
@@ -162,25 +166,17 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
         }
     }
 
-    /**
-     * Menu Items Clicked Methods
-     */
-
-    @Override
-    public void onQuoteFontClicked(String path) {
-        model.setFontPath(path);
-    }
 
     /**
      * NOTE for keys:
      * NOTIFICATION_HEADER_CONTENT_TEXT - For presenting in notification
      * KEY_TEXT - The actual quote for the app
      */
-    //TODO: Don't register leader to it's own server channel or you get double newQuote on his machine! (until app restarts)
-    private void sendPushNotification(Leader leader, Quote quote) {
+    //TODO: Don't register user to it's own server channel or you get double newQuote on his machine! (until app restarts)
+    private void sendPushNotification(BackendlessUser user, Quote quote) {
         PublishOptions publishOptions = new PublishOptions();
-        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_TICKER_TEXT, leader.getName());
-        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_CONTENT_TITLE, leader.getName());
+        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_TICKER_TEXT, String.valueOf(user.getProperty(AppStrings.KEY_NAME)));
+        publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_CONTENT_TITLE, String.valueOf(user.getProperty(AppStrings.KEY_NAME)));
         publishOptions.putHeader(AppStrings.NOTIFICATION_HEADER_CONTENT_TEXT, customResourcesProvider.getResources().getString(R.string.new_quote_push_notification));
         publishOptions.putHeader(AppStrings.KEY_OBJECT_ID, quote.getObjectId());
         publishOptions.putHeader(AppStrings.KEY_LEADER_ID, quote.getLeaderId());
@@ -190,17 +186,17 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
         publishOptions.putHeader(AppStrings.KEY_TEXT_COLOR, String.valueOf(quote.getTextColor()));
         publishOptions.putHeader(AppStrings.KEY_BG_IMAGE_NAME, quote.getBgImageName());
 
-        Backendless.Messaging.publish(AppStrings.VAL_LEADER_NAME, AppStrings.SPACE_STRING,
-                publishOptions, new AsyncCallback<MessageStatus>() {
+        Backendless.Messaging.publish(AppStrings.VAL_LEADER_NAME, AppStrings.SPACE_STRING, publishOptions, new AsyncCallback<MessageStatus>() {
                     @Override
                     public void handleResponse(MessageStatus response) {
                         Log.i(TAG, "Message sent");
                         quoteCreatorViewController.dismissProgressDialog();
                         quote.setCreated(new Date());
-                        Intent intent = new Intent().putExtra(AppStrings.KEY_QUOTE, quote);
+                        Intent intent = new Intent(quoteCreatorViewController.getContext(), QuotesListActivity.class);
+                        intent.putExtra(AppStrings.KEY_QUOTE, quote);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        quoteCreatorViewController.goToOtherActivity(QuotesListActivity.class, intent);
-                        setLeaderQuoteRelation(leader, new ArrayList<Quote>() {{
+                        quoteCreatorViewController.goToOtherActivity(intent);
+                        setUserQuoteRelation(user, new ArrayList<Quote>() {{
                             add(quote);
                         }});
                     }
@@ -212,20 +208,20 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
                         quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.push_notification_send_error));
                         Intent intent = new Intent().putExtra(AppStrings.KEY_QUOTE, quote);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        quoteCreatorViewController.goToOtherActivity(QuotesListActivity.class, intent);
-                        setLeaderQuoteRelation(leader, new ArrayList<Quote>() {{
+                        quoteCreatorViewController.goToOtherActivity(intent);
+                        setUserQuoteRelation(user, new ArrayList<Quote>() {{
                             add(quote);
                         }});
                     }
                 });
     }
 
-    private void setLeaderQuoteRelation(Leader leader, List<Quote> singleQuoteInsideList) {
-        Backendless.Data.of(Leader.class).addRelation(leader, AppStrings.BACKENDLESS_TABLE_LEADER_COLUMN_QUOTES, singleQuoteInsideList,
+    private void setUserQuoteRelation(BackendlessUser user, List<Quote> singleQuoteInsideList) {
+        usersStorage.addRelation(user, AppStrings.BACKENDLESS_TABLE_USER_COLUMN_QUOTES, singleQuoteInsideList,
                 new AsyncCallback<Integer>() {
                     @Override
                     public void handleResponse(Integer response) {
-                        Log.i(TAG, "Relation has been set with quote: " + singleQuoteInsideList.get(0).getText() + " and leader: " + leader.getName());
+                        Log.i(TAG, "Relation has been set with quote: " + singleQuoteInsideList.get(0).getText() + " and user: " + String.valueOf(user.getProperty(AppStrings.KEY_NAME)));
                     }
 
                     @Override
@@ -249,5 +245,15 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
             }
         });
     }
+
+    /**
+     * Menu Items Clicked Methods
+     */
+
+    @Override
+    public void onQuoteFontClicked(String path) {
+        model.setFontPath(path);
+    }
+
 }
 

@@ -10,7 +10,7 @@ public interface QuotesCreatorViewController {
 
     void dismissProgressDialogAndShowErrorMessage(String message);
 
-    void goToOtherActivity(Class Activity, Intent newQuote);
+    void goToOtherActivity(Intent newQuote);
 
     void dismissProgressDialog();
 

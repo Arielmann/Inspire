@@ -11,7 +11,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,15 +28,17 @@ import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
 import inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuoteListMenuView;
 import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
-import inspire.ariel.inspire.common.utils.callbackutils.GenericOperationCallback;
+import inspire.ariel.inspire.common.utils.backendutils.CheckLoggedInCallback;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
+import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import inspire.ariel.inspire.databinding.ActivityQuoteListBinding;
 import inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity.QuotesCreatorActivity;
+import lombok.Getter;
 
-public class QuotesListActivity extends AppCompatActivity implements QuotesListView, QuoteListViewInjector{
+public class QuotesListActivity extends AppCompatActivity implements QuotesListView, QuoteListViewInjector {
 
     @Inject //List Module
-    QuoteListAdapter adapter;
+            QuoteListAdapter adapter;
 
     @Inject //Views Module
     @Named(AppStrings.QUOTE_LIST_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
@@ -52,6 +53,7 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
     KProgressHUD pagingProgressDialog;
 
     @Inject //Presenters Module
+    @Getter
     QuoteListPresenter presenter;
 
     @Inject
@@ -79,10 +81,11 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
             }
 
             @Override
-            public void onFailure() {
+            public void onFailure(String reason) {
                 //TODO: if local db support available, load it instead of presenting error
+                Log.e(TAG, "Error registering device: " + reason);
                 dismissMainProgressDialog();
-                showNoInternetConnectionMessage();
+                showToastErrorMessage(getResources().getString(R.string.error_no_connection));
                 binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_restart), Toast.LENGTH_SHORT).show());
             }
         });
@@ -94,14 +97,7 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
         super.onNewIntent(intent);
     }
 
-    private void initActivity() {
-        presenter.init(adapter);
-        initQuotesRecyclerView();
-        binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(QuotesListActivity.this, QuotesCreatorActivity.class));
-        Log.d(TAG, TAG + " onCreate() method completed");
-    }
-
-    private void inject(){
+    private void inject() {
         DaggerViewComponent.builder()
                 .appModule(new AppModule((InspireApplication) getApplication()))
                 .resourcesModule(new ResourcesModule(getResources(), getAssets()))
@@ -110,6 +106,16 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
                 .listsModule(new ListsModule())
                 .build()
                 .inject(this);
+    }
+
+    private void initActivity() {
+        quoteListMenuView.init(this);
+        //TODO: You can't know who will finish first, therefore, dismiss progress dialog only after both finish
+        presenter.init(adapter);
+        presenter.checkIfUserLoggedIn(checkLoggedInCallback);
+        initQuotesRecyclerView();
+        binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(QuotesListActivity.this, QuotesCreatorActivity.class));
+        Log.d(TAG, TAG + " onCreate() method completed");
     }
 
     private void initQuotesRecyclerView() {
@@ -136,6 +142,34 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
         }
         super.onDestroy();
     }
+
+    /**
+     * User login status adaptation
+     */
+
+    private CheckLoggedInCallback checkLoggedInCallback = new CheckLoggedInCallback() {
+        @Override
+        public void onUserStatusReceived(boolean isLoggedIn) {
+            Log.i(TAG, "Login status check completed. Is user logged in? " + isLoggedIn);
+            if (isLoggedIn) {
+                quoteListMenuView.showLoginBtn();
+                quoteListMenuView.setLogoutAvailable();
+                return;
+            }
+            quoteListMenuView.showLoginBtn();
+            quoteListMenuView.setLoginAvailable();
+            binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_restart), Toast.LENGTH_SHORT).show());
+        }
+
+
+        //Todo: check if you crush when trying to log in with an already logged in user
+        @Override
+        public void onFailure(String reason) {
+            quoteListMenuView.showLoginBtn();
+            quoteListMenuView.setLoginAvailable();
+            Log.e(TAG, "Error in login validation. Reason: " + reason + " making login available");
+        }
+    };
 
     /**
      * Progress Dialog
@@ -167,32 +201,23 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
 
 
     /**
-     * Show messages
+     * Show Messages
      */
-    //Todo: Implement fragment error message with event listening or find some other solution
+
     @Override
-    public void showNoInternetConnectionMessage() {
-        Toast.makeText(this, getResources().getString(R.string.error_no_connection), Toast.LENGTH_LONG).show();
-        //binding.criticalErrorTV.setVisibility(View.VISIBLE);
+    public void showToastErrorMessage(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void showQuoteRefreshErrorMessage() {
-        Toast.makeText(this, R.string.error_quote_refresh, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showNoQuotesMessage() {
-        Toast.makeText(this, getResources().getString(R.string.error_no_quotes), Toast.LENGTH_LONG).show();
+    public void onServerOperationFailed(String error) {
+        dismissMainProgressDialog();
+        showToastErrorMessage(error);
     }
 
     /**
      * Getters
      */
-    @Override
-    public DiscreteScrollView getQuotesListRv() {
-        return binding.quotesRv;
-    }
 
     @Override
     public Context getContext() {

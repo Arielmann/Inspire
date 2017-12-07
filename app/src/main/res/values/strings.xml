@@ -25,4 +25,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="put_password_hint">Your password sir</string>
+    <string name="login">Login</string>
+    <string name="error_login">There seems to be a problem logging in. Please check you connection and try again</string>
+    <string name="error_logout">There seem to be a problem logging out. Please check you connection and try again</string>
+    <string name="empty_string" />
 </resources>

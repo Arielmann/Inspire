@@ -15,7 +15,8 @@ public class AppStrings {
     public static final String BACKENDLESS_VAL_API_KEY = "D5242878-29DD-0377-FF39-FC1E91E64300";
     public static final String BACKENDLESS_TABLE_QUOTE = "Quote";
     public static final String BACKENDLESS_TABLE_LEADER = "Leader";
-    public static final String BACKENDLESS_TABLE_LEADER_COLUMN_QUOTES = "quotes";
+    public static final String BACKENDLESS_TABLE_USERS = "Users";
+    public static final String BACKENDLESS_TABLE_USER_COLUMN_QUOTES = "quotes";
     public static final String BACKENDLESS_DEFAULT_CHANNEL = "default";
     public static final String BACKENDLESS_LEADER_ID_WHERE_CLAUSE = "leaderId = " + "'" + AppStrings.VAL_LEADER_OBJECT_ID + "'";
     public static final String BACKENDLESS_SORT_CLAUSE_CREATED_DSC = "created DESC";
@@ -42,7 +43,7 @@ public class AppStrings {
     //Leader static data
     public static final String VAL_LEADER_NAME = "Winston Churchill";
     public static String VAL_LEADER_DESCRIPTION = "My name is Winston Churchill";
-    public static final String VAL_LEADER_OBJECT_ID = "B8E5E40A-4575-3599-FF01-A18C28199B00";
+    public static final String VAL_LEADER_OBJECT_ID = "B2FD1088-D093-1C3E-FFFE-341893C28000";
 
     //Data Fields
     public static final String KEY_OBJECT_ID = "objectId";

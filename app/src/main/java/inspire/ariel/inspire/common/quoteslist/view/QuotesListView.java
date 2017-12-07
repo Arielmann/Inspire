@@ -7,9 +7,9 @@ import android.content.res.Resources;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
-public interface QuotesListView {
+import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
 
-    void showQuoteRefreshErrorMessage();
+public interface QuotesListView {
 
     void showMainProgressDialog();
 
@@ -19,18 +19,15 @@ public interface QuotesListView {
 
     void dismissPagingProgressDialog();
 
-    void showNoInternetConnectionMessage();
-
-    Resources getResources();
-
     ContentResolver getContentResolver();
-
-    DiscreteScrollView getQuotesListRv();
 
     Context getContext();
 
     void scrollQuoteListToTop();
 
-    void showNoQuotesMessage();
+    QuoteListPresenter getPresenter();
 
+    void showToastErrorMessage(String string);
+
+    void onServerOperationFailed(String error);
 }

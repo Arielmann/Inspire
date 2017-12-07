@@ -59,7 +59,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     int quoteVhLayoutInt;
 
     @Inject
-    QuotesCreatorPresenter presenter;
+    @Getter QuotesCreatorPresenter presenter;
 
     @Inject
     @Named(AppStrings.QUOTES_CREATOR_PROGRESS_DIALOG)
@@ -79,7 +79,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_creator);
         inject();
-        binding.postImageView.setOnClickListener(onPostQuoteClicked);
+        binding.postImageBtn.setOnClickListener(onPostQuoteClicked);
         setQuoteFont(FontsManager.Font.ALEF_BOLD);
         initBgPicker();
         initKeyboardChangeBehaviours();
@@ -154,7 +154,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
                     disappearingView.getView().animate().alpha(0).setDuration(AppTimeMillis.HALF_SECOND);
                     disappearingView.getView().animate().translationY(disappearingView.getEndAnimatedYPos());
                 }
-                binding.postImageView.setClickable(false);
+                binding.postImageBtn.setClickable(false);
                 setBackground(presenter.getChosenBgImage()); //Required to prevent background changes bug
             } else {
                 for (AnimatedSlidingView disappearingView : disappearingViews) {
@@ -162,7 +162,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
                     ;
                     disappearingView.getView().animate().translationY(disappearingView.getInitialYPos());
                 }
-                binding.postImageView.setClickable(true);
+                binding.postImageBtn.setClickable(true);
                 setBackground(presenter.getChosenBgImage()); //Required to prevent background changes bug
             }
         });
@@ -225,7 +225,7 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     }
 
     @Override
-    public void goToOtherActivity(Class newActivity, Intent intent) {
+    public void goToOtherActivity(Intent intent) {
         startActivity(intent);
         presenter.onDestroy();
         finish();

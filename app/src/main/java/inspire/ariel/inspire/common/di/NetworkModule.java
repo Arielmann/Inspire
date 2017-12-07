@@ -1,6 +1,7 @@
 package inspire.ariel.inspire.common.di;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 import com.backendless.IDataStore;
 import com.backendless.persistence.DataQueryBuilder;
 
@@ -20,9 +21,9 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.BACKENDLESS_TABLE_LEADER)
-    IDataStore<Leader> provideLeadersStorage() {
-        return Backendless.Data.of(Leader.class);
+    @Named(AppStrings.BACKENDLESS_TABLE_USERS)
+    IDataStore<BackendlessUser> provideLeadersStorage() {
+        return Backendless.Data.of(BackendlessUser.class);
     }
 
     @Singleton
@@ -34,7 +35,7 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    DataQueryBuilder provideQuoteRelationsQueryBuilder() {
+    DataQueryBuilder provideQuoteQueryBuilder() {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setSortBy(AppStrings.BACKENDLESS_SORT_CLAUSE_CREATED_DSC);
         queryBuilder.setWhereClause(AppStrings.BACKENDLESS_LEADER_ID_WHERE_CLAUSE);

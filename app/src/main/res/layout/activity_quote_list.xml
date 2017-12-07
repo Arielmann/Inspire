@@ -9,15 +9,17 @@
 
         <fragment
             android:id="@+id/quoteListMenuFragment"
-            android:name="inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuoteListMenuFragment"
+            android:name="inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuotesListMenuFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
         <com.yarolegovich.discretescrollview.DiscreteScrollView
             android:id="@+id/quotesRv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/quoteListMenuFragment"
             android:layout_alignParentBottom="true"
             android:orientation="vertical" />
 

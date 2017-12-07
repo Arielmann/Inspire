@@ -34,7 +34,7 @@
             android:textSize="@dimen/quote_large_text_size" />
 
         <ImageButton
-            android:id="@+id/postImageView"
+            android:id="@+id/postImageBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_above="@id/bgPicker"

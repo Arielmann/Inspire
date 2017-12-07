@@ -45,9 +45,9 @@ public class ViewsModule {
                 .build();
 
         AnimatedSlidingView slidingPostImageView = (AnimatedSlidingView.builder()
-                .view(quotesCreatorViewInjector.getBinding().postImageView)
-                .initialYPos(quotesCreatorViewInjector.getBinding().postImageView.getTranslationY())
-                .endAnimatedYPos(quotesCreatorViewInjector.getBinding().postImageView.getTranslationY() * Percentages.FIVE_HUNDRED)
+                .view(quotesCreatorViewInjector.getBinding().postImageBtn)
+                .initialYPos(quotesCreatorViewInjector.getBinding().postImageBtn.getTranslationY())
+                .endAnimatedYPos(quotesCreatorViewInjector.getBinding().postImageBtn.getTranslationY() * Percentages.FIVE_HUNDRED)
                 .build());
 
         return new ArrayList<AnimatedSlidingView>() {{

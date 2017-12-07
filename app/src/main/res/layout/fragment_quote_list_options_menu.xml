@@ -1,6 +1,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".common.quoteslist.view.optionsmenufragment.QuoteListMenuFragment">
+    tools:context=".common.quoteslist.view.optionsmenufragment.QuotesListMenuFragment">
 
     <RelativeLayout
         android:id="@+id/optionsMenuLayout"
@@ -8,9 +8,13 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary">
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/loginImageBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:scaleType="fitXY"
+            android:clickable="false"
+            android:visibility="invisible"
             android:src="@drawable/female_icon"
             android:layout_marginTop="@dimen/quote_list_menu_item_top_bottom_left_margin"
             android:layout_marginBottom="@dimen/quote_list_menu_item_top_bottom_left_margin"

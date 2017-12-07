@@ -4,8 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import com.backendless.Backendless;
-import com.backendless.BackendlessUser;
-import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 
@@ -15,8 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.di.AppComponent;
@@ -28,18 +26,13 @@ import inspire.ariel.inspire.common.di.NetworkModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.resources.ResourcesInitializer;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
-import inspire.ariel.inspire.common.utils.callbackutils.GenericOperationCallback;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
-import inspire.ariel.inspire.leader.Leader;
+import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 
 public class InspireApplication extends Application {
 
     @Inject
     ResourcesInitializer resourcesInitializer;
-
-    @Inject
-    @Named(AppStrings.BACKENDLESS_TABLE_LEADER)
-    IDataStore<Leader> leadersStorage;
 
     @Inject
     Calendar calendar;
@@ -79,42 +72,12 @@ public class InspireApplication extends Application {
                 add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);
                 add(AppStrings.VAL_LEADER_NAME);
             }};
-            //logOut();
             registerDeviceToBackendless(channels, calendar.getTime(), operationCallback);
 
         } else {
-            operationCallback.onFailure();
+            operationCallback.onFailure(getResources().getString(R.string.error_no_connection));
         }
     }
-
-    private void loginUser(){
-        Backendless.UserService.login("james.bond@mi6.co.uk", "iAmWatchingU", new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser user) {
-                Log.i(TAG, "Login successful for user " + user.getObjectId());
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.e(TAG, "Login failed. reason: " + fault.getDetail());
-            }
-        }, true);
-    }
-
-    private void logOut(){
-
-                Backendless.UserService.logout( new AsyncCallback<Void>() {
-                    public void handleResponse( Void response )
-                    {
-                        // user has been logged out.
-                    }
-
-                    public void handleFault( BackendlessFault fault ) {
-                        // something went wrong and logout failed, to get the error code call fault.getCode()
-                    }
-                });
-            }
-
 
     //TODO: Register one time only
     private void registerDeviceToBackendless(List<String> channels, Date expirationDate, GenericOperationCallback operationCallback) {
@@ -128,8 +91,7 @@ public class InspireApplication extends Application {
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                operationCallback.onFailure();
-                Log.d(TAG, "Error registering device: " + fault.getDetail());
+                operationCallback.onFailure(fault.getDetail());
             }
         });
     }
