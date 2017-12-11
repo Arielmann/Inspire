@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Lombok;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -18,7 +17,7 @@ import lombok.NonNull;
 public class Quote implements Parcelable {
 
     @NonNull private String text;
-    @NonNull private String leaderId;
+    @NonNull private String ownerId;
     private int textColor;
     private int textSize;
     @NonNull private String fontPath;
@@ -30,7 +29,7 @@ public class Quote implements Parcelable {
 
     protected Quote(Parcel in) {
         text = in.readString();
-        leaderId = in.readString();
+        ownerId = in.readString();
         textColor = in.readInt();
         textSize = in.readInt();
         fontPath = in.readString();
@@ -41,7 +40,7 @@ public class Quote implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(text);
-        dest.writeString(leaderId);
+        dest.writeString(ownerId);
         dest.writeInt(textColor);
         dest.writeInt(textSize);
         dest.writeString(fontPath);
@@ -66,11 +65,11 @@ public class Quote implements Parcelable {
         }
     };
 
-    /*public static Quote newNoQuotesToPresentQuote(Resources res){
-        return Quote.builder().text(res.getString(R.string.error_no_quotes))
+    /*public static Quote newQuote(String text){
+        return Quote.builder().text(text)
                 .fontPath(FontsManager.Font.ALEF_BOLD.getPath())
                 .bgImageName(AppStrings.BLUE_YELLOW_BG)
-                .leaderId(AppStrings.VAL_LEADER_OBJECT_ID)
+                .ownerId(AppStrings.VAL_OWNER_OBJECT_ID)
                 .textSize(Math.round(res.getDimension(R.dimen.error_msg_text_size)))
                 .textColor(Color.BLACK)
                 .build();

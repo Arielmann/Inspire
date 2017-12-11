@@ -10,7 +10,7 @@
 
         <fragment
             android:id="@+id/quoteCreatorMenuFragment"
-            android:name="inspire.ariel.inspire.leader.quotescreator.view.optionmenufragment.QuoteCreatorMenuFragment"
+            android:name="inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteCreatorMenuFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true" />
@@ -24,10 +24,8 @@
             android:layout_alignParentStart="true"
             android:layout_below="@id/quoteCreatorMenuFragment"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="top|center"
             android:background="@drawable/blue_yellow_bg"
-            android:gravity="center"
+            android:gravity="top|center"
             android:hint="@string/hint_type_quote"
             android:inputType="textMultiLine"
             android:textColor="@color/md_black_1000"

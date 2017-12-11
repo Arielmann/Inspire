@@ -1,5 +1,8 @@
 package inspire.ariel.inspire.common.di;
 
+import android.support.annotation.Nullable;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
@@ -10,44 +13,49 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.constants.Percentages;
-import inspire.ariel.inspire.common.quoteslist.view.QuoteListViewInjector;
 import inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuoteListMenuView;
 import inspire.ariel.inspire.common.utils.animationutils.AnimatedSlidingView;
-import inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity.QuotesCreatorActivityInjector;
-import inspire.ariel.inspire.leader.quotescreator.view.optionmenufragment.QuoteCreatorMenuFragmentInjector;
-import inspire.ariel.inspire.leader.quotescreator.view.optionmenufragment.QuoteCreatorMenuView;
-import inspire.ariel.inspire.leader.quotescreator.view.optionmenufragment.QuoteOptionComponents;
+import inspire.ariel.inspire.common.utils.viewutils.ProgressDialogFactory;
+import inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteCreatorMenuFragmentInjector;
+import inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteCreatorMenuView;
+import inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteMenuComponents;
 import lombok.Builder;
 
 @Module
 @Builder
 public class ViewsModule {
 
-    private QuotesCreatorActivityInjector quotesCreatorViewInjector;
-    private QuoteListViewInjector quotesListViewInjector;
+
+    /**
+     * Instantiate with builder and provide only the required view parent
+     * in your class, so it may be used as the context for the injected views.
+     */
+
+    @Nullable
+    private ViewInjector viewsInjector;
+    @Nullable
     private QuoteCreatorMenuFragmentInjector quoteCreatorMenuFragmentInjector;
 
-    public ViewsModule(QuotesCreatorActivityInjector quotesCreatorViewInjector, QuoteListViewInjector quotesListViewInjector, QuoteCreatorMenuFragmentInjector quoteCreatorMenuFragmentInjector) {
-        this.quotesCreatorViewInjector = quotesCreatorViewInjector;
-        this.quotesListViewInjector = quotesListViewInjector;
+    public ViewsModule(@Nullable ViewInjector quotesListViewInjector, @Nullable QuoteCreatorMenuFragmentInjector quoteCreatorMenuFragmentInjector) {
+        this.viewsInjector = quotesListViewInjector;
         this.quoteCreatorMenuFragmentInjector = quoteCreatorMenuFragmentInjector;
     }
 
     @Provides
-    List<AnimatedSlidingView> provideQuoteCreatorActivityDisappearingViews(){
+    List<AnimatedSlidingView> provideQuoteCreatorActivityDisappearingViews() {
+        assert viewsInjector != null;
         AnimatedSlidingView slidingBgPicker = AnimatedSlidingView.builder()
-                .view(quotesCreatorViewInjector.getBinding().bgPicker)
-                .initialYPos(quotesCreatorViewInjector.getBinding().bgPicker.getTranslationY())
-                .endAnimatedYPos(quotesCreatorViewInjector.getBinding().bgPicker.getTranslationY() * Percentages.FIVE_HUNDRED)
+                .view(viewsInjector.getBinding().bgPicker)
+                .initialYPos(viewsInjector.getBinding().bgPicker.getTranslationY())
+                .endAnimatedYPos(viewsInjector.getBinding().bgPicker.getTranslationY() * Percentages.FIVE_HUNDRED)
                 .build();
 
         AnimatedSlidingView slidingPostImageView = (AnimatedSlidingView.builder()
-                .view(quotesCreatorViewInjector.getBinding().postImageBtn)
-                .initialYPos(quotesCreatorViewInjector.getBinding().postImageBtn.getTranslationY())
-                .endAnimatedYPos(quotesCreatorViewInjector.getBinding().postImageBtn.getTranslationY() * Percentages.FIVE_HUNDRED)
+                .view(viewsInjector.getBinding().postImageBtn)
+                .initialYPos(viewsInjector.getBinding().postImageBtn.getTranslationY())
+                .endAnimatedYPos(viewsInjector.getBinding().postImageBtn.getTranslationY() * Percentages.FIVE_HUNDRED)
                 .build());
 
         return new ArrayList<AnimatedSlidingView>() {{
@@ -56,53 +64,53 @@ public class ViewsModule {
         }};
     }
 
-    @Provides
-    @Named(AppStrings.QUOTES_CREATOR_PROGRESS_DIALOG)
-    public KProgressHUD provideQuotesCreatorProgressDialog() {
-        return KProgressHUD.create(quotesCreatorViewInjector.getContext())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel(quotesCreatorViewInjector.getResources().getString(R.string.please_wait))
-                .setCancellable(true)
-                .setAnimationSpeed(AppNumbers.QUOTE_PROGRESS_HUD_ANIM_SPEED)
-                .setDimAmount(AppNumbers.PROGRESS_DIALOG_DIM_AMOUNT);
+    private KProgressHUD newEmptyProgressDialog(){
+        assert viewsInjector != null;
+        ProgressDialogFactory factory = new ProgressDialogFactory(viewsInjector.getContext());
+        return factory.newInstance();
     }
 
     @Provides
     @Named(AppStrings.PAGING_QUOTES_LIST_PROGRESS_DIALOG)
-    public KProgressHUD provideQuotesListPagingProgressDialog() {
-        return KProgressHUD.create(quotesListViewInjector.getContext())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setDimAmount(AppNumbers.PAGING_PROGRESS_DIALOG_DIM_AMOUNT)
-                .setCancellable(true)
-                .setAnimationSpeed(AppNumbers.PROGRESS_DIALOG_DIM_ANIMATION_SPEED);
+    public KProgressHUD providePagingQuotesListProgressDialog() {
+        return newEmptyProgressDialog();
     }
 
     @Provides
-    @Named(AppStrings.MAIN_QUOTES_LIST_PROGRESS_DIALOG)
-    public KProgressHUD provideQuoteListMainProgressDialog() {
-        return KProgressHUD.create(quotesListViewInjector.getContext())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setDimAmount(AppNumbers.PAGING_PROGRESS_DIALOG_DIM_AMOUNT)
-                .setCancellable(true)
-                .setAnimationSpeed(AppNumbers.PROGRESS_DIALOG_DIM_ANIMATION_SPEED);
+    @Named(AppStrings.MAIN_PROGRESS_DIALOG)
+    public KProgressHUD provideMainQuoteListProgressDialog() {
+        assert viewsInjector != null;
+        ProgressDialogFactory factory = new ProgressDialogFactory(viewsInjector.getContext());
+        return factory.newInstance(viewsInjector.getResources().getString(R.string.please_wait));
     }
 
     @Provides
-    public QuoteCreatorMenuView provideQuoteCreatorMenuView(){
-        return (QuoteCreatorMenuView) quotesCreatorViewInjector.getSupportFragmentManager().findFragmentById(R.id.quoteCreatorMenuFragment);
+    @Named(AppStrings.LOGIN_LOGOUT_PROGRESS_DIALOG)
+    public KProgressHUD provideLoginLogoutQuoteListProgressDialog() {
+        assert viewsInjector != null;
+        ProgressDialogFactory factory = new ProgressDialogFactory(viewsInjector.getContext());
+        return factory.newInstance(viewsInjector.getResources().getString(R.string.please_wait));
     }
 
     @Provides
-    public QuoteListMenuView provideQuoteListMenuView(){
-        return (QuoteListMenuView) quotesListViewInjector.getSupportFragmentManager().findFragmentById(R.id.quoteListMenuFragment);
+    public QuoteCreatorMenuView provideQuoteCreatorMenuView() {
+        assert viewsInjector != null;
+        return (QuoteCreatorMenuView) viewsInjector.getSupportFragmentManager().findFragmentById(R.id.quoteCreatorMenuFragment);
     }
 
     @Provides
-    public List<QuoteOptionComponents> provideQuoteOptionComponents() {
-        return new ArrayList<QuoteOptionComponents>() {{
-            add(new QuoteOptionComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteFontImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteFontExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteFontRv));
-            add(new QuoteOptionComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeRv));
-            add(new QuoteOptionComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorRv));
+    public QuoteListMenuView provideQuoteListMenuView() {
+        assert viewsInjector != null;
+        return (QuoteListMenuView) viewsInjector.getSupportFragmentManager().findFragmentById(R.id.quoteListMenuFragment);
+    }
+
+    @Provides
+    public List<QuoteMenuComponents> provideQuoteOptionComponents() {
+        return new ArrayList<QuoteMenuComponents>() {{
+            assert quoteCreatorMenuFragmentInjector != null;
+            add(new QuoteMenuComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteFontImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteFontExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteFontRv));
+            add(new QuoteMenuComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeRv));
+            add(new QuoteMenuComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorRv));
         }};
     }
 

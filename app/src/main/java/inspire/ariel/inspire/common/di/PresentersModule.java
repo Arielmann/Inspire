@@ -4,13 +4,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapterPresenter;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
-import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenter;
-import inspire.ariel.inspire.leader.quotescreator.presenter.QuotesCreatorPresenterImpl;
-import inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity.QuotesCreatorViewController;
+import inspire.ariel.inspire.owner.quotecreator.presenter.QuotesCreatorPresenter;
+import inspire.ariel.inspire.owner.quotecreator.presenter.QuotesCreatorPresenterImpl;
+import inspire.ariel.inspire.owner.quotecreator.view.quotescreatoractivity.QuotesCreatorViewController;
 import lombok.Builder;
 import lombok.NonNull;
 

@@ -2,6 +2,9 @@ package inspire.ariel.inspire.common.constants;
 
 public class AppNumbers {
 
+    //App Init
+    public static final int MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH = 2;
+
     //Ids
     public static final int NOTIFICATIONS_NE_QUOTE_ID = 1;
 
@@ -47,8 +50,7 @@ public class AppNumbers {
     public static int DEFAULT_TEXT_COLOR = -16777216;
 
     //Progress Dialogs
-    public static final float PAGING_PROGRESS_DIALOG_DIM_AMOUNT = 0f;
-    public static final int PROGRESS_DIALOG_DIM_ANIMATION_SPEED = 2;
+    public static final int PROGRESS_DIALOG_ANIMATION_SPEED = 2;
     public static final float PROGRESS_DIALOG_DIM_AMOUNT = 0.5f;
 
     //Discrete Scroll View

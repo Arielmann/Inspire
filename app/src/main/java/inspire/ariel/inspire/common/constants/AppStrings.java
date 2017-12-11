@@ -13,13 +13,18 @@ public class AppStrings {
     //Backendless
     public static final String BACKENDLESS_VAL_APPLICATION_ID = "1C0DA01D-01F8-CC77-FF89-629A70D7CB00";
     public static final String BACKENDLESS_VAL_API_KEY = "D5242878-29DD-0377-FF39-FC1E91E64300";
+    public static final String BACKENDLESS_VAL_OWNER_DEVICE_ID = "LGK4205a6e9a63";
     public static final String BACKENDLESS_TABLE_QUOTE = "Quote";
-    public static final String BACKENDLESS_TABLE_LEADER = "Leader";
     public static final String BACKENDLESS_TABLE_USERS = "Users";
     public static final String BACKENDLESS_TABLE_USER_COLUMN_QUOTES = "quotes";
     public static final String BACKENDLESS_DEFAULT_CHANNEL = "default";
-    public static final String BACKENDLESS_LEADER_ID_WHERE_CLAUSE = "leaderId = " + "'" + AppStrings.VAL_LEADER_OBJECT_ID + "'";
+    public static final String BACKENDLESS_OWNER_ID_WHERE_CLAUSE = "ownerId = " + "'" + AppStrings.VAL_OWNER_OBJECT_ID + "'";
     public static final String BACKENDLESS_SORT_CLAUSE_CREATED_DSC = "created DESC";
+
+    //Backendless Errors
+    public static final String BACKENDLESS_ERROR_CODE_INVALID_LOGIN_OR_PASSWORD = "3003";
+    public static final String BACKENDLESS_ERROR_CODE_EMPTY_PASSWORD_INPUT = "IllegalArgumentException"; //This fault code was found on debugger
+    public static final String BACKENDLESS_ERROR_CODE_NO_PERMISSION_ERROR = "1011";
 
     //Push Notifications
     public static final String NOTIFICATION_NEW_QUOTE_CHANNEL = "quotes";
@@ -40,17 +45,19 @@ public class AppStrings {
     //Date Formats
     public static final java.lang.String SIMPLE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-    //Leader static data
-    public static final String VAL_LEADER_NAME = "Winston Churchill";
-    public static String VAL_LEADER_DESCRIPTION = "My name is Winston Churchill";
-    public static final String VAL_LEADER_OBJECT_ID = "B2FD1088-D093-1C3E-FFFE-341893C28000";
+    //OWNER static data
+    public static final String VAL_OWNER_NAME = "Winston Churchill";
+    public static String VAL_OWNER_DESCRIPTION = "My name is Winston Churchill";
+    public static final String VAL_OWNER_OBJECT_ID = "B2FD1088-D093-1C3E-FFFE-341893C28000";
 
     //Data Fields
+    public static final String KEY_IS_USER_OWNER = "isUserOwner";
+    public static final String IS_FIRST_LAUNCH = "isFirstLaunch";
+
     public static final String KEY_OBJECT_ID = "objectId";
-    public static final String KEY_LEADER_ID = "leaderId";
+    public static final String KEY_OWNER_ID = "ownerId";
     public static final String KEY_NAME = "name";
     public static final String KEY_DESCRIPTION = "description";
-    public static final String KEY_IS_FIRST_LAUNCH = "isFirstLaunch";
     public static final String KEY_TEXT = "text";
     public static final String KEY_FONT_PATH = "fontPath";
     public static final String KEY_TEXT_COLOR = "textColor";
@@ -103,7 +110,9 @@ public class AppStrings {
     public static final String QUOTE_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "quoteCreatorActivityDiscreteScrollViewData";
     public static final String QUOTES_CREATOR_PROGRESS_DIALOG = "progressHudQuotesCreator";
     public static final String PAGING_QUOTES_LIST_PROGRESS_DIALOG = "progressHudQuotesListPaging";
-    public static final String MAIN_QUOTES_LIST_PROGRESS_DIALOG = "progressHudQuotesListMain";
+    public static final String MAIN_PROGRESS_DIALOG = "progressHudQuotesListMain";
+    public static final String LOGIN_LOGOUT_PROGRESS_DIALOG = "progressHudQuotesListLoginLogout";
+
 
     //Other
     public static final String ACCOUNT_INFO = "Account Info";

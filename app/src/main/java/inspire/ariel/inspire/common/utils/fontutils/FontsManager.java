@@ -5,6 +5,8 @@ import android.graphics.Typeface;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.util.HashSet;
+
 import javax.inject.Inject;
 
 import inspire.ariel.inspire.common.app.InspireApplication;

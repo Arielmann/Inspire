@@ -48,7 +48,7 @@ public class PushNotificationService extends BackendlessPushService {
         Quote newQuote = parseQuote(intent);
 
         if (DataManager.getInstance().getMessagesSize() > 1) {
-            notificationContentText = DataManager.getInstance().getMessagesSize() + AppStrings.SPACE_STRING + getResources().getString(R.string.push_notification_multiple_prefix) + AppStrings.SPACE_STRING + AppStrings.VAL_LEADER_NAME;
+            notificationContentText = DataManager.getInstance().getMessagesSize() + AppStrings.SPACE_STRING + getResources().getString(R.string.push_notification_multiple_prefix) + AppStrings.SPACE_STRING + AppStrings.VAL_OWNER_NAME;
         }
 
         Notification newQuoteNotification = createNewQuoteNotification(notificationContentText, newQuote);
@@ -65,7 +65,7 @@ public class PushNotificationService extends BackendlessPushService {
 
     private Quote parseQuote(Intent intent) {
         String objectId = intent.getStringExtra(AppStrings.KEY_OBJECT_ID);
-        String leaderId = intent.getStringExtra(AppStrings.KEY_LEADER_ID);
+        String ownerId = intent.getStringExtra(AppStrings.KEY_OWNER_ID);
         String text = intent.getStringExtra(AppStrings.KEY_TEXT);
         String fontPath = intent.getStringExtra(AppStrings.KEY_FONT_PATH);
         String bgImageName = intent.getStringExtra(AppStrings.KEY_BG_IMAGE_NAME);
@@ -77,7 +77,7 @@ public class PushNotificationService extends BackendlessPushService {
         textColor = parseQuoteInteger(intent.getStringExtra(AppStrings.KEY_TEXT_COLOR), AppNumbers.DEFAULT_TEXT_COLOR);
 
         Quote quote = Quote.builder().objectId(objectId)
-                .leaderId(leaderId)
+                .ownerId(ownerId)
                 .created(creationDate)
                 .text(text)
                 .textSize(textSize)
@@ -108,7 +108,7 @@ public class PushNotificationService extends BackendlessPushService {
         PendingIntent quoteListPendingIntent = PendingIntent.getActivity(this, AppNumbers.DEFAULT_REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT);
         return new NotificationCompat.Builder(this, AppStrings.NOTIFICATION_NEW_QUOTE_CHANNEL)
                 .setSmallIcon(R.drawable.thumb_up_white_18dp)
-                .setContentTitle(AppStrings.VAL_LEADER_NAME)
+                .setContentTitle(AppStrings.VAL_OWNER_NAME)
                 .setContentText(contentText)
                 .setContentIntent(quoteListPendingIntent)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)

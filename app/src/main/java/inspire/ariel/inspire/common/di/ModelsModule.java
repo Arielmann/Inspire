@@ -8,12 +8,9 @@ import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
 import inspire.ariel.inspire.common.quoteslist.model.QuotesListModelImpl;
-import inspire.ariel.inspire.common.resources.ResourcesInitializer;
-import inspire.ariel.inspire.common.resources.ResourcesProvider;
-import inspire.ariel.inspire.common.resources.ResourcesProviderImpl;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
-import inspire.ariel.inspire.leader.quotescreator.model.QuoteCreatorModel;
-import inspire.ariel.inspire.leader.quotescreator.model.QuoteCreatorModelImpl;
+import inspire.ariel.inspire.owner.quotecreator.model.QuoteCreatorModel;
+import inspire.ariel.inspire.owner.quotecreator.model.QuoteCreatorModelImpl;
 
 @Module
 public class ModelsModule {

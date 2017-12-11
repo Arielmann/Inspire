@@ -13,10 +13,17 @@ import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
+import com.orhanobut.hawk.Hawk;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,13 +34,12 @@ import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapterPresenter;
+import inspire.ariel.inspire.common.quoteslist.events.OnQuoteDeleteClickedEvent;
 import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
-import inspire.ariel.inspire.common.utils.backendutils.CheckLoggedInCallback;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 import inspire.ariel.inspire.common.utils.imageutils.ImageUtils;
-import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import lombok.Getter;
 
 public class QuoteListPresenterImpl implements QuoteListPresenter {
@@ -58,13 +64,16 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     NetworkHelper networkHelper;
 
     private QuoteListAdapterPresenter quoteListAdapterPresenter;
-    private QuotesListView view;
+    private QuotesListView quotesListView;
     private boolean isFetchingMethodUnlocked;
+    private int allServerQuotesListSize;
+    private Map<String, String> errorsMap;
 
     public QuoteListPresenterImpl(AppComponent appComponent, QuotesListView view) {
         appComponent.inject(this);
         isFetchingMethodUnlocked = true;
-        this.view = view;
+        allServerQuotesListSize = Integer.MAX_VALUE;
+        this.quotesListView = view;
     }
 
     /**
@@ -75,14 +84,20 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     public void init(QuoteListAdapterPresenter adapterPresenter) {
         this.quoteListAdapterPresenter = adapterPresenter;
         this.quoteListAdapterPresenter.setQuotes(model.getQuotes());
+        initErrorsMap();
         fetchInitialQuotes(initialQuotesDownloadCallback);
+        fetchDataSetSize();
     }
 
-    private void initQuotesImages(List<Quote> quotes) {
-        for (Quote quote : quotes) {
-            Uri uri = Uri.parse(AppStrings.PREFIX_DRAWABLE_PATH + quote.getBgImageName()); //TODO: try catch for failures
-            quote.setImage(ImageUtils.createDrawableFromUri(uri, view.getContentResolver(), customResourcesProvider.getResources()));
-        }
+    private void initErrorsMap() {
+        errorsMap = new HashMap<>();
+        errorsMap.put(AppStrings.BACKENDLESS_ERROR_CODE_INVALID_LOGIN_OR_PASSWORD, customResourcesProvider.getResources().getString(R.string.error_invalid_login_or_password));
+        errorsMap.put(AppStrings.BACKENDLESS_ERROR_CODE_EMPTY_PASSWORD_INPUT, customResourcesProvider.getResources().getString(R.string.error_empty_password_input));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onQuoteDeleteClickedEvent(OnQuoteDeleteClickedEvent event) {
+        quotesListView.showReallyDeleteDialog(event.getPosition());
     }
 
     /**
@@ -90,7 +105,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
      **/
     @Override
     public void onDestroy() {
-        view = null;
+        quotesListView = null;
     }
 
     @Override
@@ -102,11 +117,24 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
             }});
             model.getQuotes().add(0, newQuote);
             quoteListAdapterPresenter.notifyDataSetChanged();
-            view.scrollQuoteListToTop();
-        } else {
-            view.showToastErrorMessage(customResourcesProvider.getResources().getString(R.string.error_quote_refresh));
+            quotesListView.scrollQuoteListToTop();
+            DataManager.getInstance().setMessagesSize(0);
         }
-        DataManager.getInstance().setMessagesSize(0);
+    }
+
+    @Override
+    public void onStart() {
+        if (Hawk.get(AppStrings.KEY_IS_USER_OWNER)) {
+            EventBus.getDefault().register(this);
+            checkIfUserLoggedIn();
+        }
+    }
+
+    @Override
+    public void onStop(){
+        if (Hawk.get(AppStrings.KEY_IS_USER_OWNER)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     /**
@@ -115,7 +143,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
      */
     public void fetchPagingQuotes(AsyncCallback<List<Quote>> callback) {
         if (isFetchingMethodUnlocked) {
-            view.showPagingProgressDialog();
+            quotesListView.showProgressDialog(quotesListView.getPagingProgressDialog());
             isFetchingMethodUnlocked = false;
             quotesStorage.find(quotesQueryBuilder, callback);
         }
@@ -124,11 +152,10 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     public void fetchInitialQuotes(AsyncCallback<List<Quote>> callback) {
         try {
             quotesStorage.find(quotesQueryBuilder, callback);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     @SuppressWarnings("FieldCanBeLocal")
     private AsyncCallback<List<Quote>> initialQuotesDownloadCallback = new AsyncCallback<List<Quote>>() {
@@ -136,7 +163,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         public void handleResponse(List<Quote> serverQuotes) {
             isFetchingMethodUnlocked = true;
             if (serverQuotes.size() == 0 && model.getQuotes().size() == 0) {
-                view.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_quotes));
+                quotesListView.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_quotes));
                 return;
             }
             onFullQuotesResponseReceive(serverQuotes);
@@ -145,16 +172,16 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         @Override
         public void handleFault(BackendlessFault fault) {
             Log.e(TAG, "Quotes retrieval error: " + fault.getDetail());
-            view.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_connection));
+            quotesListView.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_connection));
         }
     };
 
     private AsyncCallback<List<Quote>> pagingCallback = new AsyncCallback<List<Quote>>() {
         @Override
         public void handleResponse(List<Quote> serverQuotes) {
-            //TODO: implement a small progress view (like in facebook paging)
+            //TODO: implement a small progress quotesListView (like in facebook paging)
             isFetchingMethodUnlocked = true;
-            view.dismissPagingProgressDialog();
+            quotesListView.dismissProgressDialog(quotesListView.getPagingProgressDialog());
             if (serverQuotes.size() != 0) {
                 onFullQuotesResponseReceive(serverQuotes);
             }
@@ -164,7 +191,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         public void handleFault(BackendlessFault fault) {
             Log.e(TAG, "Quotes retrieval error: " + fault.getDetail());
             isFetchingMethodUnlocked = true;
-            view.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_connection));
+            quotesListView.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_no_connection));
         }
     };
 
@@ -173,37 +200,60 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         quotesQueryBuilder.prepareNextPage();
         initQuotesImages(serverQuotes);
         quoteListAdapterPresenter.notifyDataSetChanged();
-        view.dismissMainProgressDialog();
+        quotesListView.dismissProgressDialog(quotesListView.getMainProgressDialog());
     }
 
     @Override
-    public void login(CharSequence password, GenericOperationCallback callback) {
-
-        Backendless.UserService.login("james.bond@mi6.co.uk", String.valueOf(password), new AsyncCallback<BackendlessUser>() {
+    public void deleteQuote(int position){
+        quotesStorage.remove(model.getQuotes().get(position), new AsyncCallback<Long>() {
             @Override
-            public void handleResponse(BackendlessUser user) {
-                callback.onSuccess();
+            public void handleResponse(Long response) {
+                quotesListView.dismissProgressDialog(quotesListView.getMainProgressDialog());
+                model.getQuotes().remove(position);
+                quoteListAdapterPresenter.notifyDataSetChanged();
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                callback.onFailure(fault.getDetail());
+                quotesListView.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_delete_quote));
+                Log.e(TAG, "Quote deletion failed. Reason: " + fault.getDetail());
             }
-        }, true);
+        });
     }
 
-    @Override
-    public void checkIfUserLoggedIn(CheckLoggedInCallback checkLoggedInCallback) {
+    private void fetchDataSetSize() {
+        quotesStorage.getObjectCount(new AsyncCallback<Integer>() {
+
+            @Override
+            public void handleResponse(Integer size) {
+                Log.i(TAG, "Quotes list size in server: " + size);
+                QuoteListPresenterImpl.this.allServerQuotesListSize = size;
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e(TAG, "Error getting server quotes array size. size stays Integer.MAX_VALUE. error reason: " + fault.getDetail());
+            }
+        });
+    }
+
+    private void checkIfUserLoggedIn() {
         try {
             Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
                 @Override
                 public void handleResponse(Boolean response) {
-                    checkLoggedInCallback.onUserStatusReceived(response);
+                    Log.i(TAG, "Login status check Successful. Is user logged in? " + response);
+                    if (response) {
+                        quotesListView.onUserLoggedIn();
+                        return;
+                    }
+                    quotesListView.onUserLoggedOut();
                 }
 
                 @Override
                 public void handleFault(BackendlessFault fault) {
-                    checkLoggedInCallback.onFailure(fault.getDetail());
+                    quotesListView.onUserLoggedOut();
+                    Log.e(TAG, "Error in login validation. Reason: " + fault.getDetail() + " making login available");
                 }
             });
         } catch (Exception e) {
@@ -212,7 +262,28 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     }
 
     @Override
-    public void logout(GenericOperationCallback callback) {
+    public void login(CharSequence password) {
+
+        Backendless.UserService.login("james.bond@mi6.co.uk", String.valueOf(password), new AsyncCallback<BackendlessUser>() {
+            @Override
+            public void handleResponse(BackendlessUser user) {
+                quotesListView.onUserLoggedIn();
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e(TAG, "Login failed. reason: " + fault.getDetail());
+                if (errorsMap.containsKey(fault.getCode())) {
+                    quotesListView.onServerOperationFailed(errorsMap.get(fault.getCode()));
+                    return;
+                }
+                quotesListView.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.generic_error_login));
+            }
+        }, true);
+    }
+
+    @Override
+    public void logout() {
 
         Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
             @Override
@@ -220,24 +291,37 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
                 if (response) {
                     Backendless.UserService.logout(new AsyncCallback<Void>() {
                         public void handleResponse(Void response) {
-                            callback.onSuccess();
+                            quotesListView.onUserLoggedOut();
                         }
 
                         public void handleFault(BackendlessFault fault) {
-                            callback.onFailure(fault.getDetail());
+                            quotesListView.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_logout));
+                            Log.e(TAG, "Logout failed. reason: " + fault.getDetail());
                         }
                     });
                 } else {
                     Log.i(TAG, "User was already logged out from server. operation auto-succeeds");
-                    callback.onSuccess();
+                    quotesListView.onUserLoggedOut();
                 }
             }
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                callback.onFailure(fault.getDetail());
+                quotesListView.onServerOperationFailed(customResourcesProvider.getResources().getString(R.string.error_logout));
+                Log.e(TAG, "Logout failed. reason: " + fault.getDetail());
             }
         });
+    }
+
+    /**
+     * Image handling
+     */
+
+    private void initQuotesImages(List<Quote> quotes) {
+        for (Quote quote : quotes) {
+            Uri uri = Uri.parse(AppStrings.PREFIX_DRAWABLE_PATH + quote.getBgImageName()); //TODO: try catch for failures
+            quote.setImage(ImageUtils.createDrawableFromUri(uri, quotesListView.getContentResolver(), customResourcesProvider.getResources()));
+        }
     }
 
     /**
@@ -253,10 +337,12 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
 
         @Override
         public void onScrollEnd(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
-            if (adapterPosition == (model.getQuotes().size() - 1) && networkHelper.hasNetworkAccess(view.getContext())) {
+            if (adapterPosition == (model.getQuotes().size() - 1) && networkHelper.hasNetworkAccess(quotesListView.getContext())) {
                 try {
-                    fetchPagingQuotes(pagingCallback);
-                }catch (Exception e){
+                    if(model.getQuotes().size() < allServerQuotesListSize) {
+                        fetchPagingQuotes(pagingCallback);
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -276,5 +362,5 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     public List<Quote> getQuotes() {
         return model.getQuotes();
     }
-
 }
+

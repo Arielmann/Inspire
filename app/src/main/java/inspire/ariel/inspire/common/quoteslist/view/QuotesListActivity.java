@@ -4,13 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.kaopiz.kprogresshud.KProgressHUD;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,19 +31,19 @@ import inspire.ariel.inspire.common.di.DaggerViewComponent;
 import inspire.ariel.inspire.common.di.ListsModule;
 import inspire.ariel.inspire.common.di.PresentersModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
+import inspire.ariel.inspire.common.di.ViewInjector;
 import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
 import inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuoteListMenuView;
 import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
-import inspire.ariel.inspire.common.utils.backendutils.CheckLoggedInCallback;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
 import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import inspire.ariel.inspire.databinding.ActivityQuoteListBinding;
-import inspire.ariel.inspire.leader.quotescreator.view.quotescreatoractivity.QuotesCreatorActivity;
+import inspire.ariel.inspire.owner.quotecreator.view.quotescreatoractivity.QuotesCreatorActivity;
 import lombok.Getter;
 
-public class QuotesListActivity extends AppCompatActivity implements QuotesListView, QuoteListViewInjector {
+public class QuotesListActivity extends AppCompatActivity implements QuotesListView, ViewInjector {
 
     @Inject //List Module
             QuoteListAdapter adapter;
@@ -45,23 +53,31 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
     DiscreteScrollViewData discreteScrollViewData;
 
     @Inject //Views Module
-    @Named(AppStrings.MAIN_QUOTES_LIST_PROGRESS_DIALOG)
+    @Named(AppStrings.MAIN_PROGRESS_DIALOG)
+    @Getter
     KProgressHUD mainProgressDialog;
 
     @Inject //Views Module
     @Named(AppStrings.PAGING_QUOTES_LIST_PROGRESS_DIALOG)
+    @Getter
     KProgressHUD pagingProgressDialog;
+
+    @Inject //Views Module
+    @Named(AppStrings.LOGIN_LOGOUT_PROGRESS_DIALOG)
+    @Getter
+    KProgressHUD loginLogoutProgressDialog;
 
     @Inject //Presenters Module
     @Getter
     QuoteListPresenter presenter;
 
-    @Inject
-    QuoteListMenuView quoteListMenuView;
+    @Inject //Views Module
+            QuoteListMenuView quoteListMenuView;
 
     private String TAG = QuotesListActivity.class.getName();
     private ActivityQuoteListBinding binding;
     private InspireApplication application;
+    private Set<KProgressHUD> activeProgressDialogs;
 
     /**
      * Initialization
@@ -72,7 +88,8 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_list);
         inject();
-        showMainProgressDialog();
+        activeProgressDialogs = new HashSet<>();
+        showProgressDialog(mainProgressDialog);
         application = (InspireApplication) getApplication();
         application.initApp(new GenericOperationCallback() {
             @Override
@@ -84,17 +101,11 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
             public void onFailure(String reason) {
                 //TODO: if local db support available, load it instead of presenting error
                 Log.e(TAG, "Error registering device: " + reason);
-                dismissMainProgressDialog();
+                dismissProgressDialog(mainProgressDialog);
                 showToastErrorMessage(getResources().getString(R.string.error_no_connection));
-                binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_restart), Toast.LENGTH_SHORT).show());
+                binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_login), Toast.LENGTH_SHORT).show());
             }
         });
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        presenter.OnNewIntent(intent);
-        super.onNewIntent(intent);
     }
 
     private void inject() {
@@ -102,7 +113,7 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
                 .appModule(new AppModule((InspireApplication) getApplication()))
                 .resourcesModule(new ResourcesModule(getResources(), getAssets()))
                 .presentersModule(PresentersModule.builder().appComponent(((InspireApplication) getApplication()).getAppComponent()).quotesListView(this).build())
-                .viewsModule(ViewsModule.builder().quotesListViewInjector(this).build())
+                .viewsModule(ViewsModule.builder().viewsInjector(this).build())
                 .listsModule(new ListsModule())
                 .build()
                 .inject(this);
@@ -110,9 +121,8 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
 
     private void initActivity() {
         quoteListMenuView.init(this);
-        //TODO: You can't know who will finish first, therefore, dismiss progress dialog only after both finish
+        //TODO: You can't know between quotes download or login check - who will finish first. Therefore, dismiss progress dialog only after both finish
         presenter.init(adapter);
-        presenter.checkIfUserLoggedIn(checkLoggedInCallback);
         initQuotesRecyclerView();
         binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(QuotesListActivity.this, QuotesCreatorActivity.class));
         Log.d(TAG, TAG + " onCreate() method completed");
@@ -136,6 +146,24 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
      */
 
     @Override
+    protected void onStart() {
+        presenter.onStart();
+        super.onStart();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        presenter.OnNewIntent(intent);
+        super.onNewIntent(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        presenter.onStop();
+        super.onStop();
+    }
+
+    @Override
     public void onDestroy() {
         if (presenter != null) {
             presenter.onDestroy();
@@ -147,58 +175,48 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
      * User login status adaptation
      */
 
-    private CheckLoggedInCallback checkLoggedInCallback = new CheckLoggedInCallback() {
-        @Override
-        public void onUserStatusReceived(boolean isLoggedIn) {
-            Log.i(TAG, "Login status check completed. Is user logged in? " + isLoggedIn);
-            if (isLoggedIn) {
-                quoteListMenuView.showLoginBtn();
-                quoteListMenuView.setLogoutAvailable();
-                return;
-            }
-            quoteListMenuView.showLoginBtn();
-            quoteListMenuView.setLoginAvailable();
-            binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_restart), Toast.LENGTH_SHORT).show());
-        }
 
+    @Override
+    public void onUserLoggedIn() {
+        dismissProgressDialog(loginLogoutProgressDialog);
+        binding.goToCreateQuoteActivityBtn.setVisibility(View.VISIBLE);
+        quoteListMenuView.resetLoginLogoutBtn(getResources().getDrawable(R.drawable.logout_icon), quoteListMenuView.getOnLogoutClicked());
+        binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(QuotesListActivity.this, QuotesCreatorActivity.class));
+    }
 
-        //Todo: check if you crush when trying to log in with an already logged in user
-        @Override
-        public void onFailure(String reason) {
-            quoteListMenuView.showLoginBtn();
-            quoteListMenuView.setLoginAvailable();
-            Log.e(TAG, "Error in login validation. Reason: " + reason + " making login available");
-        }
-    };
+    @Override
+    public void onUserLoggedOut() {
+        dismissProgressDialog(loginLogoutProgressDialog);
+        binding.goToCreateQuoteActivityBtn.setVisibility(View.GONE);
+        quoteListMenuView.resetLoginLogoutBtn(getResources().getDrawable(R.drawable.login_icon), quoteListMenuView.getOnLoginClicked());
+        binding.goToCreateQuoteActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_login), Toast.LENGTH_SHORT).show());
+    }
 
     /**
      * Progress Dialog
      */
-    @Override
-    public void showMainProgressDialog() {
-        //TODO: find a more UX friendly solution
-        mainProgressDialog.show();
-    }
 
     @Override
-    public void showPagingProgressDialog() {
-        pagingProgressDialog.show();
-    }
-
-    @Override
-    public void dismissMainProgressDialog() {
-        if (mainProgressDialog != null) {
-            mainProgressDialog.dismiss();
+    public void showProgressDialog(KProgressHUD dialog) {
+        if (dialog != null) {
+            activeProgressDialogs.add(dialog);
+            dialog.show();
         }
     }
 
     @Override
-    public void dismissPagingProgressDialog() {
-        if (pagingProgressDialog != null) {
-            pagingProgressDialog.dismiss();
+    public void dismissProgressDialog(KProgressHUD dialog) {
+        if (dialog != null) {
+            activeProgressDialogs.remove(dialog);
+            dialog.dismiss();
         }
     }
 
+    private void dismissAllProgressDialogs() {
+        for (KProgressHUD dialog : activeProgressDialogs) {
+            dismissProgressDialog(dialog);
+        }
+    }
 
     /**
      * Show Messages
@@ -211,8 +229,26 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
 
     @Override
     public void onServerOperationFailed(String error) {
-        dismissMainProgressDialog();
+        dismissAllProgressDialogs();
         showToastErrorMessage(error);
+    }
+
+    @Override
+    public void showReallyDeleteDialog(int quotePosition) {
+        new MaterialDialog.Builder(this)
+                .title(R.string.are_you_sure_title)
+                .titleGravity(GravityEnum.CENTER)
+                .content(getResources().getString(R.string.really_delete_msg))
+                .contentGravity(GravityEnum.CENTER)
+                .positiveText(R.string.delete_title)
+                .onPositive((dialog, which) -> {
+                    showProgressDialog(mainProgressDialog);
+                    presenter.deleteQuote(quotePosition);
+                })
+                .negativeText(R.string.cancel)
+                .onNegative((dialog, which) -> dialog.cancel())
+                .cancelable(true)
+                .show();
     }
 
     /**

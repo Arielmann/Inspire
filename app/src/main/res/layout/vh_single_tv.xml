@@ -3,7 +3,7 @@
     android:id="@+id/singleTVLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/quote_option_item_top_and_bottom_margin">
+    android:layout_marginTop="@dimen/vh_single_tv_margin_top">
 
     <TextView
         android:id="@+id/singleTv"

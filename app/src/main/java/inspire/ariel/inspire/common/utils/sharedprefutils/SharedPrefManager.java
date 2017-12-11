@@ -8,7 +8,7 @@ import inspire.ariel.inspire.common.constants.AppStrings;
 public class SharedPrefManager {
 
     public enum SharedPrefProperty {
-        IS_FIRST_LAUNCH(AppStrings.KEY_IS_FIRST_LAUNCH),
+        IS_FIRST_LAUNCH(AppStrings.IS_FIRST_LAUNCH),
         DEVICE_SCREEN_HEIGHT(AppStrings.KEY_DEVICE_STRING_HEIGHT),
         DEVICE_SCREEN_WIDTH(AppStrings.KEY_DEVICE_STRING_WIDTH);
 

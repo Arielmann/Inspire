@@ -2,14 +2,14 @@ package inspire.ariel.inspire.common.quoteslist.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.quoteslist.Quote;
+import inspire.ariel.inspire.databinding.VhQuoteBinding;
+import inspire.ariel.inspire.databinding.VhQuoteOptionsBinding;
 import lombok.Setter;
 
 public class QuoteListAdapter extends RecyclerView.Adapter<QuoteVH> implements QuoteListAdapterPresenter {
@@ -22,13 +22,16 @@ public class QuoteListAdapter extends RecyclerView.Adapter<QuoteVH> implements Q
 
     @Override
     public QuoteVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.vh_quote, parent, false);
-        return new QuoteVH(view);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        VhQuoteBinding quoteBinding = VhQuoteBinding.inflate(layoutInflater, parent, false);
+        VhQuoteOptionsBinding quoteOptionsManagerBinding = VhQuoteOptionsBinding.inflate(layoutInflater, parent, false);
+//        View view = layoutInflater.inflate(R.layout.vh_quote_options, parent);
+        return new QuoteVH(quoteBinding, quoteOptionsManagerBinding);
     }
 
     @Override
     public void onBindViewHolder(QuoteVH holder, int position) {
-        holder.setUIDataOnView(quotes.get(position));
+        holder.setUIDataOnView(quotes.get(position), position);
     }
 
     @Override

@@ -28,3 +28,8 @@
 -dontwarn weborb.**
 -keep class weborb.** {*;}
 -keep class com.backendless.** {*;}
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }

@@ -2,24 +2,21 @@ package inspire.ariel.inspire.common.quoteslist.view;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.kaopiz.kprogresshud.KProgressHUD;
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
 
 public interface QuotesListView {
 
-    void showMainProgressDialog();
+    void showProgressDialog(KProgressHUD dialog);
 
-    void showPagingProgressDialog();
-
-    void dismissMainProgressDialog();
-
-    void dismissPagingProgressDialog();
+    void dismissProgressDialog(KProgressHUD dialog);
 
     ContentResolver getContentResolver();
+
+    void showReallyDeleteDialog(int quotePosition);
 
     Context getContext();
 
@@ -30,4 +27,14 @@ public interface QuotesListView {
     void showToastErrorMessage(String string);
 
     void onServerOperationFailed(String error);
+
+    void onUserLoggedOut();
+
+    void onUserLoggedIn();
+
+    KProgressHUD getLoginLogoutProgressDialog();
+
+    KProgressHUD getMainProgressDialog();
+
+    KProgressHUD getPagingProgressDialog();
 }

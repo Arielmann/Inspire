@@ -3,7 +3,6 @@ package inspire.ariel.inspire.common.datamanager;
 import com.backendless.BackendlessUser;
 
 import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.leader.Leader;
 import lombok.Data;
 
 @Data
@@ -29,8 +28,8 @@ public class DataManager {
 
     private void initUser() {
         manager.user = new BackendlessUser();
-        manager.user.setProperty(AppStrings.KEY_OBJECT_ID, AppStrings.VAL_LEADER_OBJECT_ID);
-        manager.user.setProperty(AppStrings.KEY_NAME, AppStrings.VAL_LEADER_NAME);
-        manager.user.setProperty(AppStrings.KEY_DESCRIPTION, AppStrings.VAL_LEADER_DESCRIPTION);
+        manager.user.setProperty(AppStrings.KEY_OBJECT_ID, AppStrings.VAL_OWNER_OBJECT_ID);
+        manager.user.setProperty(AppStrings.KEY_NAME, AppStrings.VAL_OWNER_NAME);
+        manager.user.setProperty(AppStrings.KEY_DESCRIPTION, AppStrings.VAL_OWNER_DESCRIPTION);
     }
 }

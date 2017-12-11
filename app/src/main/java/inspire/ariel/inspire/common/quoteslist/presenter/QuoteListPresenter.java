@@ -2,14 +2,13 @@ package inspire.ariel.inspire.common.quoteslist.presenter;
 
 import android.content.Intent;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import java.util.List;
 
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapterPresenter;
-import inspire.ariel.inspire.common.utils.backendutils.CheckLoggedInCallback;
-import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 
 public interface QuoteListPresenter {
 
@@ -19,13 +18,17 @@ public interface QuoteListPresenter {
 
     void OnNewIntent(Intent intent);
 
-    void logout(GenericOperationCallback callback);
+    void logout();
+
+    void onStart();
+
+    void onStop();
+
+    void login(CharSequence password);
 
     List<Quote> getQuotes();
 
     DiscreteScrollView.ScrollStateChangeListener<?> getOnScrollChangedListener();
 
-    void login(CharSequence password, GenericOperationCallback callback);
-
-    void checkIfUserLoggedIn(CheckLoggedInCallback checkLoggedInCallback);
+    void deleteQuote(int quotePosition);
 }
