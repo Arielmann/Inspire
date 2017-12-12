@@ -8,11 +8,14 @@ import com.orhanobut.dialogplus.ViewHolder;
 import org.greenrobot.eventbus.EventBus;
 
 import inspire.ariel.inspire.R;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.quoteslist.events.OnQuoteDeleteClickedEvent;
+import inspire.ariel.inspire.common.quoteslist.events.OnQuoteUpdatedEvent;
+import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivity;
 import inspire.ariel.inspire.databinding.VhQuoteOptionsBinding;
-import inspire.ariel.inspire.owner.quotecreator.view.quotescreatoractivity.QuotesCreatorActivity;
+import inspire.ariel.inspire.owner.quotecreator.view.quotescreatoractivity.QuoteEditorActivity;
 import lombok.Getter;
 
 public class QuoteOptionsVH extends ViewHolder {
@@ -39,9 +42,7 @@ public class QuoteOptionsVH extends ViewHolder {
 
     public void init(DialogPlus dialog, Quote quote, int position) {
         binding.editBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(binding.getRoot().getContext(), QuotesCreatorActivity.class);
-            intent.putExtra(AppStrings.KEY_QUOTE, quote);
-            binding.getRoot().getContext().startActivity(intent);
+            EventBus.getDefault().post(new OnQuoteUpdatedEvent(quote, position));
             dialog.dismiss();
         });
 

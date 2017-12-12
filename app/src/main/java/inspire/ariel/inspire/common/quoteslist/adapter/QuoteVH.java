@@ -62,5 +62,7 @@ class QuoteVH extends RecyclerView.ViewHolder {
 
         Log.d(TAG, quote.getText() + " is presented in the list as a quote");
     }
+
+
 }
 

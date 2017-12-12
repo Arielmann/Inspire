@@ -16,7 +16,8 @@
     <string name="please_wait">Please wait…</string>
     <string name="error_quote_refresh">There was a error refreshing the data. Please try again later</string>
     <string name="error_quote_upload">There was an error posting the quote, please try again</string>
-    <string name="error_quote_leader_relation_creation">Quote was correctly posted to users but there seem to be a table relation error (server problem), please contact your administrator.</string>
+    <string name="error_quote_update">There was an error updating the quote, please try again</string>
+    <string name="error_quote_owner_relation_creation">Quote was correctly posted to users but there seem to be a table relation error (server problem), please contact your administrator.</string>
     <string name="new_quote_push_notification">wants to share something with you</string>
     <string name="push_notification_multiple_prefix">new posts from</string>
     <string name="continue_reading">Continue reading…</string>

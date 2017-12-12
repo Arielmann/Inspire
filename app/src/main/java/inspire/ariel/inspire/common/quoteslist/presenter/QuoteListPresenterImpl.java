@@ -16,11 +16,6 @@ import com.backendless.persistence.DataQueryBuilder;
 import com.orhanobut.hawk.Hawk;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +24,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import inspire.ariel.inspire.R;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapterPresenter;
-import inspire.ariel.inspire.common.quoteslist.events.OnQuoteDeleteClickedEvent;
 import inspire.ariel.inspire.common.quoteslist.model.QuoteListModel;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
@@ -95,11 +90,6 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
         errorsMap.put(AppStrings.BACKENDLESS_ERROR_CODE_EMPTY_PASSWORD_INPUT, customResourcesProvider.getResources().getString(R.string.error_empty_password_input));
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onQuoteDeleteClickedEvent(OnQuoteDeleteClickedEvent event) {
-        quotesListView.showReallyDeleteDialog(event.getPosition());
-    }
-
     /**
      * Lifecycle Methods
      **/
@@ -112,9 +102,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     public void OnNewIntent(Intent intent) {
         if (intent.getParcelableExtra(AppStrings.KEY_QUOTE) != null) {
             Quote newQuote = intent.getParcelableExtra(AppStrings.KEY_QUOTE);
-            initQuotesImages(new ArrayList<Quote>() {{
-                add(newQuote);
-            }});
+            initQuoteImage(newQuote);
             model.getQuotes().add(0, newQuote);
             quoteListAdapterPresenter.notifyDataSetChanged();
             quotesListView.scrollQuoteListToTop();
@@ -125,16 +113,17 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     @Override
     public void onStart() {
         if (Hawk.get(AppStrings.KEY_IS_USER_OWNER)) {
-            EventBus.getDefault().register(this);
             checkIfUserLoggedIn();
         }
     }
 
     @Override
-    public void onStop(){
-        if (Hawk.get(AppStrings.KEY_IS_USER_OWNER)) {
-            EventBus.getDefault().unregister(this);
-        }
+    public void onQuoteUpdated(Intent data) {
+        Quote quote = data.getParcelableExtra(AppStrings.KEY_QUOTE);
+        initQuoteImage(quote);
+        int quotePosition = data.getIntExtra(AppStrings.KEY_QUOTE_POSITION, AppNumbers.ERROR_INT);
+        model.getQuotes().set(quotePosition, quote);
+        quoteListAdapterPresenter.notifyDataSetChanged();
     }
 
     /**
@@ -198,7 +187,7 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
     private void onFullQuotesResponseReceive(List<Quote> serverQuotes) {
         model.getQuotes().addAll(serverQuotes);
         quotesQueryBuilder.prepareNextPage();
-        initQuotesImages(serverQuotes);
+        initQuotesListImages(serverQuotes);
         quoteListAdapterPresenter.notifyDataSetChanged();
         quotesListView.dismissProgressDialog(quotesListView.getMainProgressDialog());
     }
@@ -317,11 +306,15 @@ public class QuoteListPresenterImpl implements QuoteListPresenter {
      * Image handling
      */
 
-    private void initQuotesImages(List<Quote> quotes) {
+    private void initQuotesListImages(List<Quote> quotes) {
         for (Quote quote : quotes) {
-            Uri uri = Uri.parse(AppStrings.PREFIX_DRAWABLE_PATH + quote.getBgImageName()); //TODO: try catch for failures
-            quote.setImage(ImageUtils.createDrawableFromUri(uri, quotesListView.getContentResolver(), customResourcesProvider.getResources()));
+            initQuoteImage(quote);
         }
+    }
+
+    private void initQuoteImage(Quote quote){
+        Uri uri = Uri.parse(AppStrings.PREFIX_DRAWABLE_PATH + quote.getBgImageName()); //TODO: try catch for failures
+        quote.setImage(ImageUtils.createDrawableFromUri(uri, quotesListView.getContentResolver(), customResourcesProvider.getResources()));
     }
 
     /**

@@ -22,13 +22,15 @@ public interface QuoteListPresenter {
 
     void onStart();
 
-    void onStop();
-
     void login(CharSequence password);
 
     List<Quote> getQuotes();
 
     DiscreteScrollView.ScrollStateChangeListener<?> getOnScrollChangedListener();
 
+    //Called when quote was updated successfully
+    void onQuoteUpdated(Intent data);
+
     void deleteQuote(int quotePosition);
+
 }

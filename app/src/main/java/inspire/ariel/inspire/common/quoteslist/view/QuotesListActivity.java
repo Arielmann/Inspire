@@ -1,10 +1,10 @@
 package inspire.ariel.inspire.common.quoteslist.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
@@ -12,10 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.kaopiz.kprogresshud.KProgressHUD;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +28,7 @@ import javax.inject.Named;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerViewComponent;
@@ -34,12 +38,15 @@ import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.di.ViewInjector;
 import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.quoteslist.adapter.QuoteListAdapter;
+import inspire.ariel.inspire.common.quoteslist.events.OnQuoteDeleteClickedEvent;
+import inspire.ariel.inspire.common.quoteslist.events.OnQuoteUpdatedEvent;
 import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
 import inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuoteListMenuView;
 import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
 import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import inspire.ariel.inspire.databinding.ActivityQuoteListBinding;
+import inspire.ariel.inspire.owner.quotecreator.view.quotescreatoractivity.QuoteEditorActivity;
 import inspire.ariel.inspire.owner.quotecreator.view.quotescreatoractivity.QuotesCreatorActivity;
 import lombok.Getter;
 
@@ -147,6 +154,7 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
 
     @Override
     protected void onStart() {
+        EventBus.getDefault().register(this);
         presenter.onStart();
         super.onStart();
     }
@@ -159,7 +167,7 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
 
     @Override
     protected void onStop() {
-        presenter.onStop();
+        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
@@ -171,10 +179,34 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesListV
         super.onDestroy();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            presenter.onQuoteUpdated(data);
+        }
+    }
+
+    /**
+     * Event bus
+     */
+
+    @Subscribe
+    public void onQuoteDeleteClickedEvent(OnQuoteDeleteClickedEvent event) {
+        showReallyDeleteDialog(event.getPosition());
+    }
+
+    @Subscribe
+    public void onQuoteUpdateClickedEvent(OnQuoteUpdatedEvent event) {
+        Intent intent = new Intent(binding.getRoot().getContext(), QuoteEditorActivity.class);
+        intent.putExtra(AppStrings.KEY_QUOTE, event.getQuote());
+        intent.putExtra(AppStrings.KEY_QUOTE_POSITION, event.getPosition());
+        ((QuotesListActivity) binding.getRoot().getContext()).startActivityForResult(intent, AppNumbers.DEFAULT_REQUEST_CODE);
+    }
+
     /**
      * User login status adaptation
      */
-
 
     @Override
     public void onUserLoggedIn() {

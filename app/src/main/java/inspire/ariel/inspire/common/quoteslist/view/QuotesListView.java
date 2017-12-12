@@ -37,4 +37,5 @@ public interface QuotesListView {
     KProgressHUD getMainProgressDialog();
 
     KProgressHUD getPagingProgressDialog();
+
 }

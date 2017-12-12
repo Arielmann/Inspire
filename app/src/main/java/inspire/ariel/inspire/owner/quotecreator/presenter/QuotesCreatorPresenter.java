@@ -10,9 +10,7 @@ public interface QuotesCreatorPresenter {
 
     void onDestroy();
 
-    void postQuote(Quote quote);
-
-    boolean validateQuote(String text);
+    void requestPostQuote(Quote quote);
 
     String getBgImgName();
 
@@ -20,10 +18,11 @@ public interface QuotesCreatorPresenter {
 
     Drawable getChosenBgImage();
 
-    void onQuoteFontClicked(String path);
+    void requestUpdateQuote(Quote quote, int position);
 
-    DiscreteScrollView.ScrollStateChangeListener<?> getOnScrollStateChangedListener();
+    void onQuoteFontClicked(String path);
 
     DiscreteScrollView.OnItemChangedListener<?> getOnItemChangedListener();
 
+    void setFontPath(String path);
 }

@@ -1,8 +1,8 @@
 package inspire.ariel.inspire.common.di;
 
 import android.support.annotation.Nullable;
+import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
@@ -14,9 +14,7 @@ import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.common.constants.Percentages;
 import inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuoteListMenuView;
-import inspire.ariel.inspire.common.utils.animationutils.AnimatedSlidingView;
 import inspire.ariel.inspire.common.utils.viewutils.ProgressDialogFactory;
 import inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteCreatorMenuFragmentInjector;
 import inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteCreatorMenuView;
@@ -44,23 +42,11 @@ public class ViewsModule {
     }
 
     @Provides
-    List<AnimatedSlidingView> provideQuoteCreatorActivityDisappearingViews() {
+    List<View> provideQuoteCreatorActivityDisappearingViews() {
         assert viewsInjector != null;
-        AnimatedSlidingView slidingBgPicker = AnimatedSlidingView.builder()
-                .view(viewsInjector.getBinding().bgPicker)
-                .initialYPos(viewsInjector.getBinding().bgPicker.getTranslationY())
-                .endAnimatedYPos(viewsInjector.getBinding().bgPicker.getTranslationY() * Percentages.FIVE_HUNDRED)
-                .build();
-
-        AnimatedSlidingView slidingPostImageView = (AnimatedSlidingView.builder()
-                .view(viewsInjector.getBinding().postImageBtn)
-                .initialYPos(viewsInjector.getBinding().postImageBtn.getTranslationY())
-                .endAnimatedYPos(viewsInjector.getBinding().postImageBtn.getTranslationY() * Percentages.FIVE_HUNDRED)
-                .build());
-
-        return new ArrayList<AnimatedSlidingView>() {{
-            add(slidingBgPicker);
-            add(slidingPostImageView);
+        return new ArrayList<View>() {{
+            add(viewsInjector.getBinding().bgPicker);
+            add(viewsInjector.getBinding().postImageBtn);
         }};
     }
 

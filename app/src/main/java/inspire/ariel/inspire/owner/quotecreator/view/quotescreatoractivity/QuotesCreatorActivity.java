@@ -1,5 +1,6 @@
 package inspire.ariel.inspire.owner.quotecreator.view.quotescreatoractivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -39,7 +40,6 @@ import inspire.ariel.inspire.common.quoteslist.Quote;
 import inspire.ariel.inspire.common.di.ViewInjector;
 import inspire.ariel.inspire.common.quoteslist.view.QuotesListActivity;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
-import inspire.ariel.inspire.common.utils.animationutils.AnimatedSlidingView;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
 import inspire.ariel.inspire.common.utils.listutils.SingleBitmapListAdapter;
@@ -69,10 +69,10 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
 
     @Inject
     @Named(AppStrings.MAIN_PROGRESS_DIALOG)
-    KProgressHUD progressHUD;
+    KProgressHUD progressDialog;
 
     @Inject
-    List<AnimatedSlidingView> disappearingViews;
+    List<View> disappearingViews;
 
     @Inject
     QuoteCreatorMenuView quoteCreatorMenuView;
@@ -80,35 +80,20 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     private String TAG = QuotesCreatorActivity.class.getName();
     @Getter
     private ActivityQuoteCreatorBinding binding;
-    private Quote mutatingQuote;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_quote_creator);
         inject();
-        binding.postImageBtn.setOnClickListener(onPostQuoteClicked);
+        binding.postImageBtn.setOnClickListener(view -> requestQuotePost());
         setQuoteFont(FontsManager.Font.ALEF_BOLD);
         initBgPicker();
         initKeyboardChangeBehaviours();
         initQuoteMenuView();
-
-        Quote editedQuote = getIntent().getParcelableExtra(AppStrings.KEY_QUOTE);
-        if (editedQuote != null) {
-            initAtEditMode(editedQuote);
-        }
         Log.d(TAG, TAG + " onCreate() method completed");
     }
 
-    private void initAtEditMode(Quote quote) {
-        binding.quoteEditText.setText(quote.getText());
-        binding.quoteEditText.setTextColor(quote.getTextColor());
-        binding.quoteEditText.setHintTextColor(quote.getTextColor());
-        binding.quoteEditText.setTextSize(quote.getTextSize());
-        binding.creatorLayout.setBackground(quote.getImage());
-        FontsManager.getInstance().setFontOnTV(quote.getFontPath(), binding.quoteEditText);
-        this.mutatingQuote = quote;
-    }
 
     private void initQuoteMenuView() {
         quoteCreatorMenuView.setQuotesCreatorActivityViewProperties(this);
@@ -165,7 +150,6 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
         bgPicker.setSlideOnFling(discreteScrollViewData.isSetSlideOnFling());
         bgPicker.setAdapter(adapter);
         bgPicker.addOnItemChangedListener(presenter.getOnItemChangedListener());
-        bgPicker.addScrollStateChangeListener(presenter.getOnScrollStateChangedListener());
         bgPicker.setItemTransitionTimeMillis(discreteScrollViewData.getTimeMillis());
         bgPicker.setOffscreenItems(discreteScrollViewData.getOffScreenItems());
         bgPicker.setItemTransformer(discreteScrollViewData.getScaleTransformer());
@@ -174,43 +158,47 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     private void initKeyboardChangeBehaviours() {
         KeyboardVisibilityEvent.setEventListener(this, isOpen -> {
             if (isOpen) {
-                for (AnimatedSlidingView disappearingView : disappearingViews) {
-                    disappearingView.getView().animate().alpha(0).setDuration(AppTimeMillis.HALF_SECOND);
-                    disappearingView.getView().animate().translationY(disappearingView.getEndAnimatedYPos());
-                }
-                binding.postImageBtn.setClickable(false);
+                hideTypingRedundantViews();
                 setBackground(presenter.getChosenBgImage()); //Required to prevent background changes bug
             } else {
-                for (AnimatedSlidingView disappearingView : disappearingViews) {
-                    disappearingView.getView().animate().alpha(1).setDuration(AppTimeMillis.HALF_SECOND);
-                    disappearingView.getView().animate().translationY(disappearingView.getInitialYPos());
-                }
-                binding.postImageBtn.setClickable(true);
+                showTypingRedundantViews();
                 setBackground(presenter.getChosenBgImage()); //Required to prevent background changes bug
             }
         });
     }
 
-    View.OnClickListener onPostQuoteClicked = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            final String text = binding.quoteEditText.getText().toString();
-            final int textColor = binding.quoteEditText.getCurrentTextColor();
-            final int textSize = Math.round(binding.quoteEditText.getTextSize() * Percentages.FIFTY_FIVE);
-            boolean canUploadQuote = presenter.validateQuote(text);
-
-            if (canUploadQuote) {
-                Quote quote = Quote.builder().text(text)
-                        .fontPath(presenter.getFontPath())
-                        .textColor(textColor)
-                        .textSize(textSize)
-                        .ownerId(AppStrings.VAL_OWNER_OBJECT_ID)
-                        .bgImageName(presenter.getBgImgName())
-                        .build();
-                presenter.postQuote(quote);
-            }
+    private void showTypingRedundantViews() {
+        for (View disappearingView : disappearingViews) {
+            disappearingView.setVisibility(View.VISIBLE);
+            disappearingView.animate().alpha(1).setDuration(AppTimeMillis.HALF_SECOND);
+            disappearingView.setClickable(true);
         }
-    };
+    }
+
+    private void hideTypingRedundantViews() {
+        for (View disappearingView : disappearingViews) {
+            disappearingView.setClickable(false);
+            disappearingView.animate().alpha(0).setDuration(AppTimeMillis.HALF_SECOND).withEndAction((() -> disappearingView.setVisibility(View.GONE)));
+        }
+    }
+
+    void requestQuotePost() {
+        Quote newQuote = createQuoteForPost();
+        presenter.requestPostQuote(newQuote);
+    }
+
+    Quote createQuoteForPost() {
+        final String text = binding.quoteEditText.getText().toString();
+        final int textColor = binding.quoteEditText.getCurrentTextColor();
+        final int textSize = Math.round(binding.quoteEditText.getTextSize() * Percentages.FIFTY_FIVE);
+        return Quote.builder().text(text)
+                .fontPath(presenter.getFontPath())
+                .textColor(textColor)
+                .textSize(textSize)
+                .ownerId(AppStrings.VAL_OWNER_OBJECT_ID)
+                .bgImageName(presenter.getBgImgName())
+                .build();
+    }
 
     @Override
     public void setBackground(Drawable background) {
@@ -248,13 +236,6 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     }
 
     @Override
-    public void goToOtherActivity(Intent otherActivityData) {
-        startActivity(otherActivityData);
-        presenter.onDestroy();
-        finish();
-    }
-
-    @Override
     public Context getContext() {
         return this;
     }
@@ -272,6 +253,20 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
     }
 
     @Override
+    public void goToOtherActivity(Intent otherActivityData) {
+        startActivity(otherActivityData);
+        presenter.onDestroy();
+        finish();
+    }
+
+    @Override
+    public void sendResultToActivity(Intent intent) {
+        setResult(Activity.RESULT_OK, intent);
+        presenter.onDestroy();
+        finish();
+    }
+
+    @Override
     protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
@@ -279,14 +274,14 @@ public class QuotesCreatorActivity extends AppCompatActivity implements QuotesCr
 
     @Override
     public void dismissProgressDialog() {
-        if (progressHUD != null) {
-            progressHUD.dismiss();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
         }
     }
 
     //TODO: Allow cancellation
     @Override
     public void showProgressDialog() {
-        progressHUD.show();
+        progressDialog.show();
     }
 }

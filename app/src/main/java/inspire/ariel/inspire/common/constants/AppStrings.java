@@ -42,9 +42,6 @@ public class AppStrings {
     //FCM
     public static final String VAL_SENDER_ID = "876549986257";
 
-    //Date Formats
-    public static final java.lang.String SIMPLE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
     //OWNER static data
     public static final String VAL_OWNER_NAME = "Winston Churchill";
     public static String VAL_OWNER_DESCRIPTION = "My name is Winston Churchill";
@@ -64,6 +61,7 @@ public class AppStrings {
     public static final String KEY_TEXT_SIZE = "textSize";
     public static final String KEY_BG_IMAGE_NAME = "bgImageName";
     public static final String KEY_QUOTE = "quote";
+    public static final String KEY_QUOTE_POSITION = "quotePosition";
 
     //Device Data Fields
     public static final String KEY_DEVICE_STRING_HEIGHT = "deviceHeight";

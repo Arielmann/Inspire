@@ -37,6 +37,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
 
+        <activity
+            android:name=".owner.quotecreator.view.quotescreatoractivity.QuoteEditorActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+
         <service
             android:name=".common.quoteslist.services.PushNotificationService"
             android:exported="false" />
@@ -52,7 +58,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".common.singlequote.SingleQuoteActivity"></activity>
+        <activity android:name=".common.singlequote.SingleQuoteActivity" />
     </application>
 
 </manifest>

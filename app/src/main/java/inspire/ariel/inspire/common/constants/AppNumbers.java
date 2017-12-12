@@ -3,26 +3,16 @@ package inspire.ariel.inspire.common.constants;
 public class AppNumbers {
 
     //App Init
-    public static final int MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH = 2;
+    public static final int MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH = 1;
 
     //Ids
     public static final int NOTIFICATIONS_NE_QUOTE_ID = 1;
 
-    //Request Codes, Flags..
-    public static final int DEFAULT_REQUEST_CODE = 0;
-    public static final int NO_HEIGHT = 0;
-    public static final int FIRST_LINE = 0;
-
     //Backendless
-    public static final int BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT = 73000; //200 years registration to Backendless channels
+    public static final int BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT = 7300000; //Long years registration to Backendless channels
 
     //Text Views
     public static final int ELLIPSIZING_TV_DEFAULT_LINE_HEIGHT_DIVIDER = 96;
-
-    //Progress Hud
-    public static final int QUOTE_PROGRESS_HUD_ANIM_SPEED = 2;
-    public static final float QUOTE_CREATOR_PROGRESS_HUD_DIM_AMOUNT = 0.5f;
-
 
     //Font Sizes
     public static int DEFAULT_TEXT_SIZE = 45;
@@ -50,10 +40,20 @@ public class AppNumbers {
     public static int DEFAULT_TEXT_COLOR = -16777216;
 
     //Progress Dialogs
-    public static final int PROGRESS_DIALOG_ANIMATION_SPEED = 2;
+    public static final int PROGRESS_DIALOG_ANIM_SPEED = 2;
     public static final float PROGRESS_DIALOG_DIM_AMOUNT = 0.5f;
 
     //Discrete Scroll View
     public static final int DISCRETE_SCROLL_VIEW_OFF_SCREEN_ITEMS = 0;
     public static int QUOTE_CREATOR_BG_PICKER_OFF_SCREEN_ITEMS = 0;
+
+    //Activity For Result Codes
+    public static final int DEFAULT_REQUEST_CODE = 0;
+
+    //Errors
+    public static final int ERROR_INT = -1;
+
+    //Other
+    public static final int NO_HEIGHT = 0;
+    public static final int FIRST_LINE = 0;
 }

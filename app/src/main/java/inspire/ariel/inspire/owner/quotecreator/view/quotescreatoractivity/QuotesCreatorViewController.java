@@ -19,4 +19,6 @@ public interface QuotesCreatorViewController {
     Context getContext();
 
     void showErrorDialogAndGoBackToQuoteListActivity();
+
+    void sendResultToActivity(Intent intent);
 }

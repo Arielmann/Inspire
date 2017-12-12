@@ -2,9 +2,6 @@ package inspire.ariel.inspire.owner.quotecreator.presenter;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.backendless.Backendless;
@@ -58,7 +55,8 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
     private String TAG = QuoteListPresenterImpl.class.getName();
     private QuotesCreatorViewController quoteCreatorViewController;
 
-    @Inject public QuotesCreatorPresenterImpl(AppComponent component, QuotesCreatorViewController quoteCreatorViewController) {
+    @Inject
+    public QuotesCreatorPresenterImpl(AppComponent component, QuotesCreatorViewController quoteCreatorViewController) {
         component.inject(this);
         this.quoteCreatorViewController = quoteCreatorViewController;
     }
@@ -94,7 +92,8 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
      * Background Image Methods
      */
 
-    @Getter private DiscreteScrollView.OnItemChangedListener onItemChangedListener = (viewHolder, adapterPosition) -> willSetBackgroundImage(adapterPosition);
+    @Getter
+    private DiscreteScrollView.OnItemChangedListener onItemChangedListener = (viewHolder, adapterPosition) -> willSetBackgroundImage(adapterPosition);
 
     private void willSetBackgroundImage(int position) {
         model.setBgDrawableIntValue(customResourcesProvider.getBackgroundImages().get(position).getDrawableIntValue());
@@ -104,35 +103,22 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
         }
     }
 
-   @Getter private DiscreteScrollView.ScrollStateChangeListener onScrollStateChangedListener = new DiscreteScrollView.ScrollStateChangeListener() {
-        @Override
-        public void onScrollStart(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
-
-        }
-
-        @Override
-        public void onScrollEnd(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
-
-        }
-
-        @Override
-        public void onScroll(float scrollPosition, int currentPosition, int newPosition, @Nullable RecyclerView.ViewHolder currentHolder, @Nullable RecyclerView.ViewHolder newCurrent) {
-
-        }
-    };
-
     /**
      * Quote Validation
      */
 
-    @Override
-    public boolean validateQuote(String text) {
+    public boolean validateQuoteForUpload(String text) {
         if (text.replaceAll(AppStrings.REGEX_FIND_WHITESPACES, AppStrings.EMPTY_STRING).isEmpty()) {
             quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_empty_quote));
             return false;
         }
 
         if (!NetworkHelper.getInstance().hasNetworkAccess(quoteCreatorViewController.getContext())) {
+            quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_no_connection));
+            return false;
+        }
+
+        if (!networkHelper.hasNetworkAccess(quoteCreatorViewController.getContext())) {
             quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_no_connection));
             return false;
         }
@@ -146,30 +132,65 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
 
     //TODO: Protect from using the app id to post as this user from a rouge device
     @Override
-    public void postQuote(Quote quote) {
-        if (networkHelper.hasNetworkAccess(quoteCreatorViewController.getContext())) {
-            quoteCreatorViewController.showProgressDialog();
-            quotesStorage.save(quote, new AsyncCallback<Quote>() {
-                @Override
-                public void handleResponse(Quote quote) {
-                    sendPushNotification(DataManager.getInstance().getUser(), quote);
-                }
-
-                @Override
-                public void handleFault(BackendlessFault fault) {
-                    quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_quote_upload));
-                    if(fault.getCode().equals(AppStrings.BACKENDLESS_ERROR_CODE_NO_PERMISSION_ERROR)){
-                        quoteCreatorViewController.showErrorDialogAndGoBackToQuoteListActivity();
-                        return;
-                    }
-                    Log.e(TAG, "Error saving quote to server: " + fault.getDetail());
-                }
-            });
-        } else {
-            quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_quote_upload));
+    public void requestPostQuote(Quote quote) {
+        if (!validateQuoteForUpload(quote.getText())) {
+            return;
         }
+        postQuote(quote);
     }
 
+    private void postQuote(Quote quote) {
+        quoteCreatorViewController.showProgressDialog();
+        quotesStorage.save(quote, new AsyncCallback<Quote>() {
+            @Override
+            public void handleResponse(Quote quote) {
+                sendPushNotification(DataManager.getInstance().getUser(), quote);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e(TAG, "Error saving quote to server: " + fault.getDetail());
+                if (fault.getCode().equals(AppStrings.BACKENDLESS_ERROR_CODE_NO_PERMISSION_ERROR)) {
+                    quoteCreatorViewController.showErrorDialogAndGoBackToQuoteListActivity();
+                    return;
+                }
+                quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_quote_upload));
+            }
+        });
+    }
+
+    @Override
+    public void requestUpdateQuote(Quote quote, int position) {
+        if (!validateQuoteForUpload(quote.getText())) {
+            return;
+        }
+        updateQuote(quote, position);
+    }
+
+    private void updateQuote(Quote quote, int position) {
+        quoteCreatorViewController.showProgressDialog();
+        quotesStorage.save(quote, new AsyncCallback<Quote>() {
+            @Override
+            public void handleResponse(Quote quote) {
+                quoteCreatorViewController.dismissProgressDialog();
+                Intent intent = new Intent(quoteCreatorViewController.getContext(), QuotesListActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(AppStrings.KEY_QUOTE, quote);
+                intent.putExtra(AppStrings.KEY_QUOTE_POSITION, position);
+                quoteCreatorViewController.sendResultToActivity(intent);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e(TAG, "Error updating quote to server: " + fault.getDetail());
+                if (fault.getCode().equals(AppStrings.BACKENDLESS_ERROR_CODE_NO_PERMISSION_ERROR)) {
+                    quoteCreatorViewController.showErrorDialogAndGoBackToQuoteListActivity();
+                    return;
+                }
+                quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_quote_update));
+            }
+        });
+    }
 
     /**
      * NOTE for keys:
@@ -191,33 +212,31 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
         publishOptions.putHeader(AppStrings.KEY_BG_IMAGE_NAME, quote.getBgImageName());
 
         Backendless.Messaging.publish(AppStrings.VAL_OWNER_NAME, AppStrings.SPACE_STRING, publishOptions, new AsyncCallback<MessageStatus>() {
-                    @Override
-                    public void handleResponse(MessageStatus response) {
-                        Log.i(TAG, "Message sent");
-                        quoteCreatorViewController.dismissProgressDialog();
-                        quote.setCreated(new Date());
-                        Intent intent = new Intent(quoteCreatorViewController.getContext(), QuotesListActivity.class);
-                        intent.putExtra(AppStrings.KEY_QUOTE, quote);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        quoteCreatorViewController.goToOtherActivity(intent);
-                        setUserQuoteRelation(user, new ArrayList<Quote>() {{
-                            add(quote);
-                        }});
-                    }
+            @Override
+            public void handleResponse(MessageStatus response) {
+                Log.i(TAG, "Message sent");
+                quoteCreatorViewController.dismissProgressDialog();
+                quote.setCreated(new Date());
+                Intent intent = new Intent(quoteCreatorViewController.getContext(), QuotesListActivity.class);
+                intent.putExtra(AppStrings.KEY_QUOTE, quote);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                quoteCreatorViewController.goToOtherActivity(intent);
+                setUserQuoteRelation(user, new ArrayList<Quote>() {{add(quote);}});
+            }
 
-                    @Override
-                    public void handleFault(BackendlessFault fault) {
-                        Log.e(TAG, "Push notification sending error: " + fault.getDetail());
-                        quote.setCreated(new Date());
-                        quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.push_notification_send_error));
-                        Intent intent = new Intent().putExtra(AppStrings.KEY_QUOTE, quote);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        quoteCreatorViewController.goToOtherActivity(intent);
-                        setUserQuoteRelation(user, new ArrayList<Quote>() {{
-                            add(quote);
-                        }});
-                    }
-                });
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e(TAG, "Push notification sending error: " + fault.getDetail());
+                quote.setCreated(new Date());
+                quoteCreatorViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.push_notification_send_error));
+                Intent intent = new Intent().putExtra(AppStrings.KEY_QUOTE, quote);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                quoteCreatorViewController.goToOtherActivity(intent);
+                setUserQuoteRelation(user, new ArrayList<Quote>() {{
+                    add(quote);
+                }});
+            }
+        });
     }
 
     private void setUserQuoteRelation(BackendlessUser user, List<Quote> singleQuoteInsideList) {
@@ -236,28 +255,18 @@ public class QuotesCreatorPresenterImpl implements QuotesCreatorPresenter {
                 });
     }
 
-    private void removeQuoteFromServer(Quote quote) {
-        quotesStorage.remove(quote, new AsyncCallback<Long>() {
-            @Override
-            public void handleResponse(Long response) {
-                Log.i(TAG, "quote removed from server. Quote details: " + quote.toString());
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.e(TAG, "Quote removal failed for quote: " + quote.toString() + " consider manual removing in data base. Failure reason: " + fault.getDetail());
-            }
-        });
-    }
-
     /**
      * Menu Items Clicked Methods
      */
 
     @Override
     public void onQuoteFontClicked(String path) {
-        model.setFontPath(path);
+        setFontPath(path);
     }
 
+    @Override
+    public void setFontPath(String path){
+        model.setFontPath(path);
+    }
 }
 

@@ -69,6 +69,7 @@ public class InspireApplication extends Application {
             resourcesInitializer.init(this);
             FontsManager.getInstance().init(this);
             if (!Hawk.contains(AppStrings.IS_FIRST_LAUNCH)) {
+                Hawk.put(AppStrings.KEY_IS_USER_OWNER, false);
                 firstInitTasksManager = new MultipleCoDependentTaskManager(operationCallback, AppNumbers.MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH);
                 initFirstLaunch();
             } else {
@@ -84,25 +85,15 @@ public class InspireApplication extends Application {
      * if more required operations are added to this method
      */
     private void initFirstLaunch() {
-        willRegisterDeviceToBackendless();
         determineIfUserLeader();
-    }
-
-    private void willRegisterDeviceToBackendless() {
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DATE, AppNumbers.BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT);
-        List<String> channels = new ArrayList<String>() {{
-            add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);
-            add(AppStrings.VAL_OWNER_NAME);
-        }};
-        registerDeviceToBackendless(channels, calendar.getTime());
+        registerDeviceToBackendless(new ArrayList<String>(){{add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);}});
     }
 
     //TODO: Register one time only
-    private void registerDeviceToBackendless(List<String> channels, Date expirationDate) {
-        Hawk.put(AppStrings.KEY_IS_USER_OWNER, false);
-
-        Backendless.Messaging.registerDevice(AppStrings.VAL_SENDER_ID, channels, expirationDate, new AsyncCallback<Void>() {
+    private void registerDeviceToBackendless(List<String> channels) {
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DATE, AppNumbers.BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT);
+        Backendless.Messaging.registerDevice(AppStrings.VAL_SENDER_ID, channels, calendar.getTime(), new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void response) {
                 firstInitTasksManager.onSingleOperationSuccessful();
@@ -122,7 +113,9 @@ public class InspireApplication extends Application {
             public void handleResponse(DeviceRegistration response) {
                 if (response.getDeviceId().equals(AppStrings.BACKENDLESS_VAL_OWNER_DEVICE_ID)) {
                     Hawk.put(AppStrings.KEY_IS_USER_OWNER, true);
-                    firstInitTasksManager.onSingleOperationSuccessful();
+                    registerDeviceToBackendless(new ArrayList<String>(){{add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);}});
+                }else{
+                    willRegisterUserDeviceToChannels();
                 }
             }
 
@@ -134,6 +127,17 @@ public class InspireApplication extends Application {
         });
     }
 
+    private void willRegisterUserDeviceToChannels(){
+        List<String> channels = new ArrayList<String>() {{
+            add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);
+            add(AppStrings.VAL_OWNER_NAME);
+        }};
+        registerDeviceToBackendless(channels);
+    }
+
+    /**
+     * Not Thread Safe
+     */
     @RequiredArgsConstructor
     private class MultipleCoDependentTaskManager {
         @Getter final GenericOperationCallback callback;
