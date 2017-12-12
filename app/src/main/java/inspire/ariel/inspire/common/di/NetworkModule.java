@@ -12,7 +12,7 @@ import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.common.quoteslist.Quote;
+import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 
 @Module
@@ -27,18 +27,18 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    @Named(AppStrings.BACKENDLESS_TABLE_QUOTE)
-    IDataStore<Quote> provideQuotesStorage() {
-        return Backendless.Data.of(Quote.class);
+    @Named(AppStrings.BACKENDLESS_TABLE_TREATS)
+    IDataStore<Treat> provideTreatsStorage() {
+        return Backendless.Data.of(Treat.class);
     }
 
     @Singleton
     @Provides
-    DataQueryBuilder provideQuoteQueryBuilder() {
+    DataQueryBuilder provideTreatQueryBuilder() {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setSortBy(AppStrings.BACKENDLESS_SORT_CLAUSE_CREATED_DSC);
         queryBuilder.setWhereClause(AppStrings.BACKENDLESS_OWNER_ID_WHERE_CLAUSE);
-        queryBuilder.setPageSize(AppNumbers.QUOTES_QUERY_PAGE_SIZE).setOffset(AppNumbers.QUOTES_QUERY_STARTING_OFFSET);
+        queryBuilder.setPageSize(AppNumbers.TREAT_QUERY_PAGE_SIZE).setOffset(AppNumbers.TREAT_QUERY_STARTING_OFFSET);
         return queryBuilder;
     }
 

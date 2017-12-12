@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/pink_grey_bg"
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/treatListMenuFragment"
+            android:name="inspire.ariel.inspire.common.treatslist.view.optionsmenufragment.TreatsListMenuFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <com.yarolegovich.discretescrollview.DiscreteScrollView
+            android:id="@+id/treatsRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/treatListMenuFragment"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/criticalErrorTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/error_app_init"
+            android:textColor="@color/md_black_1000"
+            android:textSize="@dimen/error_msg_text_size"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/goToCreateTreatActivityBtn"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="+" />
+
+    </RelativeLayout>
+</layout>

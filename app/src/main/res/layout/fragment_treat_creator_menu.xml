@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/treatCreatorMenuFragmentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_yellow_400">
+
+        <ImageButton
+            android:id="@+id/treatTextColorImgBtn"
+            android:layout_width="@dimen/treat_prop_img_btn_width"
+            android:layout_height="@dimen/treat_prop_img_btn_height"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="@dimen/treat_prop_img_item_side_margin"
+            android:layout_marginStart="@dimen/treat_prop_img_item_side_margin"
+            android:layout_marginTop="@dimen/treat_prop_expandable_layout_top_and_bottom_margin"
+            android:layout_marginBottom="@dimen/treat_prop_expandable_layout_top_and_bottom_margin"
+            android:src="@drawable/pink_bg"/>
+
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            android:id="@+id/treatTextColorExpandingLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/treatTextColorImgBtn"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/treat_prop_img_item_side_margin"
+            android:layout_marginLeft="@dimen/treat_prop_img_item_side_margin"
+            app:ael_duration="350"
+            app:ael_interpolator="fastOutLinearIn"
+            app:ael_orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/treatTextColorRv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:transcriptMode="normal" />
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+        <ImageButton
+            android:id="@+id/treatFontImgBtn"
+            android:layout_width="@dimen/treat_prop_img_btn_width"
+            android:layout_height="@dimen/treat_prop_img_btn_height"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/treat_prop_expandable_layout_top_and_bottom_margin"
+            android:layout_marginBottom="@dimen/treat_prop_expandable_layout_top_and_bottom_margin"
+            android:src="@drawable/pink_bg" />
+
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            android:id="@+id/treatFontExpandingLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/treatFontImgBtn"
+            android:layout_centerHorizontal="true"
+            app:ael_duration="350"
+            app:ael_interpolator="fastOutLinearIn"
+            app:ael_orientation="vertical">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/treatFontRv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/treatFontExpandingLayout"
+                android:layout_alignStart="@+id/treatFontExpandingLayout"
+                android:layout_below="@+id/treatFontImgBtn"
+                android:transcriptMode="normal" />
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+        <ImageButton
+            android:id="@+id/treatTextSizeImgBtn"
+            android:layout_width="@dimen/treat_prop_img_btn_width"
+            android:layout_height="@dimen/treat_prop_img_btn_height"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/treat_prop_img_item_side_margin"
+            android:layout_marginEnd="@dimen/treat_prop_img_item_side_margin"
+            android:layout_marginTop="@dimen/treat_prop_expandable_layout_top_and_bottom_margin"
+            android:layout_marginBottom="@dimen/treat_prop_expandable_layout_top_and_bottom_margin"
+            android:src="@drawable/pink_bg" />
+
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            android:id="@+id/treatTextSizeExpandingLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/treatTextSizeImgBtn"
+            android:layout_marginRight="@dimen/treat_prop_img_item_side_margin"
+            android:layout_marginEnd="@dimen/treat_prop_img_item_side_margin"
+            app:ael_duration="350"
+            app:ael_interpolator="fastOutLinearIn"
+            app:ael_orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/treatTextSizeRv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:transcriptMode="normal" />
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+
+    </RelativeLayout>
+</layout>

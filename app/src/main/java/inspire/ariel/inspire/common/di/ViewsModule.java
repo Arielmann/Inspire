@@ -14,11 +14,11 @@ import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.common.quoteslist.view.optionsmenufragment.QuoteListMenuView;
+import inspire.ariel.inspire.common.treatslist.view.optionsmenufragment.TreatListMenuView;
 import inspire.ariel.inspire.common.utils.viewutils.ProgressDialogFactory;
-import inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteCreatorMenuFragmentInjector;
-import inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteCreatorMenuView;
-import inspire.ariel.inspire.owner.quotecreator.view.optionmenufragment.QuoteMenuComponents;
+import inspire.ariel.inspire.owner.treatcreator.view.optionmenufragment.TreatCreatorMenuFragmentInjector;
+import inspire.ariel.inspire.owner.treatcreator.view.optionmenufragment.TreatCreatorMenuView;
+import inspire.ariel.inspire.owner.treatcreator.view.optionmenufragment.TreatMenuComponents;
 import lombok.Builder;
 
 @Module
@@ -34,11 +34,11 @@ public class ViewsModule {
     @Nullable
     private ViewInjector viewsInjector;
     @Nullable
-    private QuoteCreatorMenuFragmentInjector quoteCreatorMenuFragmentInjector;
+    private TreatCreatorMenuFragmentInjector treatCreatorMenuFragmentInjector;
 
-    public ViewsModule(@Nullable ViewInjector quotesListViewInjector, @Nullable QuoteCreatorMenuFragmentInjector quoteCreatorMenuFragmentInjector) {
-        this.viewsInjector = quotesListViewInjector;
-        this.quoteCreatorMenuFragmentInjector = quoteCreatorMenuFragmentInjector;
+    public ViewsModule(@Nullable ViewInjector treatsListViewInjector, @Nullable TreatCreatorMenuFragmentInjector treatCreatorMenuFragmentInjector) {
+        this.viewsInjector = treatsListViewInjector;
+        this.treatCreatorMenuFragmentInjector = treatCreatorMenuFragmentInjector;
     }
 
     @Provides
@@ -57,7 +57,7 @@ public class ViewsModule {
     }
 
     @Provides
-    @Named(AppStrings.PAGING_QUOTES_LIST_PROGRESS_DIALOG)
+    @Named(AppStrings.PAGING_TREATS_LIST_PROGRESS_DIALOG)
     public KProgressHUD providePagingQuotesListProgressDialog() {
         return newEmptyProgressDialog();
     }
@@ -79,24 +79,24 @@ public class ViewsModule {
     }
 
     @Provides
-    public QuoteCreatorMenuView provideQuoteCreatorMenuView() {
+    public TreatCreatorMenuView provideQuoteCreatorMenuView() {
         assert viewsInjector != null;
-        return (QuoteCreatorMenuView) viewsInjector.getSupportFragmentManager().findFragmentById(R.id.quoteCreatorMenuFragment);
+        return (TreatCreatorMenuView) viewsInjector.getSupportFragmentManager().findFragmentById(R.id.treatCreatorMenuFragment);
     }
 
     @Provides
-    public QuoteListMenuView provideQuoteListMenuView() {
+    public TreatListMenuView provideQuoteListMenuView() {
         assert viewsInjector != null;
-        return (QuoteListMenuView) viewsInjector.getSupportFragmentManager().findFragmentById(R.id.quoteListMenuFragment);
+        return (TreatListMenuView) viewsInjector.getSupportFragmentManager().findFragmentById(R.id.treatListMenuFragment);
     }
 
     @Provides
-    public List<QuoteMenuComponents> provideQuoteOptionComponents() {
-        return new ArrayList<QuoteMenuComponents>() {{
-            assert quoteCreatorMenuFragmentInjector != null;
-            add(new QuoteMenuComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteFontImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteFontExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteFontRv));
-            add(new QuoteMenuComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteTextSizeRv));
-            add(new QuoteMenuComponents(quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorImgBtn, quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorExpandingLayout, quoteCreatorMenuFragmentInjector.getBinding().quoteTextColorRv));
+    public List<TreatMenuComponents> provideQuoteOptionComponents() {
+        return new ArrayList<TreatMenuComponents>() {{
+            assert treatCreatorMenuFragmentInjector != null;
+            add(new TreatMenuComponents(treatCreatorMenuFragmentInjector.getBinding().treatFontImgBtn, treatCreatorMenuFragmentInjector.getBinding().treatFontExpandingLayout, treatCreatorMenuFragmentInjector.getBinding().treatFontRv));
+            add(new TreatMenuComponents(treatCreatorMenuFragmentInjector.getBinding().treatTextSizeImgBtn, treatCreatorMenuFragmentInjector.getBinding().treatTextSizeExpandingLayout, treatCreatorMenuFragmentInjector.getBinding().treatTextSizeRv));
+            add(new TreatMenuComponents(treatCreatorMenuFragmentInjector.getBinding().treatTextColorImgBtn, treatCreatorMenuFragmentInjector.getBinding().treatTextColorExpandingLayout, treatCreatorMenuFragmentInjector.getBinding().treatTextColorRv));
         }};
     }
 

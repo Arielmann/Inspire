@@ -17,7 +17,7 @@ public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitia
 
     /*
     * This singleton model manages the data related to
-    * the creation of quotes.
+    * the creation of treats.
     */
 
     @Inject

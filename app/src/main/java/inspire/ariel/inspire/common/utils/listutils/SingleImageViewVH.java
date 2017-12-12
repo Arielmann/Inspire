@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
 
 class SingleImageViewVH extends RecyclerView.ViewHolder {
 
@@ -16,7 +15,7 @@ class SingleImageViewVH extends RecyclerView.ViewHolder {
 
     public SingleImageViewVH(View itemView) {
         super(itemView);
-        imgView = itemView.findViewById(R.id.quoteOptionItemImageView);
+        imgView = itemView.findViewById(R.id.treatOptionItemImageView);
     }
 
     public void setUIDataOnView(Drawable image) {

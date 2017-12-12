@@ -14,9 +14,9 @@ public class AppStrings {
     public static final String BACKENDLESS_VAL_APPLICATION_ID = "1C0DA01D-01F8-CC77-FF89-629A70D7CB00";
     public static final String BACKENDLESS_VAL_API_KEY = "D5242878-29DD-0377-FF39-FC1E91E64300";
     public static final String BACKENDLESS_VAL_OWNER_DEVICE_ID = "LGK4205a6e9a63";
-    public static final String BACKENDLESS_TABLE_QUOTE = "Quote";
+    public static final String BACKENDLESS_TABLE_TREATS = "Treat";
     public static final String BACKENDLESS_TABLE_USERS = "Users";
-    public static final String BACKENDLESS_TABLE_USER_COLUMN_QUOTES = "quotes";
+    public static final String BACKENDLESS_TABLE_USER_COLUMN_TREATS = "treats";
     public static final String BACKENDLESS_DEFAULT_CHANNEL = "default";
     public static final String BACKENDLESS_OWNER_ID_WHERE_CLAUSE = "ownerId = " + "'" + AppStrings.VAL_OWNER_OBJECT_ID + "'";
     public static final String BACKENDLESS_SORT_CLAUSE_CREATED_DSC = "created DESC";
@@ -27,7 +27,7 @@ public class AppStrings {
     public static final String BACKENDLESS_ERROR_CODE_NO_PERMISSION_ERROR = "1011";
 
     //Push Notifications
-    public static final String NOTIFICATION_NEW_QUOTE_CHANNEL = "quotes";
+    public static final String NOTIFICATION_NEW_TREAT_CHANNEL = "treats";
     public static final String NOTIFICATION_HEADER_TICKER_TEXT = "android-ticker-text";
     public static final String NOTIFICATION_HEADER_CONTENT_TITLE = "android-content-title";
     public static final String NOTIFICATION_HEADER_CONTENT_TEXT = "android-content-text";
@@ -60,8 +60,8 @@ public class AppStrings {
     public static final String KEY_TEXT_COLOR = "textColor";
     public static final String KEY_TEXT_SIZE = "textSize";
     public static final String KEY_BG_IMAGE_NAME = "bgImageName";
-    public static final String KEY_QUOTE = "quote";
-    public static final String KEY_QUOTE_POSITION = "quotePosition";
+    public static final String KEY_TREAT = "treat";
+    public static final String KEY_TREAT_POSITION = "treatPosition";
 
     //Device Data Fields
     public static final String KEY_DEVICE_STRING_HEIGHT = "deviceHeight";
@@ -104,12 +104,11 @@ public class AppStrings {
     public static final String LATO_REG_PATH = "fonts/Lato-Regular.ttf";
 
     //View Di Names
-    public static final String QUOTE_LIST_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "quoteListActivityDiscreteScrollViewData";
-    public static final String QUOTE_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "quoteCreatorActivityDiscreteScrollViewData";
-    public static final String QUOTES_CREATOR_PROGRESS_DIALOG = "progressHudQuotesCreator";
-    public static final String PAGING_QUOTES_LIST_PROGRESS_DIALOG = "progressHudQuotesListPaging";
-    public static final String MAIN_PROGRESS_DIALOG = "progressHudQuotesListMain";
-    public static final String LOGIN_LOGOUT_PROGRESS_DIALOG = "progressHudQuotesListLoginLogout";
+    public static final String TREAT_LIST_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "treatListActivityDiscreteScrollViewData";
+    public static final String TREAT_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "treatCreatorActivityDiscreteScrollViewData";
+    public static final String PAGING_TREATS_LIST_PROGRESS_DIALOG = "treatsListPagingProgressDialog";
+    public static final String MAIN_PROGRESS_DIALOG = "treatsListMainProgressDialog";
+    public static final String LOGIN_LOGOUT_PROGRESS_DIALOG = "treatsListLoginLogoutProgressDialog";
 
 
     //Other

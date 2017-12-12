@@ -1,8 +1,6 @@
 package inspire.ariel.inspire.common.resources;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.util.SparseArray;
 
 import java.util.List;
 

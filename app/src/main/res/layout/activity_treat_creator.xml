@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/creatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/treatCreatorMenuFragment"
+            android:name="inspire.ariel.inspire.owner.treatcreator.view.optionmenufragment.TreatCreatorMenuFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+        <!-- android:background="@android:color/transparent"-->
+        <EditText
+            android:id="@+id/treatEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/treatCreatorMenuFragment"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/blue_yellow_bg"
+            android:gravity="top|center"
+            android:hint="@string/hint_type_treat"
+            android:inputType="textMultiLine"
+            android:textColor="@color/md_black_1000"
+            android:textSize="@dimen/treat_large_text_size" />
+
+        <ImageButton
+            android:id="@+id/postImageBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_above="@id/bgPicker"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            app:srcCompat="@drawable/post_btn" />
+
+        <com.yarolegovich.discretescrollview.DiscreteScrollView
+            android:id="@+id/bgPicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bg_item_picker_background_color" />
+    </RelativeLayout>
+</layout>

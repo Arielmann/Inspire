@@ -27,8 +27,7 @@ public class AppModule {
     }
 
     @Provides
-    @Singleton
-        //Also being provided to other modules
+    @Singleton //Also being provided to other modules
     InspireApplication providesApplication() {
         return application;
     }

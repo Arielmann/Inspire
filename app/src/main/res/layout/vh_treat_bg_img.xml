@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="@dimen/bg_item_height"
+    android:layout_width="@dimen/bg_item_width">
+
+    <ImageView
+        android:id="@+id/treatOptionItemImageView"
+        android:layout_height="@dimen/bg_item_height"
+        android:layout_width="@dimen/bg_item_width"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        android:background="@color/bg_item_picker_background_color"
+        />
+</RelativeLayout>

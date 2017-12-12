@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".common.quoteslist.view.QuotesListActivity"
+            android:name=".common.treatslist.view.TreatsListActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -32,23 +32,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".owner.quotecreator.view.quotescreatoractivity.QuotesCreatorActivity"
+            android:name=".owner.treatcreator.view.treatcreatoractivity.TreatsCreatorActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
 
         <activity
-            android:name=".owner.quotecreator.view.quotescreatoractivity.QuoteEditorActivity"
+            android:name=".owner.treatcreator.view.treatcreatoractivity.TreatEditorActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
 
         <service
-            android:name=".common.quoteslist.services.PushNotificationService"
+            android:name=".common.treatslist.services.PushNotificationService"
             android:exported="false" />
 
         <receiver
-            android:name=".common.quoteslist.broadcastrecievers.PushNotificationReceiver"
+            android:name=".common.treatslist.broadcastrecievers.PushNotificationReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
@@ -58,7 +58,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".common.singlequote.SingleQuoteActivity" />
+        <activity android:name=".common.singletreat.SingleTreatActivity" />
     </application>
 
 </manifest>

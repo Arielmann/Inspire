@@ -1,0 +1,26 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".common.treatslist.view.optionsmenufragment.TreatsListMenuFragment">
+
+    <RelativeLayout
+        android:id="@+id/optionsMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/loginLogoutImageBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitXY"
+            android:clickable="false"
+            android:visibility="gone"
+            android:src="@drawable/login_icon"
+            android:layout_marginTop="@dimen/treat_list_menu_item_top_bottom_left_margin"
+            android:layout_marginBottom="@dimen/treat_list_menu_item_top_bottom_left_margin"
+            android:layout_marginLeft="@dimen/treat_list_menu_item_top_bottom_left_margin"
+            android:layout_marginStart="@dimen/treat_list_menu_item_top_bottom_left_margin"/>
+
+    </RelativeLayout>
+
+</layout>

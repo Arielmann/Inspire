@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="error_delete_quote" type="id">Delete failed. Please try again</item>
+    <item name="error_delete_treat" type="id">Delete failed. Please try again</item>
 </resources>

@@ -6,7 +6,7 @@ public class AppNumbers {
     public static final int MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH = 1;
 
     //Ids
-    public static final int NOTIFICATIONS_NE_QUOTE_ID = 1;
+    public static final int NOTIFICATIONS_NE_TREAT_ID = 1;
 
     //Backendless
     public static final int BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT = 7300000; //Long years registration to Backendless channels
@@ -33,8 +33,8 @@ public class AppNumbers {
     public static final int THREE_SPAN_COUNT = 3;
 
     //Quotes query
-    public static int QUOTES_QUERY_PAGE_SIZE = 10;
-    public static int QUOTES_QUERY_STARTING_OFFSET = 0;
+    public static int TREAT_QUERY_PAGE_SIZE = 10;
+    public static int TREAT_QUERY_STARTING_OFFSET = 0;
 
     //Color Ints
     public static int DEFAULT_TEXT_COLOR = -16777216;
@@ -45,7 +45,7 @@ public class AppNumbers {
 
     //Discrete Scroll View
     public static final int DISCRETE_SCROLL_VIEW_OFF_SCREEN_ITEMS = 0;
-    public static int QUOTE_CREATOR_BG_PICKER_OFF_SCREEN_ITEMS = 0;
+    public static int TREAT_CREATOR_BG_PICKER_OFF_SCREEN_ITEMS = 0;
 
     //Activity For Result Codes
     public static final int DEFAULT_REQUEST_CODE = 0;

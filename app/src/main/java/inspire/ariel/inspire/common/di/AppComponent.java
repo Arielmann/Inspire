@@ -4,11 +4,11 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import inspire.ariel.inspire.common.app.InspireApplication;
-import inspire.ariel.inspire.common.quoteslist.services.PushNotificationService;
-import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
+import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenterImpl;
+import inspire.ariel.inspire.common.treatslist.services.PushNotificationService;
 import inspire.ariel.inspire.common.resources.ResourcesProviderImpl;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
-import inspire.ariel.inspire.owner.quotecreator.presenter.QuotesCreatorPresenterImpl;
+import inspire.ariel.inspire.owner.treatcreator.presenter.TreatsCreatorPresenterImpl;
 
 /**
  * NOTE: For injecting within any class that wants
@@ -18,9 +18,9 @@ import inspire.ariel.inspire.owner.quotecreator.presenter.QuotesCreatorPresenter
 @Singleton
 public interface AppComponent {
 
-    void inject(QuoteListPresenterImpl quotesListPresenter);
+    void inject(TreatsListPresenterImpl treatsListPresenter);
 
-    void inject(QuotesCreatorPresenterImpl quotesCreatorPresenter);
+    void inject(TreatsCreatorPresenterImpl treatsCreatorPresenter);
 
     void inject(ResourcesProviderImpl resourceProvider);
 

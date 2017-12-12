@@ -4,12 +4,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenter;
-import inspire.ariel.inspire.common.quoteslist.presenter.QuoteListPresenterImpl;
-import inspire.ariel.inspire.common.quoteslist.view.QuotesListView;
-import inspire.ariel.inspire.owner.quotecreator.presenter.QuotesCreatorPresenter;
-import inspire.ariel.inspire.owner.quotecreator.presenter.QuotesCreatorPresenterImpl;
-import inspire.ariel.inspire.owner.quotecreator.view.quotescreatoractivity.QuotesCreatorViewController;
+import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenter;
+import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenterImpl;
+import inspire.ariel.inspire.common.treatslist.view.TreatsListView;
+import inspire.ariel.inspire.owner.treatcreator.presenter.TreatsCreatorPresenter;
+import inspire.ariel.inspire.owner.treatcreator.presenter.TreatsCreatorPresenterImpl;
+import inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity.TreatsCreatorViewController;
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -18,24 +18,24 @@ import lombok.NonNull;
 public class PresentersModule {
 
     @NonNull private AppComponent appComponent;
-    private QuotesCreatorViewController quotesCreatorViewController;
-    private QuotesListView quotesListView;
+    private TreatsCreatorViewController treatsCreatorViewController;
+    private TreatsListView treatsListView;
 
-    public PresentersModule(AppComponent appComponent, QuotesCreatorViewController quotesCreatorViewController, QuotesListView quotesListView) {
+    public PresentersModule(AppComponent appComponent, TreatsCreatorViewController treatsCreatorViewController, TreatsListView treatsListView) {
         this.appComponent = appComponent;
-        this.quotesCreatorViewController = quotesCreatorViewController;
-        this.quotesListView = quotesListView;
+        this.treatsCreatorViewController = treatsCreatorViewController;
+        this.treatsListView = treatsListView;
     }
 
     @Provides
     @Singleton
-    public QuotesCreatorPresenter provideQuoteCreatorPresenter(){
-        return new QuotesCreatorPresenterImpl(appComponent, quotesCreatorViewController);
+    public TreatsCreatorPresenter provideTreatCreatorPresenter(){
+        return new TreatsCreatorPresenterImpl(appComponent, treatsCreatorViewController);
     }
 
     @Provides
     @Singleton
-    public QuoteListPresenter provideQuoteListPresenter(){
-        return new QuoteListPresenterImpl(appComponent, quotesListView);
+    public TreatsListPresenter provideTreatListPresenter(){
+        return new TreatsListPresenterImpl(appComponent, treatsListView);
     }
 }
