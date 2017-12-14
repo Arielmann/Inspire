@@ -27,6 +27,7 @@ import javax.inject.Named;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.constants.Percentages;
@@ -60,12 +61,10 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
     @Named(AppStrings.TREAT_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
     DiscreteScrollViewData discreteScrollViewData;
 
-    @Inject
-    int treatVhLayoutInt;
+    @Inject int treatVhLayoutInt;
 
     @Inject
-    @Getter
-    TreatsCreatorPresenter presenter;
+    @Getter TreatsCreatorPresenter presenter;
 
     @Inject
     @Named(AppStrings.MAIN_PROGRESS_DIALOG)
@@ -92,7 +91,6 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
         initTreatMenuView();
         Log.d(TAG, TAG + " onCreate() method completed");
     }
-
 
     private void initTreatMenuView() {
         treatCreatorMenuView.setTreatsCreatorActivityViewProps(this);
@@ -260,7 +258,7 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
 
     @Override
     public void sendResultToActivity(Intent intent) {
-        setResult(Activity.RESULT_OK, intent);
+        setResult(AppNumbers.TREAT_EDIT_RESULT_OK, intent);
         presenter.onDestroy();
         finish();
     }

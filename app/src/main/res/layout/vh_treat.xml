@@ -13,9 +13,11 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:scaleType="fitXY"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:src="@drawable/triangle_button" />
 
-    <inspire.ariel.inspire.common.treatslist.adapter.EllipsizingTextView
+    <inspire.ariel.inspire.common.utils.viewutils.EllipsizingTextView
         android:id="@+id/treatTv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

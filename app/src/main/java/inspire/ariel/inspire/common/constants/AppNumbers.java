@@ -9,7 +9,7 @@ public class AppNumbers {
     public static final int NOTIFICATIONS_NE_TREAT_ID = 1;
 
     //Backendless
-    public static final int BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT = 7300000; //Long years registration to Backendless channels
+    public static final int BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT = 73000; //Long years registration to Backendless channels
 
     //Text Views
     public static final int ELLIPSIZING_TV_DEFAULT_LINE_HEIGHT_DIVIDER = 96;
@@ -49,6 +49,7 @@ public class AppNumbers {
 
     //Activity For Result Codes
     public static final int DEFAULT_REQUEST_CODE = 0;
+    public static int TREAT_EDIT_RESULT_OK = 250;
 
     //Errors
     public static final int ERROR_INT = -1;

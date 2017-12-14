@@ -1,6 +1,5 @@
 package inspire.ariel.inspire.common.treatslist.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.AccessToken;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.greenrobot.eventbus.EventBus;
@@ -80,6 +80,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     @Inject //Views Module
     TreatListMenuView treatListMenuView;
 
+    @Getter private static boolean isInStack;
     private final String TAG = TreatsListActivity.class.getName();
     private final Set<KProgressHUD> activeProgressDialogs = new HashSet<>();
     private ActivityTreatsListBinding binding;
@@ -91,6 +92,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isInStack = true;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_treats_list);
         inject();
         showProgressDialog(mainProgressDialog);
@@ -101,11 +103,10 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
             }
 
             @Override
-            public void onFailure(String reason) {
+            public void onFailure(String errorForUser) {
                 //TODO: if local db support available, load it instead of presenting error
-                Log.e(TAG, "Error registering device: " + reason);
                 dismissProgressDialog(mainProgressDialog);
-                showToastErrorMessage(getResources().getString(R.string.error_no_connection));
+                showToastErrorMessage(errorForUser);
                 binding.goToCreateTreatActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_login), Toast.LENGTH_SHORT).show());
             }
         });
@@ -151,7 +152,6 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     @Override
     protected void onStart() {
         EventBus.getDefault().register(this);
-        presenter.onStart();
         super.onStart();
     }
 
@@ -169,6 +169,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
 
     @Override
     public void onDestroy() {
+        isInStack = false;
         if (presenter != null) {
             presenter.onDestroy();
         }
@@ -178,9 +179,13 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == AppNumbers.TREAT_EDIT_RESULT_OK) {
             presenter.onTreatUpdated(data);
+            return;
         }
+        presenter.getFbCallbackManager().onActivityResult(requestCode, resultCode, data);
+        Log.i(TAG,"Is user logged in via focaebook? " + AccessToken.getCurrentAccessToken());
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**

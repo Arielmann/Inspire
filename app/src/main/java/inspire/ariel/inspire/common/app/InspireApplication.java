@@ -1,10 +1,10 @@
 package inspire.ariel.inspire.common.app;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.backendless.Backendless;
-import com.backendless.DeviceRegistration;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.orhanobut.hawk.Hawk;
@@ -32,6 +32,8 @@ import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
 public class InspireApplication extends Application {
 
@@ -55,6 +57,14 @@ public class InspireApplication extends Application {
                 .resourcesModule(new ResourcesModule(getResources(), getAssets()))
                 .listsModule(new ListsModule())
                 .build();
+        initFbSdk();
+    }
+
+    private void initFbSdk(){
+        FacebookSdk.setApplicationId(getResources().getString(R.string.fb_app_id));
+        String ver = FacebookSdk.getSdkVersion();
+        FacebookSdk.sdkInitialize(this);
+        AppEventsLogger.activateApp(this);
     }
 
     public AppComponent getAppComponent() {
@@ -68,8 +78,7 @@ public class InspireApplication extends Application {
             Backendless.initApp(this, AppStrings.BACKENDLESS_VAL_APPLICATION_ID, AppStrings.BACKENDLESS_VAL_API_KEY);
             resourcesInitializer.init(this);
             FontsManager.getInstance().init(this);
-            if (!Hawk.contains(AppStrings.IS_FIRST_LAUNCH)) {
-                Hawk.put(AppStrings.KEY_IS_USER_OWNER, false);
+            if (!Hawk.contains(AppStrings.KEY_IS_FIRST_LAUNCH)) {
                 firstInitTasksManager = new MultipleCoDependentTaskManager(operationCallback, AppNumbers.MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH);
                 initFirstLaunch();
             } else {
@@ -85,8 +94,11 @@ public class InspireApplication extends Application {
      * if more required operations are added to this method
      */
     private void initFirstLaunch() {
-        determineIfUserLeader();
-        registerDeviceToBackendless(new ArrayList<String>(){{add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);}});
+        List<String> channels = new ArrayList<String>() {{
+            add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);
+            add(AppStrings.VAL_OWNER_NAME);
+        }};
+        registerDeviceToBackendless(channels);
     }
 
     //TODO: Register one time only
@@ -102,37 +114,10 @@ public class InspireApplication extends Application {
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                firstInitTasksManager.onSingleOperationFailed(fault.getDetail());
+                Log.e(TAG,"Error registering device to sever. Reason: " + fault.getDetail());
+                firstInitTasksManager.onSingleOperationFailed(getResources().getString(R.string.error_app_init));
             }
         });
-    }
-
-    private void determineIfUserLeader() {
-        Backendless.Messaging.getDeviceRegistration(new AsyncCallback<DeviceRegistration>() {
-            @Override
-            public void handleResponse(DeviceRegistration response) {
-                if (response.getDeviceId().equals(AppStrings.BACKENDLESS_VAL_OWNER_DEVICE_ID)) {
-                    Hawk.put(AppStrings.KEY_IS_USER_OWNER, true);
-                    registerDeviceToBackendless(new ArrayList<String>(){{add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);}});
-                }else{
-                    willRegisterUserDeviceToChannels();
-                }
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Log.e(TAG, "An error occurred while checking if this device belongs to the leader. reason: " + fault.getDetail());
-                firstInitTasksManager.onSingleOperationFailed(fault.getDetail());
-            }
-        });
-    }
-
-    private void willRegisterUserDeviceToChannels(){
-        List<String> channels = new ArrayList<String>() {{
-            add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);
-            add(AppStrings.VAL_OWNER_NAME);
-        }};
-        registerDeviceToBackendless(channels);
     }
 
     /**
@@ -147,7 +132,7 @@ public class InspireApplication extends Application {
         protected void onSingleOperationSuccessful() {
             alreadySucceeded++;
             if (alreadySucceeded == mustSucceedOperations) {
-                Hawk.put(AppStrings.IS_FIRST_LAUNCH, false);
+                Hawk.put(AppStrings.KEY_IS_FIRST_LAUNCH, false);
                 callback.onSuccess();
             }
         }

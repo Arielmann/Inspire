@@ -1,17 +1,23 @@
 package inspire.ariel.inspire.common.treatslist.view.optionsmenufragment;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
@@ -39,8 +45,31 @@ public class TreatsListMenuFragment extends Fragment implements TreatListMenuVie
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_treat_list_menu, container, false);
         binding.loginLogoutImageBtn.setOnClickListener(onLoginClicked);
+        binding.fbLoginBtn.setFragment(this);
         return binding.getRoot();
     }
+
+    /**
+     *Facebook
+     */
+    @Getter private FacebookCallback<LoginResult> onUserLoggedWithFacebookCallback = new FacebookCallback<LoginResult>() {
+
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            Log.i(TAG,"Successfully logged in with facebook account");
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+            Log.e(TAG,"Error logging in with facebook account. Reason: " + error);
+            treatsListView.onServerOperationFailed(getResources().getString(R.string.generic_error_login));
+        }
+    };
 
     @Getter private View.OnClickListener onLoginClicked = new View.OnClickListener() {
         @Override
@@ -77,5 +106,6 @@ public class TreatsListMenuFragment extends Fragment implements TreatListMenuVie
     @Override
     public void init(TreatsListView treatsListView) {
         this.treatsListView = treatsListView;
+        binding.fbLoginBtn.registerCallback(treatsListView.getPresenter().getFbCallbackManager(), onUserLoggedWithFacebookCallback);
     }
 }

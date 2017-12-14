@@ -13,7 +13,7 @@ import com.backendless.IDataStore;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
-import com.orhanobut.hawk.Hawk;
+import com.facebook.CallbackManager;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import java.util.HashMap;
@@ -28,11 +28,11 @@ import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
+import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.adapter.TreatListAdapterPresenter;
 import inspire.ariel.inspire.common.treatslist.model.TreatListModel;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListView;
-import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 import inspire.ariel.inspire.common.utils.imageutils.ImageUtils;
 import lombok.Getter;
@@ -40,7 +40,6 @@ import lombok.Getter;
 public class TreatsListPresenterImpl implements TreatsListPresenter {
 
     private static final String TAG = TreatsListPresenterImpl.class.getName();
-
 
     @Inject
     @Named(AppStrings.BACKENDLESS_TABLE_TREATS)
@@ -57,6 +56,9 @@ public class TreatsListPresenterImpl implements TreatsListPresenter {
 
     @Inject
     NetworkHelper networkHelper;
+
+    @Inject
+    @Getter CallbackManager fbCallbackManager;
 
     private TreatListAdapterPresenter treatListAdapterPresenter;
     private TreatsListView treatsListView;
@@ -82,6 +84,7 @@ public class TreatsListPresenterImpl implements TreatsListPresenter {
         initErrorsMap();
         fetchInitialTreats(initialTreatsDownloadCallback);
         fetchDataSetSize();
+        checkIfUserLoggedIn();
     }
 
     private void initErrorsMap() {
@@ -100,20 +103,14 @@ public class TreatsListPresenterImpl implements TreatsListPresenter {
 
     @Override
     public void OnNewIntent(Intent intent) {
-        if (intent.getParcelableExtra(AppStrings.KEY_TREAT) != null) {
+        if (intent.getParcelableExtra(AppStrings.KEY_TREAT) != null) { //If owner created a new quote
             Treat newTreat = intent.getParcelableExtra(AppStrings.KEY_TREAT);
             initTreatImage(newTreat);
             model.getTreats().add(0, newTreat);
             treatListAdapterPresenter.notifyDataSetChanged();
             treatsListView.scrollTreatListToTop();
+            allServerTreatsListSize++;
             DataManager.getInstance().setMessagesSize(0);
-        }
-    }
-
-    @Override
-    public void onStart() {
-        if (Hawk.get(AppStrings.KEY_IS_USER_OWNER)) {
-            checkIfUserLoggedIn();
         }
     }
 
@@ -193,12 +190,13 @@ public class TreatsListPresenterImpl implements TreatsListPresenter {
     }
 
     @Override
-    public void deleteTreat(int treatPosition){
+    public void deleteTreat(int treatPosition) {
         treatsStorage.remove(model.getTreats().get(treatPosition), new AsyncCallback<Long>() {
             @Override
             public void handleResponse(Long response) {
                 treatsListView.dismissProgressDialog(treatsListView.getMainProgressDialog());
                 model.getTreats().remove(treatPosition);
+                allServerTreatsListSize--;
                 treatListAdapterPresenter.notifyDataSetChanged();
             }
 
@@ -211,6 +209,7 @@ public class TreatsListPresenterImpl implements TreatsListPresenter {
     }
 
     private void fetchDataSetSize() {
+
         treatsStorage.getObjectCount(new AsyncCallback<Integer>() {
 
             @Override
@@ -312,7 +311,7 @@ public class TreatsListPresenterImpl implements TreatsListPresenter {
         }
     }
 
-    private void initTreatImage(Treat treat){
+    private void initTreatImage(Treat treat) {
         Uri uri = Uri.parse(AppStrings.PREFIX_DRAWABLE_PATH + treat.getBgImageName()); //TODO: try catch for failures
         treat.setImage(ImageUtils.createDrawableFromUri(uri, treatsListView.getContentResolver(), customResourcesProvider.getResources()));
     }
@@ -332,7 +331,7 @@ public class TreatsListPresenterImpl implements TreatsListPresenter {
         public void onScrollEnd(@NonNull RecyclerView.ViewHolder currentItemHolder, int adapterPosition) {
             if (adapterPosition == (model.getTreats().size() - 1) && networkHelper.hasNetworkAccess(treatsListView.getContext())) {
                 try {
-                    if(model.getTreats().size() < allServerTreatsListSize) {
+                    if (model.getTreats().size() < allServerTreatsListSize) {
                         fetchPagingTreats(pagingCallback);
                     }
                 } catch (Exception e) {

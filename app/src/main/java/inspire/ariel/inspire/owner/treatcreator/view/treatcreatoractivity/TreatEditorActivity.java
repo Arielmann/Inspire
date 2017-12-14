@@ -1,5 +1,6 @@
 package inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -37,5 +38,21 @@ public class TreatEditorActivity extends TreatsCreatorActivity {
         FontsManager.getInstance().setFontOnTV(oldTreat.getFontPath(), super.getBinding().treatEditText);
         presenter.setFontPath(oldTreat.getFontPath());
         getBinding().bgPicker.scrollToPosition(presenter.getImagePositionFromImageName(oldTreat.getBgImageName()));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(AppStrings.SAVED_STATE_OLD_TREAT, oldTreat);
+        outState.putInt(AppStrings.SAVED_STATE_OLD_TREAT_POSITION, oldTreatPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null){
+            oldTreat = savedInstanceState.getParcelable(AppStrings.SAVED_STATE_OLD_TREAT);
+            oldTreatPosition = savedInstanceState.getInt(AppStrings.SAVED_STATE_OLD_TREAT_POSITION);
+        }
     }
 }

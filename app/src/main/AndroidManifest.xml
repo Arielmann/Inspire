@@ -12,6 +12,10 @@
         android:name="inspire.ariel.inspire.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
+    <meta-data
+        android:name="com.facebook.sdk.ApplicationId"
+        android:value="@string/fb_app_id" />
+
     <application
         android:name=".common.app.InspireApplication"
         android:allowBackup="true"
@@ -36,12 +40,27 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-
         <activity
             android:name=".owner.treatcreator.view.treatcreatoractivity.TreatEditorActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity
+            android:name=".common.facebookactivity.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".common.customtabactivity.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".common.treatslist.services.PushNotificationService"
@@ -59,6 +78,7 @@
         </receiver>
 
         <activity android:name=".common.singletreat.SingleTreatActivity" />
+
     </application>
 
 </manifest>

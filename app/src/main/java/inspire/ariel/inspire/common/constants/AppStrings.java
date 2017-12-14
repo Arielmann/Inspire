@@ -36,6 +36,19 @@ public class AppStrings {
     public static final String REGEX_FIND_WHITESPACES = "\\s";
     public static final java.lang.String REGEX_ELIPSIZING_TEXT_VIEW_DEFAULT_END_PUNCTUATION = "[\\.,\u2026;\\:\\s]*$";
 
+    //OnSavedInstanceState Keys
+    public static final String SAVED_STATE_SUPER_STATE = "superState";
+    public static final String SAVED_STATE_ELLIPSIZE_LISTENERS = "ellipsizeListeners";
+    public static final String SAVED_STATE_IS_ELLIPSIZED = "isEllipsized";
+    public static final String SAVED_STATE_IS_STALE = "isStale";
+    public static final String SAVED_STATE_PROGRAMMATIC_CHANGE = "programmaticChange";
+    public static final String SAVED_STATE_FULL_TEXT = "fullText";
+    public static final String SAVED_STATE_MAX_LINES = "maxLines";
+    public static final String SAVED_STATE_LINE_SPACING_MULTIPLIER = "lineSpacingMultiplier";
+    public static final String SAVED_STATE_LINE_ADDITIONAL_VERTICAL_PADDING = "lineAdditionalVerticalPadding";
+    public static final String SAVED_STATE_OLD_TREAT = "oldTreat";
+    public static final String SAVED_STATE_OLD_TREAT_POSITION = "oldTreatPosition";
+
     //Prefixes
     public static String PREFIX_DRAWABLE_PATH = "android.resource://" + BuildConfig.APPLICATION_ID + "/drawable/";
 
@@ -48,8 +61,7 @@ public class AppStrings {
     public static final String VAL_OWNER_OBJECT_ID = "B2FD1088-D093-1C3E-FFFE-341893C28000";
 
     //Data Fields
-    public static final String KEY_IS_USER_OWNER = "isUserOwner";
-    public static final String IS_FIRST_LAUNCH = "isFirstLaunch";
+    public static final String KEY_IS_FIRST_LAUNCH = "isFirstLaunch";
 
     public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_OWNER_ID = "ownerId";
@@ -62,10 +74,6 @@ public class AppStrings {
     public static final String KEY_BG_IMAGE_NAME = "bgImageName";
     public static final String KEY_TREAT = "treat";
     public static final String KEY_TREAT_POSITION = "treatPosition";
-
-    //Device Data Fields
-    public static final String KEY_DEVICE_STRING_HEIGHT = "deviceHeight";
-    public static final String KEY_DEVICE_STRING_WIDTH = "deviceWidth";
 
     //String Helpers
     public static final String EMPTY_STRING = "";
@@ -110,9 +118,6 @@ public class AppStrings {
     public static final String MAIN_PROGRESS_DIALOG = "treatsListMainProgressDialog";
     public static final String LOGIN_LOGOUT_PROGRESS_DIALOG = "treatsListLoginLogoutProgressDialog";
 
-
-    //Other
-    public static final String ACCOUNT_INFO = "Account Info";
 }
 
 

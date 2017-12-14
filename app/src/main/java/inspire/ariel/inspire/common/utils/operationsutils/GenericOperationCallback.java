@@ -4,5 +4,5 @@ public interface GenericOperationCallback {
 
     void onSuccess();
 
-    void onFailure(String reason);
+    void onFailure(String errorForUser);
 }

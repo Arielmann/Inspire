@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.common.treatslist.adapter;
+package inspire.ariel.inspire.common.utils.viewutils;
 
 /*
  * Copyright (C) 2011 Micah Hainline
@@ -17,25 +17,27 @@ package inspire.ariel.inspire.common.treatslist.adapter;
  * limitations under the License.
  */
 
-        import java.util.ArrayList;
-        import java.util.List;
-        import java.util.regex.Matcher;
-        import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-        import android.annotation.SuppressLint;
-        import android.content.Context;
-        import android.content.res.TypedArray;
-        import android.graphics.Canvas;
-        import android.text.Layout;
-        import android.text.Layout.Alignment;
-        import android.text.Spannable;
-        import android.text.SpannableStringBuilder;
-        import android.text.StaticLayout;
-        import android.text.TextUtils.TruncateAt;
-        import android.util.AttributeSet;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.Layout;
+import android.text.Layout.Alignment;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.StaticLayout;
+import android.text.TextUtils.TruncateAt;
+import android.util.AttributeSet;
 
-        import inspire.ariel.inspire.common.constants.AppNumbers;
-        import inspire.ariel.inspire.common.constants.AppStrings;
+import inspire.ariel.inspire.common.constants.AppNumbers;
+import inspire.ariel.inspire.common.constants.AppStrings;
 
 public class EllipsizingTextView extends android.support.v7.widget.AppCompatTextView {
     private static final String ELLIPSIS = "\u2026";
@@ -45,7 +47,7 @@ public class EllipsizingTextView extends android.support.v7.widget.AppCompatText
         void ellipsizeStateChanged(boolean ellipsized);
     }
 
-    private final List<EllipsizeListener> ellipsizeListeners = new ArrayList<EllipsizeListener>();
+    private final List<EllipsizeListener> ellipsizeListeners = new ArrayList<>();
     private boolean isEllipsized;
     private boolean isStale;
     private boolean programmaticChange;
@@ -70,7 +72,7 @@ public class EllipsizingTextView extends android.support.v7.widget.AppCompatText
     public EllipsizingTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         super.setEllipsize(null);
-        TypedArray a = context.obtainStyledAttributes(attrs, new int[] { android.R.attr.maxLines });
+        TypedArray a = context.obtainStyledAttributes(attrs, new int[]{android.R.attr.maxLines});
         setMaxLines(a.getInt(0, Integer.MAX_VALUE));
         a.recycle();
         setEndPunctuationPattern(DEFAULT_END_PUNCTUATION);
@@ -198,7 +200,6 @@ public class EllipsizingTextView extends android.support.v7.widget.AppCompatText
     }
 
 
-
     /**
      * Get how many lines of text we are allowed to display.
      */
@@ -222,7 +223,7 @@ public class EllipsizingTextView extends android.support.v7.widget.AppCompatText
         Layout layout = createWorkingLayout("");
         int height = getHeight() - getPaddingTop() - getPaddingBottom();
         int lineHeight = layout.getLineBottom(AppNumbers.FIRST_LINE);
-        if(lineHeight == AppNumbers.NO_HEIGHT){
+        if (lineHeight == AppNumbers.NO_HEIGHT) {
             return height / AppNumbers.ELLIPSIZING_TV_DEFAULT_LINE_HEIGHT_DIVIDER;
         }
         return height / lineHeight;
@@ -240,3 +241,39 @@ public class EllipsizingTextView extends android.support.v7.widget.AppCompatText
         // Ellipsize settings are not respected
     }
 }
+
+
+/**
+ * OnSavedInstanceState (listeners are not saved)
+ */
+   /* @Override
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AppStrings.SAVED_STATE_SUPER_STATE, super.onSaveInstanceState());
+        bundle.putBoolean(AppStrings.SAVED_STATE_IS_ELLIPSIZED, isEllipsized);
+        bundle.putBoolean(AppStrings.SAVED_STATE_IS_STALE, isStale);
+        bundle.putBoolean(AppStrings.SAVED_STATE_PROGRAMMATIC_CHANGE, programmaticChange);
+        bundle.putCharSequence(AppStrings.SAVED_STATE_FULL_TEXT, fullText);
+        bundle.putInt(AppStrings.SAVED_STATE_MAX_LINES, maxLines);
+        bundle.putFloat(AppStrings.SAVED_STATE_LINE_SPACING_MULTIPLIER, lineSpacingMultiplier);
+        bundle.putFloat(AppStrings.SAVED_STATE_LINE_ADDITIONAL_VERTICAL_PADDING, lineAdditionalVerticalPadding);
+        return bundle;
+    }
+
+    //Todo: Listeners are not being saved. Check if bug is created
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) { // implicit null check
+            Bundle bundle = (Bundle) state;
+            this.isEllipsized = bundle.getBoolean(AppStrings.SAVED_STATE_IS_ELLIPSIZED);
+            this.isStale = bundle.getBoolean(AppStrings.SAVED_STATE_IS_STALE);
+            this.programmaticChange = bundle.getBoolean(AppStrings.SAVED_STATE_PROGRAMMATIC_CHANGE);
+            this.fullText = bundle.getCharSequence(AppStrings.SAVED_STATE_FULL_TEXT);
+            this.maxLines = bundle.getInt(AppStrings.SAVED_STATE_MAX_LINES);
+            this.lineSpacingMultiplier = bundle.getInt(AppStrings.SAVED_STATE_LINE_SPACING_MULTIPLIER);
+            this.lineAdditionalVerticalPadding = bundle.getInt(AppStrings.SAVED_STATE_LINE_ADDITIONAL_VERTICAL_PADDING);
+            state = bundle.getParcelable("superState");
+        }
+        super.onRestoreInstanceState(state);
+    }
+*/

@@ -46,6 +46,9 @@ dependencies {
     //Backendless
     compile 'com.backendless:backendless:4.0.3'
 
+    //Facebook
+    compile 'com.facebook.android:facebook-android-sdk:4.28.0'
+
     //Lists
     compile 'com.yarolegovich:discrete-scrollview:1.3.2'
 

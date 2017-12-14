@@ -51,6 +51,7 @@ public class PushNotificationService extends BackendlessPushService {
             notificationContentText = DataManager.getInstance().getMessagesSize() + AppStrings.SPACE_STRING + getResources().getString(R.string.push_notification_multiple_prefix) + AppStrings.SPACE_STRING + AppStrings.VAL_OWNER_NAME;
         }
 
+        //Todo: find a way to deliver that new treat if the activity is already opened.
         Notification newQuoteNotification = createNewQuoteNotification(notificationContentText, newTreat);
 
         if (notificationManager != null) {
@@ -104,7 +105,9 @@ public class PushNotificationService extends BackendlessPushService {
     private Notification createNewQuoteNotification(String contentText, Treat newTreat) {
         Intent intent = new Intent(this, TreatsListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(AppStrings.KEY_TREAT, newTreat);
+        if(TreatsListActivity.isInStack()) { //Server calls doesn't happen if activity is in stack so put the treat for it
+            intent.putExtra(AppStrings.KEY_TREAT, newTreat);
+        }
         PendingIntent treatListPendingIntent = PendingIntent.getActivity(this, AppNumbers.DEFAULT_REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT);
         return new NotificationCompat.Builder(this, AppStrings.NOTIFICATION_NEW_TREAT_CHANNEL)
                 .setSmallIcon(R.drawable.thumb_up_white_18dp)
@@ -118,17 +121,19 @@ public class PushNotificationService extends BackendlessPushService {
 
     @Override
     public void onError(Context context, String message) {
-        Toast.makeText(context, getResources().getString(R.string.error_app_init), Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "Error registering device: Reason: " + message);
+        Toast.makeText(context, getResources().getString(R.string.error_app_init), Toast.LENGTH_LONG).show();
     }
 
 
     @Override
     public void onRegistered(Context context, String registrationId) {
-        //Toast.makeText( context, "device registered" + registrationId, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "Device registered to channel. Device Id:" + registrationId);
     }
 
     @Override
     public void onUnregistered(Context context, Boolean unregistered) {
+        Log.i(TAG, "Has device unregistered from channel successfully? " + unregistered);
         //Toast.makeText(context, "device unregistered", Toast.LENGTH_SHORT).show();
     }
 }

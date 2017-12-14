@@ -4,6 +4,7 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.IDataStore;
 import com.backendless.persistence.DataQueryBuilder;
+import com.facebook.CallbackManager;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -46,5 +47,11 @@ public class NetworkModule {
     @Singleton
     NetworkHelper provideNetworkHelper() {
         return NetworkHelper.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    CallbackManager provideFbCallbackManager() {
+        return CallbackManager.Factory.create();
     }
 }

@@ -25,7 +25,7 @@
             android:layout_below="@id/treatCreatorMenuFragment"
             android:layout_centerHorizontal="true"
             android:background="@drawable/blue_yellow_bg"
-            android:gravity="top|center"
+            android:gravity="center"
             android:hint="@string/hint_type_treat"
             android:inputType="textMultiLine"
             android:textColor="@color/md_black_1000"
