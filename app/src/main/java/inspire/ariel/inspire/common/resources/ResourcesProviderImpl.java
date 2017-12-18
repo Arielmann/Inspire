@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppStrings;
@@ -13,6 +14,7 @@ import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
 
+@Singleton
 public class ResourcesProviderImpl implements ResourcesProvider, ResourcesInitializer {
 
     /*

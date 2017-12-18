@@ -30,6 +30,7 @@ import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
+import inspire.ariel.inspire.dbmanager.RealmManager;
 import inspire.ariel.inspire.owner.treatcreator.model.TreatCreatorModel;
 import inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity.TreatsCreatorViewController;
 import lombok.Getter;
@@ -145,6 +146,7 @@ public class TreatsCreatorPresenterImpl implements TreatsCreatorPresenter {
         treatsStorage.save(treat, new AsyncCallback<Treat>() {
             @Override
             public void handleResponse(Treat treat) {
+                RealmManager.getInstance().saveTreat(treat);
                 sendPushNotification(DataManager.getInstance().getUser(), treat);
             }
 
@@ -247,7 +249,7 @@ public class TreatsCreatorPresenterImpl implements TreatsCreatorPresenter {
                 new AsyncCallback<Integer>() {
                     @Override
                     public void handleResponse(Integer response) {
-                        Log.i(TAG, "Relation has been set with treat: " + singleTreatInsideList.get(0).getText() + " and user: " + String.valueOf(user.getProperty(AppStrings.KEY_NAME)));
+                        Log.i(TAG, "Relation has been set startOperations treat: " + singleTreatInsideList.get(0).getText() + " and user: " + String.valueOf(user.getProperty(AppStrings.KEY_NAME)));
                     }
 
                     @Override
@@ -277,7 +279,7 @@ public class TreatsCreatorPresenterImpl implements TreatsCreatorPresenter {
         //TODO: Consult if changing to different data structure will reduce complexity
         int index = 0;
         for (InspireBackgroundImage inspireBackgroundImage : customResourcesProvider.getBackgroundImages()) {
-            if (bgImageName.equals(inspireBackgroundImage.getName())) {
+            if (bgImageName.equalsIgnoreCase(inspireBackgroundImage.getName())) {
                 return index;
             }
             index++;

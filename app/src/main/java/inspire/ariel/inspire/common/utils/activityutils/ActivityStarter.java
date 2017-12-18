@@ -23,7 +23,7 @@ public class ActivityStarter implements View.OnClickListener {
         this.starter = new Intent(context, screen);
     }
 
-    //Go to screen on button click with progress dialog
+    //Go to screen on button click startOperations progress dialog
     private ActivityStarter(Activity activity, Class screen, String dialogMessage) {
         this.context = activity;
         this.starter = new Intent(activity, screen);

@@ -1,23 +1,24 @@
+/*
 package inspire.ariel.inspire.common.treatslist.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.databinding.VhTreatBinding;
 import inspire.ariel.inspire.databinding.VhTreatOptionsBinding;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
 import lombok.Setter;
 
-public class TreatListAdapter extends RecyclerView.Adapter<TreatVH> implements TreatListAdapterPresenter {
+public class TreatListRealmAdapter extends RealmRecyclerViewAdapter<Treat, TreatVH> implements TreatListRealmAdapterPresenter {
 
-    @Setter private List<Treat> treats;
+    @Setter private RealmResults<Treat> treats;
 
-    public TreatListAdapter() {
-        treats = new ArrayList<>();
+    public TreatListRealmAdapter(RealmResults<Treat> treats) {
+        super(null, true, true);
+        this.treats = treats;
     }
 
     @Override
@@ -38,3 +39,4 @@ public class TreatListAdapter extends RecyclerView.Adapter<TreatVH> implements T
         return treats.size();
     }
 }
+*/

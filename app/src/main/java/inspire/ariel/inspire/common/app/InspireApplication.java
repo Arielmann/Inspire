@@ -1,12 +1,13 @@
 package inspire.ariel.inspire.common.app;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
@@ -22,18 +23,16 @@ import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerAppComponent;
-import inspire.ariel.inspire.common.di.ListsModule;
 import inspire.ariel.inspire.common.di.ModelsModule;
 import inspire.ariel.inspire.common.di.NetworkModule;
+import inspire.ariel.inspire.common.di.RecyclerViewsModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.resources.ResourcesInitializer;
-import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
+import io.realm.Realm;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 public class InspireApplication extends Application {
 
@@ -53,43 +52,39 @@ public class InspireApplication extends Application {
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .networkModule(new NetworkModule())
-                .modelsModule(new ModelsModule())
+                .modelsModule(new ModelsModule(this))
                 .resourcesModule(new ResourcesModule(getResources(), getAssets()))
-                .listsModule(new ListsModule())
+                .recyclerViewsModule(new RecyclerViewsModule())
                 .build();
-        initFbSdk();
-    }
-
-    private void initFbSdk(){
-        FacebookSdk.setApplicationId(getResources().getString(R.string.fb_app_id));
-        String ver = FacebookSdk.getSdkVersion();
-        FacebookSdk.sdkInitialize(this);
-        AppEventsLogger.activateApp(this);
+        initApp();
     }
 
     public AppComponent getAppComponent() {
         return appComponent;
     }
 
-    public void initApp(GenericOperationCallback operationCallback) {
-        if (NetworkHelper.getInstance().hasNetworkAccess(this)) {
-            this.getAppComponent().inject(this);
-            Hawk.init(this).build();
-            Backendless.initApp(this, AppStrings.BACKENDLESS_VAL_APPLICATION_ID, AppStrings.BACKENDLESS_VAL_API_KEY);
-            resourcesInitializer.init(this);
-            FontsManager.getInstance().init(this);
-            if (!Hawk.contains(AppStrings.KEY_IS_FIRST_LAUNCH)) {
-                firstInitTasksManager = new MultipleCoDependentTaskManager(operationCallback, AppNumbers.MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH);
-                initFirstLaunch();
-            } else {
-                operationCallback.onSuccess();
-            }
+    public void initAppForFirstTimeIfNeeded(GenericOperationCallback operationCallback) {
+        if (!Hawk.contains(AppStrings.KEY_IS_FIRST_LAUNCH)) {
+            firstInitTasksManager = new MultipleCoDependentTaskManager(operationCallback, AppNumbers.MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH);
+            initFirstLaunch();
         } else {
-            operationCallback.onFailure(getResources().getString(R.string.error_no_connection));
+            operationCallback.onSuccess();
         }
     }
 
-    /**NOTE:
+    private void initApp() {
+        Realm.init(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        this.getAppComponent().inject(this);
+        Hawk.init(this).build();
+        Backendless.initApp(this, AppStrings.BACKENDLESS_VAL_APPLICATION_ID, AppStrings.BACKENDLESS_VAL_API_KEY);
+        resourcesInitializer.init(this);
+        FontsManager.getInstance().init(this);
+    }
+
+    /**
+     * NOTE:
      * Don't forget to increase firstInitTasksManager's "mustSucceedOperations"
      * if more required operations are added to this method
      */
@@ -114,7 +109,7 @@ public class InspireApplication extends Application {
 
             @Override
             public void handleFault(BackendlessFault fault) {
-                Log.e(TAG,"Error registering device to sever. Reason: " + fault.getDetail());
+                Log.e(TAG, "Error registering device to sever. Reason: " + fault.getDetail());
                 firstInitTasksManager.onSingleOperationFailed(getResources().getString(R.string.error_app_init));
             }
         });
@@ -125,7 +120,8 @@ public class InspireApplication extends Application {
      */
     @RequiredArgsConstructor
     private class MultipleCoDependentTaskManager {
-        @Getter final GenericOperationCallback callback;
+        @Getter
+        final GenericOperationCallback callback;
         private final int mustSucceedOperations;
         private int alreadySucceeded;
 

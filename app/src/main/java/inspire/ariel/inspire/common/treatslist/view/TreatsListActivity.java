@@ -4,16 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.AccessToken;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,13 +30,15 @@ import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
+import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerViewComponent;
-import inspire.ariel.inspire.common.di.ListsModule;
 import inspire.ariel.inspire.common.di.PresentersModule;
+import inspire.ariel.inspire.common.di.RecyclerViewsModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.di.ViewInjector;
 import inspire.ariel.inspire.common.di.ViewsModule;
+import inspire.ariel.inspire.common.loginactivity.view.LoginActivity;
 import inspire.ariel.inspire.common.treatslist.adapter.TreatListAdapter;
 import inspire.ariel.inspire.common.treatslist.events.OnTreatDeleteClickedEvent;
 import inspire.ariel.inspire.common.treatslist.events.OnTreatUpdatedEvent;
@@ -80,7 +83,8 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     @Inject //Views Module
     TreatListMenuView treatListMenuView;
 
-    @Getter private static boolean isInStack;
+    public static boolean isInForeground;
+    public static boolean isInStack;
     private final String TAG = TreatsListActivity.class.getName();
     private final Set<KProgressHUD> activeProgressDialogs = new HashSet<>();
     private ActivityTreatsListBinding binding;
@@ -96,7 +100,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
         binding = DataBindingUtil.setContentView(this, R.layout.activity_treats_list);
         inject();
         showProgressDialog(mainProgressDialog);
-        ((InspireApplication) getApplication()).initApp(new GenericOperationCallback() {
+        ((InspireApplication) getApplication()).initAppForFirstTimeIfNeeded(new GenericOperationCallback() {
             @Override
             public void onSuccess() {
                 initActivity();
@@ -104,9 +108,8 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
 
             @Override
             public void onFailure(String errorForUser) {
-                //TODO: if local db support available, load it instead of presenting error
                 dismissProgressDialog(mainProgressDialog);
-                showToastErrorMessage(errorForUser);
+                showSnackbarMessage(errorForUser);
                 binding.goToCreateTreatActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_login), Toast.LENGTH_SHORT).show());
             }
         });
@@ -118,7 +121,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
                 .resourcesModule(new ResourcesModule(getResources(), getAssets()))
                 .presentersModule(PresentersModule.builder().appComponent(((InspireApplication) getApplication()).getAppComponent()).treatsListView(this).build())
                 .viewsModule(ViewsModule.builder().viewsInjector(this).build())
-                .listsModule(new ListsModule())
+                .recyclerViewsModule(new RecyclerViewsModule())
                 .build()
                 .inject(this);
     }
@@ -126,7 +129,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     private void initActivity() {
         treatListMenuView.init(this);
         //TODO: You can't know between treats download or login check - who will finish first. Therefore, dismiss progress dialog only after both finish
-        presenter.init(adapter);
+        presenter.startOperations(adapter); //presenter's model already available so no crush
         initTreatsRecyclerView();
         binding.goToCreateTreatActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(TreatsListActivity.this, TreatsCreatorActivity.class));
         Log.d(TAG, TAG + " onCreate() method completed");
@@ -151,6 +154,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
 
     @Override
     protected void onStart() {
+        isInForeground = true;
         EventBus.getDefault().register(this);
         super.onStart();
     }
@@ -163,28 +167,26 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
 
     @Override
     protected void onStop() {
+        isInForeground = false;
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        isInStack = false;
         if (presenter != null) {
             presenter.onDestroy();
         }
+        isInStack = false;
         super.onDestroy();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == AppNumbers.TREAT_EDIT_RESULT_OK) {
             presenter.onTreatUpdated(data);
             return;
         }
-        presenter.getFbCallbackManager().onActivityResult(requestCode, resultCode, data);
-        Log.i(TAG,"Is user logged in via focaebook? " + AccessToken.getCurrentAccessToken());
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -218,11 +220,15 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     }
 
     @Override
+    public void showToastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void onUserLoggedOut() {
         dismissProgressDialog(loginLogoutProgressDialog);
+        ActivityStarter.startActivity(this, LoginActivity.class);
         binding.goToCreateTreatActivityBtn.setVisibility(View.GONE);
-        treatListMenuView.resetLoginLogoutBtn(getResources().getDrawable(R.drawable.login_icon), treatListMenuView.getOnLoginClicked());
-        binding.goToCreateTreatActivityBtn.setOnClickListener(view -> Toast.makeText(view.getContext(), getResources().getString(R.string.error_please_login), Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -255,15 +261,19 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
      * Show Messages
      */
 
-    @Override
-    public void showToastErrorMessage(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+    public void showSnackbarMessage(CharSequence error) {
+        Snackbar snackBar = Snackbar.make(binding.treatListLayout, error, AppTimeMillis.ALMOST_FOREVER);
+        View errorView = snackBar.getView();
+        TextView errorTv = errorView.findViewById(android.support.design.R.id.snackbar_text);
+        errorTv.setMaxLines(AppNumbers.SNACK_BAR_MAX_LINES);
+        snackBar.setAction(R.string.ok, view -> snackBar.dismiss());
+        snackBar.show();
     }
 
     @Override
-    public void onServerOperationFailed(String error) {
+    public void onServerOperationFailed(CharSequence error) {
         dismissAllProgressDialogs();
-        showToastErrorMessage(error);
+        showSnackbarMessage(error);
     }
 
     @Override

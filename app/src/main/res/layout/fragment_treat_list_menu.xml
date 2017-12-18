@@ -14,24 +14,11 @@
             android:layout_height="50dp"
             android:scaleType="fitXY"
             android:clickable="false"
-            android:src="@drawable/login_icon"
-            android:visibility="gone"
+            android:src="@drawable/logout_icon"
             android:layout_marginTop="@dimen/treat_list_menu_item_top_bottom_left_margin"
             android:layout_marginBottom="@dimen/treat_list_menu_item_top_bottom_left_margin"
             android:layout_marginLeft="@dimen/treat_list_menu_item_top_bottom_left_margin"
             android:layout_marginStart="@dimen/treat_list_menu_item_top_bottom_left_margin"/>
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/fbLoginBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_toRightOf="@id/loginLogoutImageBtn"
-            android:layout_toEndOf="@id/loginLogoutImageBtn"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            />
-
 
     </RelativeLayout>
 

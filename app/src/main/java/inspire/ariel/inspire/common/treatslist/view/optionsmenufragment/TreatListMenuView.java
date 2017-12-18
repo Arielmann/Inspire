@@ -11,8 +11,6 @@ public interface TreatListMenuView {
 
     void resetLoginLogoutBtn(Drawable imgDrawable, View.OnClickListener newListener);
 
-    View.OnClickListener getOnLoginClicked();
-
     View.OnClickListener getOnLogoutClicked();
 
 }

@@ -31,4 +31,6 @@
     <dimen name="treat_option_expandable_layout_top_and_bottom_margin">10dp</dimen>
     <dimen name="treat_option_item_top_and_bottom_margin">15dp</dimen>
     <dimen name="vh_empty_side_margin">10dp</dimen>
+    <dimen name="continue_with_fb_btn_height">75dp</dimen>
+    <dimen name="login_title_top_margin">25sp</dimen>
 </resources>

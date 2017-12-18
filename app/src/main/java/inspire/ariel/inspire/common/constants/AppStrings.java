@@ -1,5 +1,7 @@
 package inspire.ariel.inspire.common.constants;
 
+import java.util.List;
+
 import inspire.ariel.inspire.BuildConfig;
 
 public class AppStrings {
@@ -10,10 +12,16 @@ public class AppStrings {
     * All user presented strings are located on R.string in the res package
     */
 
+    //Tags
+    public static final String REALM_SYNC_SERVER_TAG = "Data bases sync message";
+    public static final String KEY_LOCAL_TREATS = "localTreats";
+
     //Backendless
     public static final String BACKENDLESS_VAL_APPLICATION_ID = "1C0DA01D-01F8-CC77-FF89-629A70D7CB00";
     public static final String BACKENDLESS_VAL_API_KEY = "D5242878-29DD-0377-FF39-FC1E91E64300";
     public static final String BACKENDLESS_VAL_OWNER_DEVICE_ID = "LGK4205a6e9a63";
+    public static final String BACKENDLESS_VAL_FB_EMAIL = "fb_email";
+
     public static final String BACKENDLESS_TABLE_TREATS = "Treat";
     public static final String BACKENDLESS_TABLE_USERS = "Users";
     public static final String BACKENDLESS_TABLE_USER_COLUMN_TREATS = "treats";
@@ -25,6 +33,7 @@ public class AppStrings {
     public static final String BACKENDLESS_ERROR_CODE_INVALID_LOGIN_OR_PASSWORD = "3003";
     public static final String BACKENDLESS_ERROR_CODE_EMPTY_PASSWORD_INPUT = "IllegalArgumentException"; //This fault code was found on debugger
     public static final String BACKENDLESS_ERROR_CODE_NO_PERMISSION_ERROR = "1011";
+    public static final String BACKENDLESS_ERROR_CODE_API_CALLS_LIMIT_REACHED = "999";
 
     //Push Notifications
     public static final String NOTIFICATION_NEW_TREAT_CHANNEL = "treats";
@@ -37,15 +46,6 @@ public class AppStrings {
     public static final java.lang.String REGEX_ELIPSIZING_TEXT_VIEW_DEFAULT_END_PUNCTUATION = "[\\.,\u2026;\\:\\s]*$";
 
     //OnSavedInstanceState Keys
-    public static final String SAVED_STATE_SUPER_STATE = "superState";
-    public static final String SAVED_STATE_ELLIPSIZE_LISTENERS = "ellipsizeListeners";
-    public static final String SAVED_STATE_IS_ELLIPSIZED = "isEllipsized";
-    public static final String SAVED_STATE_IS_STALE = "isStale";
-    public static final String SAVED_STATE_PROGRAMMATIC_CHANGE = "programmaticChange";
-    public static final String SAVED_STATE_FULL_TEXT = "fullText";
-    public static final String SAVED_STATE_MAX_LINES = "maxLines";
-    public static final String SAVED_STATE_LINE_SPACING_MULTIPLIER = "lineSpacingMultiplier";
-    public static final String SAVED_STATE_LINE_ADDITIONAL_VERTICAL_PADDING = "lineAdditionalVerticalPadding";
     public static final String SAVED_STATE_OLD_TREAT = "oldTreat";
     public static final String SAVED_STATE_OLD_TREAT_POSITION = "oldTreatPosition";
 
@@ -61,19 +61,23 @@ public class AppStrings {
     public static final String VAL_OWNER_OBJECT_ID = "B2FD1088-D093-1C3E-FFFE-341893C28000";
 
     //Data Fields
+    public static final String KEY_IMAGE = "image";
+    public static final String KEY_IS_PURCHASED = "isPurchased";
     public static final String KEY_IS_FIRST_LAUNCH = "isFirstLaunch";
+    public static final String KEY_TREAT = "treat";
+    public static final String KEY_TREAT_POSITION = "treatPosition";
+    public static final String KEY_MESSAGE_FOR_DISPLAY = "messageForDisplay";
 
     public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_OWNER_ID = "ownerId";
     public static final String KEY_NAME = "name";
+    public static final String KEY_CREATED = "created";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_TEXT = "text";
     public static final String KEY_FONT_PATH = "fontPath";
     public static final String KEY_TEXT_COLOR = "textColor";
     public static final String KEY_TEXT_SIZE = "textSize";
     public static final String KEY_BG_IMAGE_NAME = "bgImageName";
-    public static final String KEY_TREAT = "treat";
-    public static final String KEY_TREAT_POSITION = "treatPosition";
 
     //String Helpers
     public static final String EMPTY_STRING = "";

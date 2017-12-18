@@ -11,6 +11,9 @@ public class AppNumbers {
     //Backendless
     public static final int BACKENDLESS_REGISTRATION_CHANNEL_DAYS_LIMIT = 73000; //Long years registration to Backendless channels
 
+    //Realm
+    public static final long REALM_VERSION = 0;
+
     //Text Views
     public static final int ELLIPSIZING_TV_DEFAULT_LINE_HEIGHT_DIVIDER = 96;
 
@@ -49,10 +52,13 @@ public class AppNumbers {
 
     //Activity For Result Codes
     public static final int DEFAULT_REQUEST_CODE = 0;
-    public static int TREAT_EDIT_RESULT_OK = 250;
+    public static int TREAT_EDIT_RESULT_OK = 125890;
 
     //Errors
     public static final int ERROR_INT = -1;
+
+    //Snackbar
+    public static final int SNACK_BAR_MAX_LINES = 5;
 
     //Other
     public static final int NO_HEIGHT = 0;

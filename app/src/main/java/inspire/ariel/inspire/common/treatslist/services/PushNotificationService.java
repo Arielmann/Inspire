@@ -23,6 +23,7 @@ import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
+import inspire.ariel.inspire.dbmanager.RealmManager;
 
 public class PushNotificationService extends BackendlessPushService {
 
@@ -42,11 +43,33 @@ public class PushNotificationService extends BackendlessPushService {
 
     //TODO: Support app messages as well (without treats)
     @Override
-    public boolean onMessage(Context context, Intent intent) {
+    public boolean onMessage(Context context, Intent serverIntent) {
         DataManager.getInstance().setMessagesSize(DataManager.getInstance().getMessagesSize() + 1);
-        String notificationContentText = getResources().getString(R.string.new_treat_push_notification);
-        Treat newTreat = parseQuote(intent);
+        Treat newTreat = parseQuote(serverIntent);
+        RealmManager.getInstance().saveTreat(newTreat);
 
+        if(TreatsListActivity.isInForeground){
+            handelMessageWhenActivityInForeground(newTreat);
+            return false;
+        }
+        handelMessageWhenActivityNotForeground(newTreat);
+
+        // When returning 'true', default Backendless onMessage implementation will be executed.
+        // The default implementation displays the notification in the Android Notification Center.
+        // Returning false, cancels the execution of the default implementation.
+        return false;
+    }
+
+    private void handelMessageWhenActivityInForeground(Treat newTreat){
+        Intent activityDataIntent = new Intent();
+        activityDataIntent.putExtra(AppStrings.KEY_MESSAGE_FOR_DISPLAY, getResources().getString(R.string.user_msg_new_treat));
+        activityDataIntent.putExtra(AppStrings.KEY_TREAT, newTreat);
+        activityDataIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(activityDataIntent); //Todo: generates warning. Take care of it
+    }
+
+    private void handelMessageWhenActivityNotForeground(Treat newTreat){
+        String notificationContentText = getResources().getString(R.string.new_treat_push_notification);
         if (DataManager.getInstance().getMessagesSize() > 1) {
             notificationContentText = DataManager.getInstance().getMessagesSize() + AppStrings.SPACE_STRING + getResources().getString(R.string.push_notification_multiple_prefix) + AppStrings.SPACE_STRING + AppStrings.VAL_OWNER_NAME;
         }
@@ -57,11 +80,6 @@ public class PushNotificationService extends BackendlessPushService {
         if (notificationManager != null) {
             notificationManager.notify(AppStrings.NOTIFICATION_NEW_TREAT_CHANNEL, AppNumbers.NOTIFICATIONS_NE_TREAT_ID, newQuoteNotification);
         }
-
-        // When returning 'true', default Backendless onMessage implementation will be executed.
-        // The default implementation displays the notification in the Android Notification Center.
-        // Returning false, cancels the execution of the default implementation.
-        return false;
     }
 
     private Treat parseQuote(Intent intent) {
@@ -105,7 +123,7 @@ public class PushNotificationService extends BackendlessPushService {
     private Notification createNewQuoteNotification(String contentText, Treat newTreat) {
         Intent intent = new Intent(this, TreatsListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if(TreatsListActivity.isInStack()) { //Server calls doesn't happen if activity is in stack so put the treat for it
+        if(TreatsListActivity.isInStack) { //Treat download doesn't happen if activity is in stack so put the treat for it
             intent.putExtra(AppStrings.KEY_TREAT, newTreat);
         }
         PendingIntent treatListPendingIntent = PendingIntent.getActivity(this, AppNumbers.DEFAULT_REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT);

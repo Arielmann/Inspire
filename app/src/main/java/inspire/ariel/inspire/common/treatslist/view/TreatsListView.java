@@ -15,6 +15,8 @@ public interface TreatsListView {
 
     ContentResolver getContentResolver();
 
+    void onServerOperationFailed(CharSequence error);
+
     void showReallyDeleteDialog(int treatPosition);
 
     Context getContext();
@@ -22,10 +24,6 @@ public interface TreatsListView {
     void scrollTreatListToTop();
 
     TreatsListPresenter getPresenter();
-
-    void showToastErrorMessage(String string);
-
-    void onServerOperationFailed(String error);
 
     void onUserLoggedOut();
 
@@ -37,4 +35,7 @@ public interface TreatsListView {
 
     KProgressHUD getPagingProgressDialog();
 
+    void showToastMessage(String messageForUser);
+
+    void showSnackbarMessage(CharSequence error);
 }

@@ -1,6 +1,5 @@
 package inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -30,14 +29,14 @@ public class TreatEditorActivity extends TreatsCreatorActivity {
     }
 
     private void initAtEditMode() {
-        super.getBinding().treatEditText.setText(oldTreat.getText());
-        super.getBinding().treatEditText.setTextColor(oldTreat.getTextColor());
-        super.getBinding().treatEditText.setHintTextColor(oldTreat.getTextColor());
-        super.getBinding().treatEditText.setTextSize(oldTreat.getTextSize());
-        super.getBinding().creatorLayout.setBackground(oldTreat.getImage());
-        FontsManager.getInstance().setFontOnTV(oldTreat.getFontPath(), super.getBinding().treatEditText);
+        super.getActivityTreatCreatorBinding().treatEditText.setText(oldTreat.getText());
+        super.getActivityTreatCreatorBinding().treatEditText.setTextColor(oldTreat.getTextColor());
+        super.getActivityTreatCreatorBinding().treatEditText.setHintTextColor(oldTreat.getTextColor());
+        super.getActivityTreatCreatorBinding().treatEditText.setTextSize(oldTreat.getTextSize());
+        super.getActivityTreatCreatorBinding().creatorLayout.setBackground(oldTreat.getImage());
+        FontsManager.getInstance().setFontOnTV(oldTreat.getFontPath(), super.getActivityTreatCreatorBinding().treatEditText);
         presenter.setFontPath(oldTreat.getFontPath());
-        getBinding().bgPicker.scrollToPosition(presenter.getImagePositionFromImageName(oldTreat.getBgImageName()));
+        getActivityTreatCreatorBinding().bgPicker.scrollToPosition(presenter.getImagePositionFromImageName(oldTreat.getBgImageName()));
     }
 
     @Override

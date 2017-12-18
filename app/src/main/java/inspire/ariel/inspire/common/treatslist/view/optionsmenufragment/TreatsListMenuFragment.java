@@ -1,23 +1,16 @@
 package inspire.ariel.inspire.common.treatslist.view.optionsmenufragment;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
@@ -44,53 +37,29 @@ public class TreatsListMenuFragment extends Fragment implements TreatListMenuVie
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_treat_list_menu, container, false);
-        binding.loginLogoutImageBtn.setOnClickListener(onLoginClicked);
-        binding.fbLoginBtn.setFragment(this);
+        binding.loginLogoutImageBtn.setOnClickListener(onLogoutClicked);
         return binding.getRoot();
     }
 
-    /**
-     *Facebook
-     */
-    @Getter private FacebookCallback<LoginResult> onUserLoggedWithFacebookCallback = new FacebookCallback<LoginResult>() {
-
-        @Override
-        public void onSuccess(LoginResult loginResult) {
-            Log.i(TAG,"Successfully logged in with facebook account");
-        }
-
-        @Override
-        public void onCancel() {
-
-        }
-
-        @Override
-        public void onError(FacebookException error) {
-            Log.e(TAG,"Error logging in with facebook account. Reason: " + error);
-            treatsListView.onServerOperationFailed(getResources().getString(R.string.generic_error_login));
-        }
-    };
-
-    @Getter private View.OnClickListener onLoginClicked = new View.OnClickListener() {
+    @Getter
+    private View.OnClickListener onLogoutClicked = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             new MaterialDialog.Builder(treatsListView.getContext())
-                    .title(R.string.login)
+                    .title(R.string.really_logout_title)
                     .titleGravity(GravityEnum.CENTER)
-                    .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                    .input(R.string.put_password_hint, R.string.empty_string, (dialog, input) -> {
+                    .contentGravity(GravityEnum.CENTER)
+                    .positiveText(R.string.delete_title)
+                    .onPositive((dialog, which) -> {
                         treatsListView.showProgressDialog(treatsListView.getLoginLogoutProgressDialog());
-                        treatsListView.getPresenter().login(input);
-                    }).show();
+                        treatsListView.getPresenter().logout();
+                    })
+                    .negativeText(R.string.cancel)
+                    .onNegative((dialog, which) -> dialog.cancel())
+                    .cancelable(true)
+                    .show();
         }
-    };
 
-    @Getter private View.OnClickListener onLogoutClicked = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            treatsListView.showProgressDialog(treatsListView.getLoginLogoutProgressDialog());
-            treatsListView.getPresenter().logout();
-        }
     };
 
     @Override
@@ -106,6 +75,22 @@ public class TreatsListMenuFragment extends Fragment implements TreatListMenuVie
     @Override
     public void init(TreatsListView treatsListView) {
         this.treatsListView = treatsListView;
-        binding.fbLoginBtn.registerCallback(treatsListView.getPresenter().getFbCallbackManager(), onUserLoggedWithFacebookCallback);
     }
 }
+
+
+
+ /*   @Getter
+    private View.OnClickListener onLoginClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            new MaterialDialog.Builder(treatsListView.getContext())
+                    .title(R.string.login)
+                    .titleGravity(GravityEnum.CENTER)
+                    .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                    .input(R.string.put_password_hint, R.string.empty_string, (dialog, input) -> {
+                        treatsListView.showProgressDialog(treatsListView.getLoginLogoutProgressDialog());
+                        treatsListView.getPresenter().login(input);
+                    }).show();
+        }
+    };*/

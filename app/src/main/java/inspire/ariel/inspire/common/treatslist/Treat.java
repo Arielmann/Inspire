@@ -6,26 +6,46 @@ import android.os.Parcelable;
 
 import java.util.Date;
 
+import inspire.ariel.inspire.common.constants.AppStrings;
+import io.realm.RealmModel;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.Index;
+import io.realm.annotations.RealmClass;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
+import weborb.service.ExcludeProperty;
 
-@Data @Builder @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode(exclude={"image"})
-public class Treat implements Parcelable {
+@Data
+@Builder
+@AllArgsConstructor
+@EqualsAndHashCode(exclude = {AppStrings.KEY_IMAGE}, callSuper = false)
+@ToString
+@RealmClass
+@ExcludeProperty( propertyName = AppStrings.KEY_IS_PURCHASED )
+public class Treat implements Parcelable, RealmModel {
 
-    @NonNull private String text;
     @NonNull private String ownerId;
+    @NonNull private String text;
     private int textColor;
     private int textSize;
     @NonNull private String fontPath;
     @NonNull private String bgImageName;
-
     private String objectId;
-    private Date created;
-    private Drawable image;
+    @NonNull @Index private Date created;
+    @Ignore private Drawable image;
+    @Setter private boolean isPurchased;
+
+    public void setPurchased(boolean purchased) {
+        isPurchased = purchased;
+    }
+
+
+    public Treat(){}
 
     protected Treat(Parcel in) {
         text = in.readString();

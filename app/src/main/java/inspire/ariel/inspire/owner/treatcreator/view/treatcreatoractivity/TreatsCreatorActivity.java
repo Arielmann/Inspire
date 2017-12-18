@@ -1,6 +1,5 @@
 package inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -33,14 +32,14 @@ import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.constants.Percentages;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerViewComponent;
-import inspire.ariel.inspire.common.di.ListsModule;
+import inspire.ariel.inspire.common.di.RecyclerViewsModule;
 import inspire.ariel.inspire.common.di.PresentersModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
-import inspire.ariel.inspire.common.di.ViewsModule;
-import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.di.ViewInjector;
-import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
+import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
+import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
 import inspire.ariel.inspire.common.utils.listutils.SingleBitmapListAdapter;
@@ -61,10 +60,12 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
     @Named(AppStrings.TREAT_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
     DiscreteScrollViewData discreteScrollViewData;
 
-    @Inject int treatVhLayoutInt;
+    @Inject
+    int treatVhLayoutInt;
 
     @Inject
-    @Getter TreatsCreatorPresenter presenter;
+    @Getter
+    TreatsCreatorPresenter presenter;
 
     @Inject
     @Named(AppStrings.MAIN_PROGRESS_DIALOG)
@@ -77,14 +78,14 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
     TreatCreatorMenuView treatCreatorMenuView;
 
     private String TAG = TreatsCreatorActivity.class.getName();
-    @Getter private ActivityTreatCreatorBinding binding;
+    @Getter private ActivityTreatCreatorBinding activityTreatCreatorBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_treat_creator);
+        activityTreatCreatorBinding = DataBindingUtil.setContentView(this, R.layout.activity_treat_creator);
         inject();
-        binding.postImageBtn.setOnClickListener(view -> requestTreatPost());
+        activityTreatCreatorBinding.postImageBtn.setOnClickListener(view -> requestTreatPost());
         setTreatFont(FontsManager.Font.ALEF_BOLD);
         initBgPicker();
         initKeyboardChangeBehaviours();
@@ -101,7 +102,7 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
     private void inject() {
         DaggerViewComponent.builder()
                 .appModule(new AppModule(((InspireApplication) getApplication())))
-                .listsModule(new ListsModule())
+                .recyclerViewsModule(new RecyclerViewsModule())
                 .presentersModule(PresentersModule.builder().appComponent(((InspireApplication) getApplication()).getAppComponent()).treatsCreatorViewController(this).build())
                 .resourcesModule(new ResourcesModule(getResources(), getAssets()))
                 .viewsModule(ViewsModule.builder().viewsInjector(this).build())
@@ -143,7 +144,7 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
 
     private void initBgPicker() {
         SingleBitmapListAdapter adapter = new SingleBitmapListAdapter(customResourcesProvider.getBackgroundImages(), treatVhLayoutInt);
-        DiscreteScrollView bgPicker = binding.bgPicker;
+        DiscreteScrollView bgPicker = activityTreatCreatorBinding.bgPicker;
         bgPicker.setSlideOnFling(discreteScrollViewData.isSetSlideOnFling());
         bgPicker.setAdapter(adapter);
         bgPicker.addOnItemChangedListener(presenter.getOnItemChangedListener());
@@ -185,9 +186,9 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
     }
 
     Treat createTreatForPost() {
-        final String text = binding.treatEditText.getText().toString();
-        final int textColor = binding.treatEditText.getCurrentTextColor();
-        final int textSize = Math.round(binding.treatEditText.getTextSize() * Percentages.FIFTY_FIVE);
+        final String text = activityTreatCreatorBinding.treatEditText.getText().toString();
+        final int textColor = activityTreatCreatorBinding.treatEditText.getCurrentTextColor();
+        final int textSize = Math.round(activityTreatCreatorBinding.treatEditText.getTextSize() * Percentages.FIFTY_FIVE);
         return Treat.builder().text(text)
                 .fontPath(presenter.getFontPath())
                 .textColor(textColor)
@@ -199,7 +200,7 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
 
     @Override
     public void setBackground(Drawable background) {
-        binding.treatEditText.setBackground(background);
+        activityTreatCreatorBinding.treatEditText.setBackground(background);
     }
 
     /**
@@ -212,18 +213,18 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
 
     @Override
     public void setTreatTextSize(int size) {
-        binding.treatEditText.setTextSize(size);
+        activityTreatCreatorBinding.treatEditText.setTextSize(size);
     }
 
     @Override
     public void setTreatFont(FontsManager.Font font) {
-        FontsManager.getInstance().setFontOnTV(font, binding.treatEditText);
+        FontsManager.getInstance().setFontOnTV(font, activityTreatCreatorBinding.treatEditText);
     }
 
     @Override
     public void setTreatTextColor(int color) {
-        binding.treatEditText.setHintTextColor(color);
-        binding.treatEditText.setTextColor(color);
+        activityTreatCreatorBinding.treatEditText.setHintTextColor(color);
+        activityTreatCreatorBinding.treatEditText.setTextColor(color);
     }
 
     @Override
@@ -245,7 +246,10 @@ public class TreatsCreatorActivity extends AppCompatActivity implements TreatsCr
                 .content(getResources().getString(R.string.error_invalid_user_permissions))
                 .contentGravity(GravityEnum.CENTER)
                 .positiveText(R.string.ok)
-                .onPositive((dialog, which) -> goToOtherActivity(new Intent(TreatsCreatorActivity.this, TreatsListActivity.class)))
+                .onPositive((dialog, which) -> {
+                    TreatsCreatorActivity.this.dismissProgressDialog();
+                    goToOtherActivity(new Intent(TreatsCreatorActivity.this, TreatsListActivity.class));
+                })
                 .show();
     }
 

@@ -21,7 +21,7 @@ import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerViewComponent;
-import inspire.ariel.inspire.common.di.ListsModule;
+import inspire.ariel.inspire.common.di.RecyclerViewsModule;
 import inspire.ariel.inspire.common.di.PresentersModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.di.ViewsModule;
@@ -62,7 +62,7 @@ public class TreatCreatorMenuFragment extends Fragment implements TreatCreatorMe
     public void willInject(AppComponent component, TreatsCreatorViewController controller, AssetManager assetManager) {
         DaggerViewComponent.builder()
                 .appModule(new AppModule(null))
-                .listsModule(new ListsModule())
+                .recyclerViewsModule(new RecyclerViewsModule())
                 .presentersModule(PresentersModule.builder().appComponent(component).treatsCreatorViewController(controller).build())
                 .resourcesModule(new ResourcesModule(getResources(), assetManager))
                 .viewsModule(ViewsModule.builder().treatCreatorMenuFragmentInjector(this).build())

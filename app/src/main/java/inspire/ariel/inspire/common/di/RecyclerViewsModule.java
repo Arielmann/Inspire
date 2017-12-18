@@ -17,7 +17,7 @@ import inspire.ariel.inspire.common.treatslist.adapter.TreatListAdapter;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
 
 @Module
-public class ListsModule {
+public class RecyclerViewsModule {
 
 
     @Provides

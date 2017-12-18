@@ -27,7 +27,7 @@ public class ViewsModule {
 
 
     /**
-     * Instantiate with builder and provide only the required view parent
+     * Instantiate startOperations builder and provide only the required view parent
      * in your class, so it may be used as the context for the injected views.
      */
 
@@ -45,8 +45,8 @@ public class ViewsModule {
     List<View> provideQuoteCreatorActivityDisappearingViews() {
         assert viewsInjector != null;
         return new ArrayList<View>() {{
-            add(viewsInjector.getBinding().bgPicker);
-            add(viewsInjector.getBinding().postImageBtn);
+            add(viewsInjector.getActivityTreatCreatorBinding().bgPicker);
+            add(viewsInjector.getActivityTreatCreatorBinding().postImageBtn);
         }};
     }
 
