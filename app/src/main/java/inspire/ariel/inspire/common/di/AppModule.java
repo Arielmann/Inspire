@@ -7,16 +7,14 @@ import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.Calendar;
-import java.util.Map;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.common.app.InspireApplication;
-import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.utils.errorutils.ErrorsManager;
-import inspire.ariel.inspire.dbmanager.RealmManager;
+import inspire.ariel.inspire.localdbmanager.RealmManager;
 
 @Module
 

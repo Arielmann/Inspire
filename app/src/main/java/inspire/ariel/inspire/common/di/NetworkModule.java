@@ -4,6 +4,7 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.IDataStore;
 import com.backendless.persistence.DataQueryBuilder;
+import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.facebook.CallbackManager;
 
 import javax.inject.Named;
@@ -35,12 +36,22 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    DataQueryBuilder provideTreatQueryBuilder() {
+    DataQueryBuilder providePagedTreatsQueryBuilder() {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setSortBy(AppStrings.BACKENDLESS_SORT_CLAUSE_CREATED_DSC);
         queryBuilder.setWhereClause(AppStrings.BACKENDLESS_OWNER_ID_WHERE_CLAUSE);
         queryBuilder.setPageSize(AppNumbers.TREAT_QUERY_PAGE_SIZE).setOffset(AppNumbers.TREAT_QUERY_STARTING_OFFSET);
         return queryBuilder;
+    }
+
+    @Singleton
+    @Provides
+    LoadRelationsQueryBuilder<Treat> providePagedTreatsRelationQueryBuilder() {
+        LoadRelationsQueryBuilder<Treat> loadRelationsQueryBuilder;
+        loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Treat.class);
+        loadRelationsQueryBuilder.setRelationName( AppStrings.BACKENDLESS_TABLE_USER_COLUMN_PURCHASED_TREATS );
+        loadRelationsQueryBuilder.setPageSize(AppNumbers.PURCHASED_TREAT_QUERY_PAGE_SIZE).setOffset(AppNumbers.TREAT_QUERY_STARTING_OFFSET);
+        return loadRelationsQueryBuilder;
     }
 
     @Provides

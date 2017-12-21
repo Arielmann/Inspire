@@ -1,7 +1,5 @@
 package inspire.ariel.inspire.common.di;
 
-import android.support.v4.app.NotificationCompat;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -12,8 +10,8 @@ import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.treatslist.model.TreatListModel;
 import inspire.ariel.inspire.common.treatslist.model.TreatsListModelImpl;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
-import inspire.ariel.inspire.owner.treatcreator.model.TreatCreatorModel;
-import inspire.ariel.inspire.owner.treatcreator.model.TreatCreatorModelImpl;
+import inspire.ariel.inspire.owner.treatdesigner.model.TreatDesignerModel;
+import inspire.ariel.inspire.owner.treatdesigner.model.TreatDesignerModelImpl;
 
 @Module
 public class ModelsModule {
@@ -32,7 +30,7 @@ public class ModelsModule {
 
     @Singleton
     @Provides
-    TreatCreatorModel provideTreatsCreatorModel(){
-        return TreatCreatorModelImpl.builder().bgImageName(AppStrings.BLUE_YELLOW_BG).fontPath(FontsManager.Font.ALEF_BOLD.getPath()).bgDrawableIntValue(R.drawable.blue_yellow_bg).build();
+    TreatDesignerModel provideTreatsCreatorModel(){
+        return TreatDesignerModelImpl.builder().bgImageName(AppStrings.BLUE_YELLOW_BG).fontPath(FontsManager.Font.ALEF_BOLD.getPath()).bgDrawableIntValue(R.drawable.blue_yellow_bg).build();
     }
 }

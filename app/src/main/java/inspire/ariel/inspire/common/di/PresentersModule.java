@@ -8,9 +8,9 @@ import inspire.ariel.inspire.common.loginactivity.view.LoginView;
 import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenter;
 import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenterImpl;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListView;
-import inspire.ariel.inspire.owner.treatcreator.presenter.TreatsCreatorPresenter;
-import inspire.ariel.inspire.owner.treatcreator.presenter.TreatsCreatorPresenterImpl;
-import inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity.TreatsCreatorViewController;
+import inspire.ariel.inspire.owner.treatdesigner.presenter.TreatsDesignerPresenter;
+import inspire.ariel.inspire.owner.treatdesigner.presenter.TreatsDesignerPresenterImpl;
+import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.TreatsDesignerViewController;
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -19,20 +19,20 @@ import lombok.NonNull;
 public class PresentersModule {
 
     @NonNull private AppComponent appComponent;
-    private TreatsCreatorViewController treatsCreatorViewController;
+    private TreatsDesignerViewController treatsDesignerViewController;
     private TreatsListView treatsListView;
     private LoginView loginView;
 
-    public PresentersModule(AppComponent appComponent, TreatsCreatorViewController treatsCreatorViewController, TreatsListView treatsListView, LoginView loginView) {
+    public PresentersModule(AppComponent appComponent, TreatsDesignerViewController treatsDesignerViewController, TreatsListView treatsListView, LoginView loginView) {
         this.appComponent = appComponent;
-        this.treatsCreatorViewController = treatsCreatorViewController;
+        this.treatsDesignerViewController = treatsDesignerViewController;
         this.treatsListView = treatsListView;
         this.loginView = loginView;
     }
 
     @Provides
-    public TreatsCreatorPresenter provideTreatCreatorPresenter(){
-        return new TreatsCreatorPresenterImpl(appComponent, treatsCreatorViewController);
+    public TreatsDesignerPresenter provideTreatDesignerPresenter(){
+        return new TreatsDesignerPresenterImpl(appComponent, treatsDesignerViewController);
     }
 
     @Provides

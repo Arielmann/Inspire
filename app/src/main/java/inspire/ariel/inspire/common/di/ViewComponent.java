@@ -5,18 +5,21 @@ import javax.inject.Singleton;
 import dagger.Component;
 import inspire.ariel.inspire.common.loginactivity.view.LoginActivity;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
-import inspire.ariel.inspire.owner.treatcreator.view.optionmenufragment.TreatCreatorMenuFragment;
-import inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity.TreatsCreatorActivity;
+import inspire.ariel.inspire.owner.treatdesigner.view.optionmenufragment.TreatDesignerMenuFragment;
+import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.AbstractTreatDesignerActivity;
+import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.TreatsCreatorActivity;
 
 @Component(modules = {AppModule.class, ViewsModule.class, ResourcesModule.class, RecyclerViewsModule.class, PresentersModule.class})
 @Singleton
 public interface ViewComponent {
 
-    void inject(TreatCreatorMenuFragment treatCreatorMenuFragment);
+    void inject(TreatDesignerMenuFragment treatDesignerMenuFragment);
 
     void inject(TreatsCreatorActivity treatsCreatorActivity);
 
     void inject(TreatsListActivity treatsListActivity);
 
     void inject(LoginActivity loginActivity);
+
+    void inject(AbstractTreatDesignerActivity abstractTreatDesignerActivity);
 }

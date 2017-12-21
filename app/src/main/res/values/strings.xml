@@ -9,10 +9,9 @@
     <string name="error_app_init">There was an error loading the app. Please check your internet connection and restart :)</string>
     <string name="error_device_registration">\"There was an error registering your device to the app, please restart and try again in a few minutes\"</string>
     <string name="error_empty_treat">Cannot upload empty treat. Make sense doesn\'t it? :)</string>
-    <string name="error_general_channel_registration">An error has occurred, you are not registered to the app\'s main messages channel. That\'s Ok, message can still be displayed.</string>
     <string name="error_no_treats">There is nothing to display, yet…</string>
     <string name="error_no_connection">There seem to be a network problem. Please check your connection and restart the app</string>
-    <string name="error_no_connection_and_local_db_active">There is internet connection. Data saved before connection lost is being displayed. Please restart the app with internet connection to get fully updated</string>
+    <string name="error_no_connection_and_local_db_active">There was a problem connecting the server. Previously saved is being displayed. Please restart the app with internet connection to get fully updated</string>
     <string name="error_please_login">Please log in to access this important screen</string>
     <string name="please_wait">Please wait…</string>
     <string name="error_treat_refresh">There was a error refreshing the data. Please try again later</string>
@@ -40,7 +39,7 @@
     <string name="ok">Ok</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
-    <string name="really_delete_msg">The treat will be lost for all eternity</string>
+    <string name="really_delete_msg">Users will not be able to view the treat, unless they have already purchased it</string>
     <string name="are_you_sure_title">Are you sure?</string>
     <string name="delete_title">Delete</string>
     <string name="error_delete_treat">There was an error deleting the treat</string>
@@ -53,4 +52,9 @@
     <string name="really_logout_title">Logout?</string>
     <string name="user_msg_new_treat">A fresh new message has arrived</string>
     <string name="no_new_quotes_from_paging">There aren\'t any older messages</string>
+    <string name="title_put_admin_password">Ask a crew member to put the admin password for you :)</string>
+    <string name="purchase_title">Go!</string>
+    <string name="error_login_validation">We could not verify your user data. App is initiated in offline mode. Make sure you have internet connection and restart the app</string>
+    <string name="error_purchase_treat">Could not make the purchase at the moment. please try again later</string>
+    <string name="purchased">Purchased</string>
 </resources>

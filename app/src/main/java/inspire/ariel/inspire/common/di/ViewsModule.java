@@ -16,9 +16,9 @@ import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.treatslist.view.optionsmenufragment.TreatListMenuView;
 import inspire.ariel.inspire.common.utils.viewutils.ProgressDialogFactory;
-import inspire.ariel.inspire.owner.treatcreator.view.optionmenufragment.TreatCreatorMenuFragmentInjector;
-import inspire.ariel.inspire.owner.treatcreator.view.optionmenufragment.TreatCreatorMenuView;
-import inspire.ariel.inspire.owner.treatcreator.view.optionmenufragment.TreatMenuComponents;
+import inspire.ariel.inspire.owner.treatdesigner.view.optionmenufragment.TreatDesignerMenuFragmentInjector;
+import inspire.ariel.inspire.owner.treatdesigner.view.optionmenufragment.TreatDesignerMenuView;
+import inspire.ariel.inspire.owner.treatdesigner.view.optionmenufragment.TreatMenuComponents;
 import lombok.Builder;
 
 @Module
@@ -34,19 +34,19 @@ public class ViewsModule {
     @Nullable
     private ViewInjector viewsInjector;
     @Nullable
-    private TreatCreatorMenuFragmentInjector treatCreatorMenuFragmentInjector;
+    private TreatDesignerMenuFragmentInjector treatDesignerMenuFragmentInjector;
 
-    public ViewsModule(@Nullable ViewInjector treatsListViewInjector, @Nullable TreatCreatorMenuFragmentInjector treatCreatorMenuFragmentInjector) {
+    public ViewsModule(@Nullable ViewInjector treatsListViewInjector, @Nullable TreatDesignerMenuFragmentInjector treatDesignerMenuFragmentInjector) {
         this.viewsInjector = treatsListViewInjector;
-        this.treatCreatorMenuFragmentInjector = treatCreatorMenuFragmentInjector;
+        this.treatDesignerMenuFragmentInjector = treatDesignerMenuFragmentInjector;
     }
 
     @Provides
     List<View> provideQuoteCreatorActivityDisappearingViews() {
         assert viewsInjector != null;
         return new ArrayList<View>() {{
-            add(viewsInjector.getActivityTreatCreatorBinding().bgPicker);
-            add(viewsInjector.getActivityTreatCreatorBinding().postImageBtn);
+            add(viewsInjector.getAbstractTreatDesignerBinding().bgPicker);
+            add(viewsInjector.getAbstractTreatDesignerBinding().postImageBtn);
         }};
     }
 
@@ -79,9 +79,9 @@ public class ViewsModule {
     }
 
     @Provides
-    public TreatCreatorMenuView provideQuoteCreatorMenuView() {
+    public TreatDesignerMenuView provideQuoteCreatorMenuView() {
         assert viewsInjector != null;
-        return (TreatCreatorMenuView) viewsInjector.getSupportFragmentManager().findFragmentById(R.id.treatCreatorMenuFragment);
+        return (TreatDesignerMenuView) viewsInjector.getSupportFragmentManager().findFragmentById(R.id.designerMenuFragment);
     }
 
     @Provides
@@ -93,13 +93,11 @@ public class ViewsModule {
     @Provides
     public List<TreatMenuComponents> provideQuoteOptionComponents() {
         return new ArrayList<TreatMenuComponents>() {{
-            assert treatCreatorMenuFragmentInjector != null;
-            add(new TreatMenuComponents(treatCreatorMenuFragmentInjector.getBinding().treatFontImgBtn, treatCreatorMenuFragmentInjector.getBinding().treatFontExpandingLayout, treatCreatorMenuFragmentInjector.getBinding().treatFontRv));
-            add(new TreatMenuComponents(treatCreatorMenuFragmentInjector.getBinding().treatTextSizeImgBtn, treatCreatorMenuFragmentInjector.getBinding().treatTextSizeExpandingLayout, treatCreatorMenuFragmentInjector.getBinding().treatTextSizeRv));
-            add(new TreatMenuComponents(treatCreatorMenuFragmentInjector.getBinding().treatTextColorImgBtn, treatCreatorMenuFragmentInjector.getBinding().treatTextColorExpandingLayout, treatCreatorMenuFragmentInjector.getBinding().treatTextColorRv));
+            assert treatDesignerMenuFragmentInjector != null;
+            add(new TreatMenuComponents(treatDesignerMenuFragmentInjector.getBinding().treatFontImgBtn, treatDesignerMenuFragmentInjector.getBinding().treatFontExpandingLayout, treatDesignerMenuFragmentInjector.getBinding().treatFontRv));
+            add(new TreatMenuComponents(treatDesignerMenuFragmentInjector.getBinding().treatTextSizeImgBtn, treatDesignerMenuFragmentInjector.getBinding().treatTextSizeExpandingLayout, treatDesignerMenuFragmentInjector.getBinding().treatTextSizeRv));
+            add(new TreatMenuComponents(treatDesignerMenuFragmentInjector.getBinding().treatTextColorImgBtn, treatDesignerMenuFragmentInjector.getBinding().treatTextColorExpandingLayout, treatDesignerMenuFragmentInjector.getBinding().treatTextColorRv));
         }};
     }
-
-
 }
 

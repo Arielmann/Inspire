@@ -1,6 +1,7 @@
 package inspire.ariel.inspire.common.treatslist.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -8,13 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.treatslist.events.OnPurchaseClickListener;
+import inspire.ariel.inspire.databinding.VhAdminTreatOptionsBinding;
 import inspire.ariel.inspire.databinding.VhTreatBinding;
-import inspire.ariel.inspire.databinding.VhTreatOptionsBinding;
 import lombok.Setter;
 
 public class TreatListAdapter extends RecyclerView.Adapter<TreatVH> implements TreatListAdapterPresenter {
 
+    private static final String TAG = TreatListAdapter.class.getName();
     @Setter private List<Treat> treats;
+    @Setter private OnPurchaseClickListener onPurchaseClickListener;
 
     public TreatListAdapter() {
         treats = new ArrayList<>();
@@ -24,8 +28,8 @@ public class TreatListAdapter extends RecyclerView.Adapter<TreatVH> implements T
     public TreatVH onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         VhTreatBinding quoteBinding = VhTreatBinding.inflate(layoutInflater, parent, false);
-        VhTreatOptionsBinding quoteOptionsManagerBinding = VhTreatOptionsBinding.inflate(layoutInflater, parent, false);
-        return new TreatVH(quoteBinding, quoteOptionsManagerBinding);
+        VhAdminTreatOptionsBinding quoteOptionsManagerBinding = VhAdminTreatOptionsBinding.inflate(layoutInflater, parent, false);
+        return new TreatVH(quoteBinding, quoteOptionsManagerBinding, onPurchaseClickListener);
     }
 
     @Override

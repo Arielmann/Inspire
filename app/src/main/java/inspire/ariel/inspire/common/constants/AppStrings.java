@@ -19,15 +19,17 @@ public class AppStrings {
     //Backendless
     public static final String BACKENDLESS_VAL_APPLICATION_ID = "1C0DA01D-01F8-CC77-FF89-629A70D7CB00";
     public static final String BACKENDLESS_VAL_API_KEY = "D5242878-29DD-0377-FF39-FC1E91E64300";
-    public static final String BACKENDLESS_VAL_OWNER_DEVICE_ID = "LGK4205a6e9a63";
     public static final String BACKENDLESS_VAL_FB_EMAIL = "fb_email";
+    public static final String BACKENDLESS_VAL_OWNER_ID = "BBCF673D-BD9D-081B-FF09-364F223A1100";
 
     public static final String BACKENDLESS_TABLE_TREATS = "Treat";
     public static final String BACKENDLESS_TABLE_USERS = "Users";
     public static final String BACKENDLESS_TABLE_USER_COLUMN_TREATS = "treats";
+    public static final String BACKENDLESS_TABLE_USER_COLUMN_PURCHASED_TREATS = "purchasedTreats";
     public static final String BACKENDLESS_DEFAULT_CHANNEL = "default";
-    public static final String BACKENDLESS_OWNER_ID_WHERE_CLAUSE = "ownerId = " + "'" + AppStrings.VAL_OWNER_OBJECT_ID + "'";
+    public static final String BACKENDLESS_OWNER_ID_WHERE_CLAUSE = "ownerId = " + "'" + AppStrings.BACKENDLESS_VAL_OWNER_ID + "'";
     public static final String BACKENDLESS_SORT_CLAUSE_CREATED_DSC = "created DESC";
+    public static final String BACKENDLESS_TABLE_TREAT_COLUMN_IS_VISIBLE_TO_USER = "isVisibleToUser";
 
     //Backendless Errors
     public static final String BACKENDLESS_ERROR_CODE_INVALID_LOGIN_OR_PASSWORD = "3003";
@@ -57,16 +59,18 @@ public class AppStrings {
 
     //OWNER static data
     public static final String VAL_OWNER_NAME = "Winston Churchill";
-    public static String VAL_OWNER_DESCRIPTION = "My name is Winston Churchill";
-    public static final String VAL_OWNER_OBJECT_ID = "B2FD1088-D093-1C3E-FFFE-341893C28000";
+    public static final CharSequence VAL_PURCHASER = "1313";
 
     //Data Fields
-    public static final String KEY_IMAGE = "image";
+    public static final String KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER = "firstTimeLoggedIn";
     public static final String KEY_IS_PURCHASED = "isPurchased";
     public static final String KEY_IS_FIRST_LAUNCH = "isFirstLaunch";
     public static final String KEY_TREAT = "treat";
     public static final String KEY_TREAT_POSITION = "treatPosition";
     public static final String KEY_MESSAGE_FOR_DISPLAY = "messageForDisplay";
+    public static final String KEY_LOGGED_IN_USER = "loggedInUser";
+    public static final String KEY_TIMES_PURCHASED = "timesPurchased";
+    public static final String KEY_IMAGE = "image";
 
     public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_OWNER_ID = "ownerId";
@@ -117,10 +121,14 @@ public class AppStrings {
 
     //View Di Names
     public static final String TREAT_LIST_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "treatListActivityDiscreteScrollViewData";
-    public static final String TREAT_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "treatCreatorActivityDiscreteScrollViewData";
+    public static final String TREAT_DESIGNER_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA = "treatCreatorActivityDiscreteScrollViewData";
     public static final String PAGING_TREATS_LIST_PROGRESS_DIALOG = "treatsListPagingProgressDialog";
     public static final String MAIN_PROGRESS_DIALOG = "treatsListMainProgressDialog";
     public static final String LOGIN_LOGOUT_PROGRESS_DIALOG = "treatsListLoginLogoutProgressDialog";
+
+    //Backendless Query builders names
+    public static final String ALL_OWNER_TREATS_QUERY_BUILDER = "pageTreatsQueryBuilder";
+    public static final String PURCHASED_TREATS_QUERY_BUILDER = "purchasedTreatsQueryBuilder";
 
 }
 

@@ -23,7 +23,7 @@ import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
-import inspire.ariel.inspire.dbmanager.RealmManager;
+import inspire.ariel.inspire.localdbmanager.RealmManager;
 
 public class PushNotificationService extends BackendlessPushService {
 
@@ -61,10 +61,10 @@ public class PushNotificationService extends BackendlessPushService {
     }
 
     private void handelMessageWhenActivityInForeground(Treat newTreat){
-        Intent activityDataIntent = new Intent();
+        Intent activityDataIntent = new Intent(getApplicationContext(), TreatsListActivity.class);
         activityDataIntent.putExtra(AppStrings.KEY_MESSAGE_FOR_DISPLAY, getResources().getString(R.string.user_msg_new_treat));
         activityDataIntent.putExtra(AppStrings.KEY_TREAT, newTreat);
-        activityDataIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        activityDataIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(activityDataIntent); //Todo: generates warning. Take care of it
     }
 
@@ -84,7 +84,7 @@ public class PushNotificationService extends BackendlessPushService {
 
     private Treat parseQuote(Intent intent) {
         String objectId = intent.getStringExtra(AppStrings.KEY_OBJECT_ID);
-        String ownerId = intent.getStringExtra(AppStrings.KEY_OWNER_ID);
+        String groupCode = intent.getStringExtra(AppStrings.KEY_OWNER_ID);
         String text = intent.getStringExtra(AppStrings.KEY_TEXT);
         String fontPath = intent.getStringExtra(AppStrings.KEY_FONT_PATH);
         String bgImageName = intent.getStringExtra(AppStrings.KEY_BG_IMAGE_NAME);
@@ -96,7 +96,7 @@ public class PushNotificationService extends BackendlessPushService {
         textColor = parseQuoteInteger(intent.getStringExtra(AppStrings.KEY_TEXT_COLOR), AppNumbers.DEFAULT_TEXT_COLOR);
 
         Treat treat = Treat.builder().objectId(objectId)
-                .ownerId(ownerId)
+                .ownerId(groupCode)
                 .created(creationDate)
                 .text(text)
                 .textSize(textSize)

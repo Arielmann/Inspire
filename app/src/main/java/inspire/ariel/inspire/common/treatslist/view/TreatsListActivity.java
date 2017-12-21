@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.OrientationHelper;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.di.ViewInjector;
 import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.loginactivity.view.LoginActivity;
+import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.adapter.TreatListAdapter;
 import inspire.ariel.inspire.common.treatslist.events.OnTreatDeleteClickedEvent;
 import inspire.ariel.inspire.common.treatslist.events.OnTreatUpdatedEvent;
@@ -48,8 +50,8 @@ import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
 import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import inspire.ariel.inspire.databinding.ActivityTreatsListBinding;
-import inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity.TreatEditorActivity;
-import inspire.ariel.inspire.owner.treatcreator.view.treatcreatoractivity.TreatsCreatorActivity;
+import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.TreatEditorActivity;
+import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.TreatsCreatorActivity;
 import lombok.Getter;
 
 public class TreatsListActivity extends AppCompatActivity implements TreatsListView, ViewInjector {
@@ -214,6 +216,11 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     @Override
     public void onUserLoggedIn() {
         dismissProgressDialog(loginLogoutProgressDialog);
+    }
+
+    @Override
+    public void onAdminLoggedIn(){
+        dismissProgressDialog(loginLogoutProgressDialog);
         binding.goToCreateTreatActivityBtn.setVisibility(View.VISIBLE);
         treatListMenuView.resetLoginLogoutBtn(getResources().getDrawable(R.drawable.logout_icon), treatListMenuView.getOnLogoutClicked());
         binding.goToCreateTreatActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(TreatsListActivity.this, TreatsCreatorActivity.class));
@@ -287,6 +294,22 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
                 .onPositive((dialog, which) -> {
                     showProgressDialog(mainProgressDialog);
                     presenter.deleteTreat(treatPosition);
+                })
+                .negativeText(R.string.cancel)
+                .onNegative((dialog, which) -> dialog.cancel())
+                .cancelable(true)
+                .show();
+    }
+
+    @Override
+    public void showEnterAdminPasswordDialog(Treat treat, int treatPosition) {
+        new MaterialDialog.Builder(this)
+                .title(R.string.title_put_admin_password)
+                .titleGravity(GravityEnum.CENTER)
+                .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                .input(AppStrings.EMPTY_STRING, AppStrings.EMPTY_STRING, (dialog, input) -> {
+                    showProgressDialog(mainProgressDialog);
+                    presenter.purchaseTreat(input, treat, treatPosition);
                 })
                 .negativeText(R.string.cancel)
                 .onNegative((dialog, which) -> dialog.cancel())

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.facebook.FacebookSdk;
@@ -89,6 +90,8 @@ public class InspireApplication extends Application {
      * if more required operations are added to this method
      */
     private void initFirstLaunch() {
+        Hawk.put(AppStrings.KEY_LOGGED_IN_USER, new BackendlessUser()); //Prevents crushes upon check
+        Hawk.put(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER, false); //No one has connected yet
         List<String> channels = new ArrayList<String>() {{
             add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);
             add(AppStrings.VAL_OWNER_NAME);

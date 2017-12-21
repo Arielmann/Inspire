@@ -3,9 +3,11 @@ package inspire.ariel.inspire.common.treatslist;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import java.util.Date;
 
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import io.realm.RealmModel;
 import io.realm.annotations.Ignore;
@@ -16,17 +18,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
-import weborb.service.ExcludeProperty;
+import weborb.service.ExcludeProperties;
 
 @Data
 @Builder
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {AppStrings.KEY_IMAGE}, callSuper = false)
+@EqualsAndHashCode(exclude = {"image"})//Throws warning if not put as string literal
 @ToString
 @RealmClass
-@ExcludeProperty( propertyName = AppStrings.KEY_IS_PURCHASED )
+@ExcludeProperties( propertyNames = {AppStrings.KEY_IS_PURCHASED, AppStrings.KEY_TIMES_PURCHASED, AppStrings.KEY_IMAGE, AppStrings.BACKENDLESS_TABLE_TREAT_COLUMN_IS_VISIBLE_TO_USER})
 public class Treat implements Parcelable, RealmModel {
 
     @NonNull private String ownerId;
@@ -35,15 +36,12 @@ public class Treat implements Parcelable, RealmModel {
     private int textSize;
     @NonNull private String fontPath;
     @NonNull private String bgImageName;
-    private String objectId;
-    @NonNull @Index private Date created;
+    @Nullable private String objectId;
+    @Nullable @Index private Date created;
     @Ignore private Drawable image;
-    @Setter private boolean isPurchased;
-
-    public void setPurchased(boolean purchased) {
-        isPurchased = purchased;
-    }
-
+    @Builder.Default private int purchasesLimit = AppNumbers.DEFAULT_PURCHASES_LIMIT;
+    @Builder.Default private int timesPurchased = AppNumbers.DEFAULT_TREAT_TIMES_PURCHASED;
+    private boolean isDeletedFromServer;
 
     public Treat(){}
 
@@ -84,16 +82,6 @@ public class Treat implements Parcelable, RealmModel {
             return new Treat[size];
         }
     };
-
-    /*public static Quote newQuote(String text){
-        return Quote.builder().text(text)
-                .fontPath(FontsManager.Font.ALEF_BOLD.getPath())
-                .bgImageName(AppStrings.BLUE_YELLOW_BG)
-                .ownerId(AppStrings.VAL_OWNER_OBJECT_ID)
-                .textSize(Math.round(res.getDimension(R.dimen.error_msg_text_size)))
-                .textColor(Color.BLACK)
-                .build();
-    }*/
 }
 
 

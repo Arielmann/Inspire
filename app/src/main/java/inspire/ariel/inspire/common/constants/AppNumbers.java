@@ -1,5 +1,7 @@
 package inspire.ariel.inspire.common.constants;
 
+import javax.crypto.EncryptedPrivateKeyInfo;
+
 public class AppNumbers {
 
     //App Init
@@ -37,6 +39,7 @@ public class AppNumbers {
 
     //Quotes query
     public static int TREAT_QUERY_PAGE_SIZE = 10;
+    public static int PURCHASED_TREAT_QUERY_PAGE_SIZE = 20;
     public static int TREAT_QUERY_STARTING_OFFSET = 0;
 
     //Color Ints
@@ -60,7 +63,14 @@ public class AppNumbers {
     //Snackbar
     public static final int SNACK_BAR_MAX_LINES = 5;
 
+    //Treats
+    public static final int DEFAULT_PURCHASES_LIMIT = 1;
+    public static final int DEFAULT_TREAT_TIMES_PURCHASED = 0;
+
     //Other
     public static final int NO_HEIGHT = 0;
     public static final int FIRST_LINE = 0;
+    public static final int VAL_PURCHASER = 1313;
+
+
 }

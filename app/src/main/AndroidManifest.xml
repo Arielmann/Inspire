@@ -40,12 +40,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".owner.treatcreator.view.treatcreatoractivity.TreatsCreatorActivity"
+            android:name=".owner.treatdesigner.view.treatdesigneractivity.TreatsCreatorActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
-            android:name=".owner.treatcreator.view.treatcreatoractivity.TreatEditorActivity"
+            android:name=".owner.treatdesigner.view.treatdesigneractivity.TreatEditorActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
@@ -79,6 +79,7 @@
 
         <activity android:name=".common.singletreat.SingleTreatActivity" />
         <activity android:name=".common.loginactivity.view.LoginActivity" />
+        <activity android:name=".owner.treatdesigner.view.treatdesigneractivity.AbstractTreatDesignerActivity"></activity>
     </application>
 
 </manifest>

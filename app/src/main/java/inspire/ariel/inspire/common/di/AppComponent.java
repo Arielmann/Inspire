@@ -10,7 +10,7 @@ import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenterImpl
 import inspire.ariel.inspire.common.treatslist.services.PushNotificationService;
 import inspire.ariel.inspire.common.resources.ResourcesProviderImpl;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
-import inspire.ariel.inspire.owner.treatcreator.presenter.TreatsCreatorPresenterImpl;
+import inspire.ariel.inspire.owner.treatdesigner.presenter.TreatsDesignerPresenterImpl;
 
 /**
  * NOTE: For injecting within any class that wants
@@ -22,7 +22,7 @@ public interface AppComponent {
 
     void inject(TreatsListPresenterImpl treatsListPresenter);
 
-    void inject(TreatsCreatorPresenterImpl treatsCreatorPresenter);
+    void inject(TreatsDesignerPresenterImpl treatsCreatorPresenter);
 
     void inject(ResourcesProviderImpl resourceProvider);
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/treatBgImageLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="@dimen/bg_item_height"
     android:layout_width="@dimen/bg_item_width">

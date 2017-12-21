@@ -49,7 +49,7 @@ public class TreatsListMenuFragment extends Fragment implements TreatListMenuVie
                     .title(R.string.really_logout_title)
                     .titleGravity(GravityEnum.CENTER)
                     .contentGravity(GravityEnum.CENTER)
-                    .positiveText(R.string.delete_title)
+                    .positiveText(R.string.ok)
                     .onPositive((dialog, which) -> {
                         treatsListView.showProgressDialog(treatsListView.getLoginLogoutProgressDialog());
                         treatsListView.getPresenter().logout();
@@ -59,7 +59,6 @@ public class TreatsListMenuFragment extends Fragment implements TreatListMenuVie
                     .cancelable(true)
                     .show();
         }
-
     };
 
     @Override

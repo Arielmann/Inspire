@@ -8,11 +8,7 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.facebook.CallbackManager;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.orhanobut.hawk.Hawk;
 
 import javax.inject.Inject;
 
@@ -26,7 +22,8 @@ import lombok.Getter;
 public class LoginPresenterImpl implements LoginPresenter {
 
     @Inject
-    @Getter CallbackManager fbCallbackManager;
+    @Getter
+    CallbackManager fbCallbackManager;
 
     @Inject
     ResourcesProvider customResourcesProvider;
@@ -55,7 +52,12 @@ public class LoginPresenterImpl implements LoginPresenter {
                 new AsyncCallback<BackendlessUser>() {
                     @Override
                     public void handleResponse(BackendlessUser loggedInUser) {
-                        Log.i(TAG, "Successfully logged in startOperations user's id: " + loggedInUser.getUserId());
+                        Log.i(TAG, "Successfully logged in startOperations user's id: " + loggedInUser.toString());
+                        BackendlessUser previousUser = Hawk.get(AppStrings.KEY_LOGGED_IN_USER);
+                        if (!previousUser.getObjectId().equalsIgnoreCase(loggedInUser.getObjectId())) {
+                            Hawk.put(AppStrings.KEY_LOGGED_IN_USER, loggedInUser);
+                            Hawk.put(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER, true);
+                        }
                         loginView.onUserLoggedIn();
                     }
 

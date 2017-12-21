@@ -48,7 +48,7 @@ dependencies {
     //Facebook
     compile 'com.facebook.android:facebook-android-sdk:4.28.0'
 
-   /* //Stream support
+    /* //Stream support
     compile 'com.annimon:stream:1.1.9'*/
 
     //Lists

@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenter;
 
 public interface TreatsListView {
@@ -18,6 +19,8 @@ public interface TreatsListView {
     void onServerOperationFailed(CharSequence error);
 
     void showReallyDeleteDialog(int treatPosition);
+
+    void showEnterAdminPasswordDialog(Treat treat, int treatPosition);
 
     Context getContext();
 
@@ -35,7 +38,10 @@ public interface TreatsListView {
 
     KProgressHUD getPagingProgressDialog();
 
+    void onAdminLoggedIn();
+
     void showToastMessage(String messageForUser);
 
     void showSnackbarMessage(CharSequence error);
+
 }

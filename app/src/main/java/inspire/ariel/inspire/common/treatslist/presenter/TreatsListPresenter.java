@@ -6,7 +6,6 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.adapter.TreatListAdapterPresenter;
-import io.realm.RealmResults;
 
 public interface TreatsListPresenter {
 
@@ -18,8 +17,6 @@ public interface TreatsListPresenter {
 
     void logout();
 
-    void login(CharSequence password);
-
     DiscreteScrollView.ScrollStateChangeListener<?> getOnScrollChangedListener();
 
     //Called when treat was updated successfully
@@ -27,4 +24,5 @@ public interface TreatsListPresenter {
 
     void deleteTreat(int treatPosition);
 
+    void purchaseTreat(CharSequence adminPassword, Treat treat, int treatPosition);
 }

@@ -9,15 +9,15 @@ import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.events.OnTreatDeleteClickedEvent;
 import inspire.ariel.inspire.common.treatslist.events.OnTreatUpdatedEvent;
-import inspire.ariel.inspire.databinding.VhTreatOptionsBinding;
+import inspire.ariel.inspire.databinding.VhAdminTreatOptionsBinding;
 import lombok.Getter;
 
 public class TreatOptionsVH extends ViewHolder {
 
-    private VhTreatOptionsBinding binding;
+    private VhAdminTreatOptionsBinding binding;
     @Getter private int height;
 
-    public TreatOptionsVH(VhTreatOptionsBinding binding) {
+    public TreatOptionsVH(VhAdminTreatOptionsBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
         calculateLayoutHeight();

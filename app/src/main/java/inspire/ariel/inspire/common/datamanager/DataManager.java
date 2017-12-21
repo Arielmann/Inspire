@@ -1,8 +1,9 @@
 package inspire.ariel.inspire.common.datamanager;
 
+import android.util.Log;
+
 import com.backendless.BackendlessUser;
 
-import inspire.ariel.inspire.common.constants.AppStrings;
 import lombok.Data;
 
 @Data
@@ -10,26 +11,38 @@ public class DataManager {
 
     private static final String TAG = DataManager.class.getSimpleName();
 
-    private static DataManager manager = null;
+    private static DataManager manager;
     private BackendlessUser user;
     private int messagesSize;
+    private UserStatusData userStatusData;
 
     public static DataManager getInstance() {
         if (manager == null) {
             manager = new DataManager();
-            manager.initUser();
+            manager.user = new BackendlessUser();
             manager.messagesSize = 0;
+            manager.setUnauthorizedUser();
         }
         return manager;
     }
 
-    private DataManager() {
+    public void setNormalUser(BackendlessUser user) {
+        this.user = user;
+        manager.userStatusData = UserStatusData.getNormalUserData();
+        Log.i(TAG, "User was set at normal mode");
     }
 
-    private void initUser() {
-        manager.user = new BackendlessUser();
-        manager.user.setProperty(AppStrings.KEY_OBJECT_ID, AppStrings.VAL_OWNER_OBJECT_ID);
-        manager.user.setProperty(AppStrings.KEY_NAME, AppStrings.VAL_OWNER_NAME);
-        manager.user.setProperty(AppStrings.KEY_DESCRIPTION, AppStrings.VAL_OWNER_DESCRIPTION);
+    public void setAdminUser(BackendlessUser user) {
+        this.user = user;
+        manager.userStatusData = UserStatusData.getAdminDataUserData();
+        Log.i(TAG, "User was set at ADMIN mode");
+    }
+
+    public void setUnauthorizedUser() {
+        manager.userStatusData = UserStatusData.getAdminDataUserData();
+        Log.i(TAG, "User was set at Unauthorized mode");
+    }
+
+    private DataManager() {
     }
 }

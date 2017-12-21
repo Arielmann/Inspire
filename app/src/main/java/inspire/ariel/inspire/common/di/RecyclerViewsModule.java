@@ -42,7 +42,7 @@ public class RecyclerViewsModule {
 
     @Provides
     @Singleton
-    @Named(AppStrings.TREAT_CREATOR_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
+    @Named(AppStrings.TREAT_DESIGNER_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
     DiscreteScrollViewData provideTreatCreatorActivityDiscreteScrollViewData(){
         return DiscreteScrollViewData.builder()
                 .hasFixedSize(true)

@@ -4,14 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import javax.inject.Inject;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.app.InspireApplication;
+import inspire.ariel.inspire.common.constants.AppNumbers;
+import inspire.ariel.inspire.common.constants.AppTimeMillis;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerViewComponent;
 import inspire.ariel.inspire.common.di.RecyclerViewsModule;
@@ -24,7 +29,7 @@ import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.databinding.ActivityLoginBinding;
 
-public class LoginActivity extends AppCompatActivity implements LoginView, ViewInjector{
+public class LoginActivity extends AppCompatActivity implements LoginView, ViewInjector {
 
 
     //4267B2 - Facebook blue color
@@ -66,11 +71,20 @@ public class LoginActivity extends AppCompatActivity implements LoginView, ViewI
 
     @Override
     public void onServerOperationFailed(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+        showSnackbarMessage(error);
     }
 
     @Override
     public Context getContext() {
         return this;
+    }
+
+    private void showSnackbarMessage(CharSequence error) {
+        Snackbar snackBar = Snackbar.make(binding.loginLayout, error, AppTimeMillis.ALMOST_FOREVER);
+        View errorView = snackBar.getView();
+        TextView errorTv = errorView.findViewById(android.support.design.R.id.snackbar_text);
+        errorTv.setMaxLines(AppNumbers.SNACK_BAR_MAX_LINES);
+        snackBar.setAction(R.string.ok, view -> snackBar.dismiss());
+        snackBar.show();
     }
 }

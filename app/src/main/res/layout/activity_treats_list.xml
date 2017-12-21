@@ -39,10 +39,10 @@
 
         <Button
             android:id="@+id/goToCreateTreatActivityBtn"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+            android:layout_below="@id/treatListMenuFragment"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:text="+" />
