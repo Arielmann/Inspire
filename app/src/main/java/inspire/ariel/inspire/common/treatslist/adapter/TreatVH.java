@@ -21,6 +21,16 @@ import inspire.ariel.inspire.databinding.VhTreatBinding;
 
 class TreatVH extends RecyclerView.ViewHolder {
 
+
+    /**
+     * Treat possible statuses:
+     * 1. Purchaseable - show green purchase button
+     * 2. Not purchaseable - hide purchase button
+     * 3. Sold out - show gray purchase button
+     * 4. Invisible - hide from user
+     */
+
+
     private static final String TAG = TreatVH.class.getSimpleName();
 
     VhTreatBinding treatBinding;
@@ -43,11 +53,7 @@ class TreatVH extends RecyclerView.ViewHolder {
 
     public void setUIDataOnView(Treat treat, int position) {
         initUserStatusDataBasedViews();
-        if(treat.getPurchasesLimit() <= treat.getTimesPurchased()){
-            treatBinding.purchaseBtn.setBackgroundColor(Color.GRAY);
-            treatBinding.purchaseBtn.setClickable(false);
-            treatBinding.purchaseBtn.setText(treatBinding.getRoot().getResources().getString(R.string.purchased));
-        }
+        initTreatStateBasedViews(treat);
         treatBinding.treatTv.setText(treat.getText());
         treatBinding.treatTv.setTextColor(treat.getTextColor());
         treatBinding.treatTv.setTextSize(treat.getTextSize());
@@ -74,10 +80,19 @@ class TreatVH extends RecyclerView.ViewHolder {
         Log.d(TAG, treat.getText() + " is presented in the list as a treat");
     }
 
-    private void initUserStatusDataBasedViews(){
+    private void initUserStatusDataBasedViews() {
         treatBinding.optionsManagerBtn.setVisibility(DataManager.getInstance().getUserStatusData().getTreatOptionsManagerVisibility());
         treatBinding.purchaseBtn.setClickable(DataManager.getInstance().getUserStatusData().isPurchaseBtnClickable());
         treatBinding.purchaseBtn.setBackgroundColor(DataManager.getInstance().getUserStatusData().getPurchaseBtnColor());
     }
+
+    private void initTreatStateBasedViews(Treat treat) {
+        if (treat.getUserPurchases() >= treat.getPurchasesLimit()) {
+            treatBinding.purchaseBtn.setBackgroundColor(Color.GRAY);
+            treatBinding.purchaseBtn.setClickable(false);
+            treatBinding.purchaseBtn.setText(treatBinding.getRoot().getResources().getString(R.string.sold_out));
+        }
+    }
 }
+
 

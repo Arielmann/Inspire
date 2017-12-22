@@ -29,6 +29,7 @@ import inspire.ariel.inspire.common.di.NetworkModule;
 import inspire.ariel.inspire.common.di.RecyclerViewsModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
 import inspire.ariel.inspire.common.resources.ResourcesInitializer;
+import inspire.ariel.inspire.common.utils.asyncutils.CodependentTasksManager;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import io.realm.Realm;
@@ -45,11 +46,15 @@ public class InspireApplication extends Application {
 
     private static final String TAG = InspireApplication.class.getSimpleName();
     private AppComponent appComponent;
-    private MultipleCoDependentTaskManager firstInitTasksManager;
+    private CodependentTasksManager firstInitTasksManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        initApp();
+    }
+
+    private void initAppComponent(){
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .networkModule(new NetworkModule())
@@ -57,7 +62,6 @@ public class InspireApplication extends Application {
                 .resourcesModule(new ResourcesModule(getResources(), getAssets()))
                 .recyclerViewsModule(new RecyclerViewsModule())
                 .build();
-        initApp();
     }
 
     public AppComponent getAppComponent() {
@@ -65,15 +69,18 @@ public class InspireApplication extends Application {
     }
 
     public void initAppForFirstTimeIfNeeded(GenericOperationCallback operationCallback) {
-        if (!Hawk.contains(AppStrings.KEY_IS_FIRST_LAUNCH)) {
-            firstInitTasksManager = new MultipleCoDependentTaskManager(operationCallback, AppNumbers.MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH);
+        if (!Hawk.contains(AppStrings.KEY_IS_FIRST_LAUNCH) || (boolean)Hawk.get(AppStrings.KEY_IS_FIRST_LAUNCH)) {
+            Hawk.put(AppStrings.KEY_IS_FIRST_LAUNCH, true);
+            firstInitTasksManager = new CodependentTasksManager(operationCallback, AppNumbers.MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH);
             initFirstLaunch();
         } else {
+            Hawk.put(AppStrings.KEY_IS_FIRST_LAUNCH, false);
             operationCallback.onSuccess();
         }
     }
 
     private void initApp() {
+        initAppComponent();
         Realm.init(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -90,8 +97,8 @@ public class InspireApplication extends Application {
      * if more required operations are added to this method
      */
     private void initFirstLaunch() {
-        Hawk.put(AppStrings.KEY_LOGGED_IN_USER, new BackendlessUser()); //Prevents crushes upon check
-        Hawk.put(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER, false); //No one has connected yet
+        Hawk.put(AppStrings.KEY_LOGGED_IN_USER, new BackendlessUser()); //Prevents crushes upon access
+        Hawk.put(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER, true); //No one has connected yet
         List<String> channels = new ArrayList<String>() {{
             add(AppStrings.BACKENDLESS_DEFAULT_CHANNEL);
             add(AppStrings.VAL_OWNER_NAME);
@@ -116,29 +123,5 @@ public class InspireApplication extends Application {
                 firstInitTasksManager.onSingleOperationFailed(getResources().getString(R.string.error_app_init));
             }
         });
-    }
-
-    /**
-     * Not Thread Safe
-     */
-    @RequiredArgsConstructor
-    private class MultipleCoDependentTaskManager {
-        @Getter
-        final GenericOperationCallback callback;
-        private final int mustSucceedOperations;
-        private int alreadySucceeded;
-
-        protected void onSingleOperationSuccessful() {
-            alreadySucceeded++;
-            if (alreadySucceeded == mustSucceedOperations) {
-                Hawk.put(AppStrings.KEY_IS_FIRST_LAUNCH, false);
-                callback.onSuccess();
-            }
-        }
-
-        protected void onSingleOperationFailed(String reason) {
-            callback.onFailure(reason);
-        }
-
     }
 }

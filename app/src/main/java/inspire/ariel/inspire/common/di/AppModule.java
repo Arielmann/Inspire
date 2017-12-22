@@ -14,7 +14,7 @@ import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.utils.errorutils.ErrorsManager;
-import inspire.ariel.inspire.localdbmanager.RealmManager;
+import inspire.ariel.inspire.common.localdbmanager.RealmManager;
 
 @Module
 

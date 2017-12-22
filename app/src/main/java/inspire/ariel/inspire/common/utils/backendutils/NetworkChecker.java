@@ -4,20 +4,20 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class NetworkHelper {
+public class NetworkChecker {
 
-    private static NetworkHelper insideNetworkHelper;
+    private static NetworkChecker insideNetworkChecker;
 
 
     //creates the only instance
-    private NetworkHelper() {}
+    private NetworkChecker() {}
 
     // prevents creating of instances
-    public static NetworkHelper getInstance() { // create a static common database
-        if (insideNetworkHelper == null) {
-            insideNetworkHelper = new NetworkHelper();
+    public static NetworkChecker getInstance() { // create a static common database
+        if (insideNetworkChecker == null) {
+            insideNetworkChecker = new NetworkChecker();
         }
-        return insideNetworkHelper;
+        return insideNetworkChecker;
     }
 
     public boolean hasNetworkAccess(Context context) {

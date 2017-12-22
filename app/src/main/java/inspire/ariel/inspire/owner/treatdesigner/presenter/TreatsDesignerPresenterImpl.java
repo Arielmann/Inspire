@@ -28,9 +28,9 @@ import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenterImpl;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
-import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
+import inspire.ariel.inspire.common.utils.backendutils.NetworkChecker;
 import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
-import inspire.ariel.inspire.localdbmanager.RealmManager;
+import inspire.ariel.inspire.common.localdbmanager.RealmManager;
 import inspire.ariel.inspire.owner.treatdesigner.model.TreatDesignerModel;
 import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.TreatsDesignerViewController;
 import lombok.Getter;
@@ -52,7 +52,7 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
     TreatDesignerModel model;
 
     @Inject
-    NetworkHelper networkHelper;
+    NetworkChecker networkChecker;
 
     private String TAG = TreatsListPresenterImpl.class.getName();
     private TreatsDesignerViewController treatDesignerViewController;
@@ -115,12 +115,12 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
             return false;
         }
 
-        if (!NetworkHelper.getInstance().hasNetworkAccess(treatDesignerViewController.getContext())) {
+        if (!NetworkChecker.getInstance().hasNetworkAccess(treatDesignerViewController.getContext())) {
             treatDesignerViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_no_connection));
             return false;
         }
 
-        if (!networkHelper.hasNetworkAccess(treatDesignerViewController.getContext())) {
+        if (!networkChecker.hasNetworkAccess(treatDesignerViewController.getContext())) {
             treatDesignerViewController.dismissProgressDialogAndShowErrorMessage(customResourcesProvider.getResources().getString(R.string.error_no_connection));
             return false;
         }

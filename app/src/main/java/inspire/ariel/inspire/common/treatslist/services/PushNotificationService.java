@@ -23,7 +23,7 @@ import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
-import inspire.ariel.inspire.localdbmanager.RealmManager;
+import inspire.ariel.inspire.common.localdbmanager.RealmManager;
 
 public class PushNotificationService extends BackendlessPushService {
 

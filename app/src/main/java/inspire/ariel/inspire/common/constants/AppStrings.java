@@ -27,7 +27,8 @@ public class AppStrings {
     public static final String BACKENDLESS_TABLE_USER_COLUMN_TREATS = "treats";
     public static final String BACKENDLESS_TABLE_USER_COLUMN_PURCHASED_TREATS = "purchasedTreats";
     public static final String BACKENDLESS_DEFAULT_CHANNEL = "default";
-    public static final String BACKENDLESS_OWNER_ID_WHERE_CLAUSE = "ownerId = " + "'" + AppStrings.BACKENDLESS_VAL_OWNER_ID + "'";
+    public static final String BACKENDLESS_OWNER_ID_AND_VISIBLE_WHERE_CLAUSE = AppStrings.KEY_OWNER_ID + " = " + "'" + AppStrings.BACKENDLESS_VAL_OWNER_ID + "'" + " and " + AppStrings.KEY_VISIBLE + " = true";
+    public static final String BACKENDLESS_OWNER_ID__WHERE_CLAUSE = AppStrings.KEY_OWNER_ID + " = " + "'" + AppStrings.BACKENDLESS_VAL_OWNER_ID + "'";
     public static final String BACKENDLESS_SORT_CLAUSE_CREATED_DSC = "created DESC";
     public static final String BACKENDLESS_TABLE_TREAT_COLUMN_IS_VISIBLE_TO_USER = "isVisibleToUser";
 
@@ -59,7 +60,7 @@ public class AppStrings {
 
     //OWNER static data
     public static final String VAL_OWNER_NAME = "Winston Churchill";
-    public static final CharSequence VAL_PURCHASER = "1313";
+    public static final String VAL_PURCHASER = "1313";
 
     //Data Fields
     public static final String KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER = "firstTimeLoggedIn";
@@ -69,19 +70,20 @@ public class AppStrings {
     public static final String KEY_TREAT_POSITION = "treatPosition";
     public static final String KEY_MESSAGE_FOR_DISPLAY = "messageForDisplay";
     public static final String KEY_LOGGED_IN_USER = "loggedInUser";
-    public static final String KEY_TIMES_PURCHASED = "timesPurchased";
+    public static final String KEY_USER_PURCHASES = "userPurchases";
     public static final String KEY_IMAGE = "image";
 
     public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_OWNER_ID = "ownerId";
     public static final String KEY_NAME = "name";
     public static final String KEY_CREATED = "created";
-    public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_TEXT = "text";
     public static final String KEY_FONT_PATH = "fontPath";
     public static final String KEY_TEXT_COLOR = "textColor";
     public static final String KEY_TEXT_SIZE = "textSize";
     public static final String KEY_BG_IMAGE_NAME = "bgImageName";
+    public static final String KEY_PURCHASEABLE = "purchaseable";
+    public static final String KEY_VISIBLE = "visible";
 
     //String Helpers
     public static final String EMPTY_STRING = "";

@@ -16,7 +16,7 @@ public interface TreatsListView {
 
     ContentResolver getContentResolver();
 
-    void onServerOperationFailed(CharSequence error);
+    void onServerOperationFailed(String error);
 
     void showReallyDeleteDialog(int treatPosition);
 
@@ -38,10 +38,8 @@ public interface TreatsListView {
 
     KProgressHUD getPagingProgressDialog();
 
-    void onAdminLoggedIn();
-
     void showToastMessage(String messageForUser);
 
-    void showSnackbarMessage(CharSequence error);
+    void showSnackbarMessage(String message);
 
 }

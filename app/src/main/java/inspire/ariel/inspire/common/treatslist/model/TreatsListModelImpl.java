@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.treatslist.Treat;
-import inspire.ariel.inspire.localdbmanager.RealmManager;
+import inspire.ariel.inspire.common.localdbmanager.RealmManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,67 +27,63 @@ public class TreatsListModelImpl implements TreatListModel {
     RealmManager realmManager;
 
     private static TreatsListModelImpl model;
-    @Setter
-    @Getter
-    private List<Treat> treatsInAdapter;
+    @Setter @Getter private List<Treat> treatsInAdapter;
 
     public static TreatsListModelImpl getInstance(AppComponent component) {
         if (model == null) {
             model = new TreatsListModelImpl();
             component.inject(model);
             model.treatsInAdapter = new ArrayList<>();
-            if (Hawk.contains(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER)) {
-                if (!((boolean) Hawk.get(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER))) {
-                    model.treatsInAdapter = model.realmManager.getTreats();
-                }
+            if (!((boolean) Hawk.get(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER))) {
+                model.treatsInAdapter = model.realmManager.getVisibleTreats();
             }
         }
-            return model;
+        return model;
     }
 
     private TreatsListModelImpl() {
-        }
-
-        @Override
-        public void saveTreatToDb (Treat treat){
-            realmManager.saveTreat(treat);
-        }
-
-        @Override
-        public void saveTreatsListToDb (List < Treat > treats) {
-            realmManager.saveTreatsList(treats);
-        }
-
-        @Override
-        public void syncRealmWithServerTreats (List < Treat > serverTreats) {
-            realmManager.syncRealmWithServerTreats(serverTreats);
-        }
-
-        @Override
-        public void deleteTreatFromDb (Treat treat){
-            realmManager.deleteTreat(treat);
-        }
-
-        @Override
-        public void updateTreatInDb (Treat treat){
-            realmManager.updateTreat(treat);
-        }
-
-        @Override
-        public void removeAllTreatsFromDb () {
-            realmManager.deleteAllTreats();
-        }
-
-        @Override
-        public void updatePurchasedTreatsInDb (List < Treat > serverTreats) {
-            realmManager.updatePurchasedTreatsInDb(serverTreats);
-        }
-
-        @Override
-        public List<Treat> getTreatsFromDb () {
-            return realmManager.getTreats();
-        }
     }
+
+    @Override
+    public void saveTreatToDb(Treat treat) {
+        realmManager.saveTreat(treat);
+    }
+
+    @Override
+    public void saveTreatsListToDb(List<Treat> treats) {
+        realmManager.saveTreatsList(treats);
+    }
+
+    @Override
+    public void syncRealmWithServerTreats(List<Treat> serverTreats) {
+        realmManager.syncRealmWithServerTreats(serverTreats);
+    }
+
+    @Override
+    public void updateTreatInDb(Treat treat) {
+        realmManager.updateTreat(treat);
+    }
+
+    @Override
+    public void deleteAllTreatsFromDb() {
+        realmManager.deleteAllTreats();
+    }
+
+    @Override
+    public void updatePurchasedTreatsInDb(List<Treat> serverTreats) {
+        realmManager.updatePurchasedTreatsInDb(serverTreats);
+    }
+
+    @Override
+    public List<Treat> getVisibleTreatsFromDb() {
+        return realmManager.getVisibleTreats();
+    }
+
+    @Override
+    public void deleteTreatFromDb(Treat treat) {
+        realmManager.deleteTreat(treat);
+    }
+}
 
 
 

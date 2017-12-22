@@ -32,6 +32,7 @@ import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.constants.AppTimeMillis;
+import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerViewComponent;
 import inspire.ariel.inspire.common.di.PresentersModule;
@@ -101,7 +102,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
         isInStack = true;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_treats_list);
         inject();
-        showProgressDialog(mainProgressDialog);
+        presenter.prepareForFirsLaunchIfNeeded();
         ((InspireApplication) getApplication()).initAppForFirstTimeIfNeeded(new GenericOperationCallback() {
             @Override
             public void onSuccess() {
@@ -216,12 +217,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     @Override
     public void onUserLoggedIn() {
         dismissProgressDialog(loginLogoutProgressDialog);
-    }
-
-    @Override
-    public void onAdminLoggedIn(){
-        dismissProgressDialog(loginLogoutProgressDialog);
-        binding.goToCreateTreatActivityBtn.setVisibility(View.VISIBLE);
+        binding.goToCreateTreatActivityBtn.setVisibility(DataManager.getInstance().getUserStatusData().getGoToTreatDesignerVisibility());
         treatListMenuView.resetLoginLogoutBtn(getResources().getDrawable(R.drawable.logout_icon), treatListMenuView.getOnLogoutClicked());
         binding.goToCreateTreatActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(TreatsListActivity.this, TreatsCreatorActivity.class));
     }
@@ -268,8 +264,11 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
      * Show Messages
      */
 
-    public void showSnackbarMessage(CharSequence error) {
-        Snackbar snackBar = Snackbar.make(binding.treatListLayout, error, AppTimeMillis.ALMOST_FOREVER);
+    public void showSnackbarMessage(String message) {
+        if(message.isEmpty()){
+            return;
+        }
+        Snackbar snackBar = Snackbar.make(binding.treatListLayout, message, AppTimeMillis.ALMOST_FOREVER);
         View errorView = snackBar.getView();
         TextView errorTv = errorView.findViewById(android.support.design.R.id.snackbar_text);
         errorTv.setMaxLines(AppNumbers.SNACK_BAR_MAX_LINES);
@@ -278,7 +277,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     }
 
     @Override
-    public void onServerOperationFailed(CharSequence error) {
+    public void onServerOperationFailed(String error) {
         dismissAllProgressDialogs();
         showSnackbarMessage(error);
     }
@@ -293,7 +292,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
                 .positiveText(R.string.delete_title)
                 .onPositive((dialog, which) -> {
                     showProgressDialog(mainProgressDialog);
-                    presenter.deleteTreat(treatPosition);
+                    presenter.setTreatUnPurchaseable(treatPosition);
                 })
                 .negativeText(R.string.cancel)
                 .onNegative((dialog, which) -> dialog.cancel())
@@ -309,7 +308,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
                 .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
                 .input(AppStrings.EMPTY_STRING, AppStrings.EMPTY_STRING, (dialog, input) -> {
                     showProgressDialog(mainProgressDialog);
-                    presenter.purchaseTreat(input, treat, treatPosition);
+                    presenter.purchaseTreat(input.toString(), treat, treatPosition);
                 })
                 .negativeText(R.string.cancel)
                 .onNegative((dialog, which) -> dialog.cancel())

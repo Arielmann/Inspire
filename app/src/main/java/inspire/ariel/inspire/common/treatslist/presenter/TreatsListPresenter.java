@@ -9,6 +9,8 @@ import inspire.ariel.inspire.common.treatslist.adapter.TreatListAdapterPresenter
 
 public interface TreatsListPresenter {
 
+    void prepareForFirsLaunchIfNeeded();
+
     void startOperations(TreatListAdapterPresenter adapterPresenter);
 
     void onDestroy();
@@ -22,7 +24,7 @@ public interface TreatsListPresenter {
     //Called when treat was updated successfully
     void onTreatUpdated(Intent data);
 
-    void deleteTreat(int treatPosition);
+    void setTreatUnPurchaseable(int treatPosition);
 
-    void purchaseTreat(CharSequence adminPassword, Treat treat, int treatPosition);
+    void purchaseTreat(String adminPassword, Treat treat, int treatPosition);
 }

@@ -33,7 +33,6 @@
         <Button
             android:id="@+id/purchaseBtn"
             android:layout_width="wrap_content"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:background="@color/md_green_200"
             android:textAllCaps="false"

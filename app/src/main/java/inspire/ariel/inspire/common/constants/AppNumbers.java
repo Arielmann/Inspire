@@ -1,11 +1,10 @@
 package inspire.ariel.inspire.common.constants;
 
-import javax.crypto.EncryptedPrivateKeyInfo;
-
 public class AppNumbers {
 
     //App Init
     public static final int MUST_COMPLETED_TASKS_ON_FIRST_LAUNCH = 1;
+    public static final int MUST_COMPLETED_TASKS_ON_TREAT_PURCHASES = 2;
 
     //Ids
     public static final int NOTIFICATIONS_NE_TREAT_ID = 1;
@@ -18,6 +17,7 @@ public class AppNumbers {
 
     //Text Views
     public static final int ELLIPSIZING_TV_DEFAULT_LINE_HEIGHT_DIVIDER = 96;
+
 
     //Font Sizes
     public static int DEFAULT_TEXT_SIZE = 45;

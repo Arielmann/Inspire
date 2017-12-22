@@ -16,13 +16,13 @@ public interface TreatListModel {
 
     void syncRealmWithServerTreats(List<Treat> serverTreats);
 
-    void deleteTreatFromDb(Treat treat);
-
     void updateTreatInDb(Treat treat);
 
-    void removeAllTreatsFromDb();
+    void deleteAllTreatsFromDb();
 
     void updatePurchasedTreatsInDb(List<Treat> serverTreats);
 
-    List<Treat> getTreatsFromDb();
+    List<Treat> getVisibleTreatsFromDb();
+
+    void deleteTreatFromDb(Treat treat);
 }

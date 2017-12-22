@@ -15,7 +15,7 @@ import dagger.Provides;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.treatslist.Treat;
-import inspire.ariel.inspire.common.utils.backendutils.NetworkHelper;
+import inspire.ariel.inspire.common.utils.backendutils.NetworkChecker;
 
 @Module
 public class NetworkModule {
@@ -39,7 +39,7 @@ public class NetworkModule {
     DataQueryBuilder providePagedTreatsQueryBuilder() {
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setSortBy(AppStrings.BACKENDLESS_SORT_CLAUSE_CREATED_DSC);
-        queryBuilder.setWhereClause(AppStrings.BACKENDLESS_OWNER_ID_WHERE_CLAUSE);
+        queryBuilder.setWhereClause(AppStrings.BACKENDLESS_OWNER_ID_AND_VISIBLE_WHERE_CLAUSE);
         queryBuilder.setPageSize(AppNumbers.TREAT_QUERY_PAGE_SIZE).setOffset(AppNumbers.TREAT_QUERY_STARTING_OFFSET);
         return queryBuilder;
     }
@@ -56,8 +56,8 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    NetworkHelper provideNetworkHelper() {
-        return NetworkHelper.getInstance();
+    NetworkChecker provideNetworkChecker() {
+        return NetworkChecker.getInstance();
     }
 
     @Provides
