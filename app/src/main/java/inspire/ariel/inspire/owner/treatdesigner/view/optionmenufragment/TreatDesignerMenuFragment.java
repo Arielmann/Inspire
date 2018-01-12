@@ -71,7 +71,7 @@ public class TreatDesignerMenuFragment extends Fragment implements TreatDesigner
     }
 
     @Override
-    public void initView() {
+    public void init() {
         initExpandableLayouts();
         initImgButtons();
         initRecyclerViews();

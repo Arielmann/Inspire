@@ -6,7 +6,7 @@
     <string name="action_choose_treat_text_color">Color</string>
     <string name="action_choose_treat_text_size">Size</string>
     <string name="initialization_msg">Initializing…</string>
-    <string name="error_app_init">There was an error loading the app. Please check your internet connection and restart :)</string>
+    <string name="error_app_init">There was an error loading the app. Please check your internet connection and restart</string>
     <string name="error_device_registration">\"There was an error registering your device to the app, please restart and try again in a few minutes\"</string>
     <string name="error_empty_treat">Cannot upload empty treat. Make sense doesn\'t it? :)</string>
     <string name="error_no_treats">There is nothing to display, yet…</string>
@@ -49,7 +49,7 @@
     <string name="user_msg_new_treat">A fresh new message has arrived.</string>
     <string name="no_new_quotes_from_paging">There aren\'t any older messages.</string>
     <string name="title_put_admin_password">Ask a crew member to put the admin password for you</string>
-    <string name="purchase_title">Go!</string>
+    <string name="title_purchase">Purchase</string>
     <string name="error_login_validation">We could not verify your user data. App is initiated in offline mode. Make sure you have internet connection and restart the app.</string>
     <string name="error_purchase_treat">Could not make the purchase at the moment. please try again later.</string>
     <string name="error_no_connection_for_first_time_logged_in">We need network connection to get everything you need. Please restart the app while online.</string>
@@ -60,5 +60,13 @@
     //Facebook
     <string name="fb_app_id">827806877381190</string>
     <string name="fb_login_protocol_scheme">fb827806877381190</string>
+
+    //Drawer Items
+    <string name="drawer_item_title_purchases_history">Purchases History</string>
+    <string name="drawer_item_title_logout">Logout</string>
+    <string name="drawer_item_title_create_treat">New Treat</string>
+    <string name="title_all_treats">All Treats</string>
+    <string name="title_my_treats">My Treats</string>
+    <string name="error_treat_not_purchaseable">Treat is not purchaseable at the moment</string>
 
 </resources>

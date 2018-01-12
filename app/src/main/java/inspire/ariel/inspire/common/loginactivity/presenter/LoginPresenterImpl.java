@@ -57,10 +57,14 @@ public class LoginPresenterImpl implements LoginPresenter {
                         Log.i(TAG, "Successfully logged in startOperations user's id: " + loggedInUser.toString());
                         BackendlessUser previousUser = Hawk.get(AppStrings.KEY_LOGGED_IN_USER);
                         Hawk.put(AppStrings.KEY_LOGGED_IN_USER, loggedInUser);
-                        if (previousUser.getObjectId() != null && !previousUser.getObjectId().equalsIgnoreCase(loggedInUser.getObjectId())) {
+                        String prevObjId = previousUser.getObjectId();
+                        String currObjId = loggedInUser.getObjectId();
+                        if (prevObjId != null && prevObjId.equals(currObjId)) {
                             Hawk.put(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER, false); //Same user logged in again
+                        }else {
+                            Hawk.put(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER, true);
                         }
-                        Hawk.put(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER, true);
+                        //TODO: Ask for user permmisions
                         loginView.onUserLoggedIn();
                     }
 

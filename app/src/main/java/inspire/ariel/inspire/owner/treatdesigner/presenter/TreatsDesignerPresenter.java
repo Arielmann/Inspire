@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 
 public interface TreatsDesignerPresenter {
 

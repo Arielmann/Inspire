@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenter;
 
 public interface TreatsListView {

@@ -52,6 +52,12 @@ public class AppStrings {
     public static final String SAVED_STATE_OLD_TREAT = "oldTreat";
     public static final String SAVED_STATE_OLD_TREAT_POSITION = "oldTreatPosition";
 
+    //Drawer
+    public static final String LOGOUT_DRAWER_ITEM = "logoutDraerItem";
+    public static final String PURCHASE_HISTORY_DRAWER_ITEM = "purchasehistoryDrawerItem";
+    public static final String CREATE_TREAT_DRAWER_ITEM = "createTreatDrawerItem";
+
+
     //Prefixes
     public static String PREFIX_DRAWABLE_PATH = "android.resource://" + BuildConfig.APPLICATION_ID + "/drawable/";
 

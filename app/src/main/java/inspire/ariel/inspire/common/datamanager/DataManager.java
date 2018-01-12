@@ -19,7 +19,6 @@ public class DataManager {
     public static DataManager getInstance() {
         if (manager == null) {
             manager = new DataManager();
-            manager.user = new BackendlessUser();
             manager.messagesSize = 0;
             manager.setUnauthorizedUserStatus();
         }
@@ -39,7 +38,8 @@ public class DataManager {
     }
 
     public void setUnauthorizedUserStatus() {
-        manager.userStatusData = UserStatusData.getAdminDataUserData();
+        manager.user = new BackendlessUser();
+        manager.userStatusData = UserStatusData.getUnAuthorizedUserData();
         Log.i(TAG, "User was set at Unauthorized mode");
     }
 

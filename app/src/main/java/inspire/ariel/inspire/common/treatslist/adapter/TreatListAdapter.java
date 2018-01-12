@@ -1,14 +1,13 @@
 package inspire.ariel.inspire.common.treatslist.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.treatslist.events.OnPurchaseClickListener;
 import inspire.ariel.inspire.databinding.VhAdminTreatOptionsBinding;
 import inspire.ariel.inspire.databinding.VhTreatBinding;

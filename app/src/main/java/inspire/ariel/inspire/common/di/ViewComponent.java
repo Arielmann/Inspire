@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import inspire.ariel.inspire.common.loginactivity.view.LoginActivity;
+import inspire.ariel.inspire.common.drawer.DrawerFragment;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.owner.treatdesigner.view.optionmenufragment.TreatDesignerMenuFragment;
 import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.AbstractTreatDesignerActivity;
@@ -22,4 +23,5 @@ public interface ViewComponent {
     void inject(LoginActivity loginActivity);
 
     void inject(AbstractTreatDesignerActivity abstractTreatDesignerActivity);
+
 }

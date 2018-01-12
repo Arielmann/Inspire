@@ -9,27 +9,27 @@ import android.view.View;
 
 import com.orhanobut.dialogplus.DialogPlus;
 
+import hugo.weaving.DebugLog;
 import inspire.ariel.inspire.R;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.singletreat.SingleTreatActivity;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.treatslist.events.OnPurchaseClickListener;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.databinding.VhAdminTreatOptionsBinding;
 import inspire.ariel.inspire.databinding.VhTreatBinding;
 
+
+/**
+ * {@link Treat Treat} View Holder possible statuses:
+ * <pre>1. Purchaseable - show green purchase button</pre>
+ * <pre>2. Not purchaseable or user is unauthorized  - hide purchase button</pre>
+ * <pre>3. Sold out - show gray purchase button</pre>
+ */
+
 class TreatVH extends RecyclerView.ViewHolder {
-
-
-    /**
-     * Treat possible statuses:
-     * 1. Purchaseable - show green purchase button
-     * 2. Not purchaseable - hide purchase button
-     * 3. Sold out - show gray purchase button
-     * 4. Invisible - hide from user
-     */
-
 
     private static final String TAG = TreatVH.class.getSimpleName();
 
@@ -52,8 +52,8 @@ class TreatVH extends RecyclerView.ViewHolder {
     }
 
     public void setUIDataOnView(Treat treat, int position) {
-        initUserStatusDataBasedViews();
-        initTreatStateBasedViews(treat);
+        initUserStatusDataBasedViews(treat, position);
+        initTreatStateBasedViews(treat, position);
         treatBinding.treatTv.setText(treat.getText());
         treatBinding.treatTv.setTextColor(treat.getTextColor());
         treatBinding.treatTv.setTextSize(treat.getTextSize());
@@ -65,6 +65,49 @@ class TreatVH extends RecyclerView.ViewHolder {
             itemView.getContext().startActivity(intent);
         });
 
+        Log.d(TAG, treat.getText() + " is presented in the list as a treat");
+    }
+
+    @DebugLog
+    private void initUserStatusDataBasedViews(Treat treat, int position) {
+        treatBinding.optionsManagerBtn.setVisibility(DataManager.getInstance().getUserStatusData().getTreatOptionsVisibility());
+        if(treatBinding.optionsManagerBtn.getVisibility() == View.VISIBLE){
+            setTreatOptionsClickListener(treat, position);
+        }
+    }
+
+    private void initTreatStateBasedViews(Treat treat, int position) {
+
+        if (treat.getPurchasesLimit() == AppNumbers.NOT_PURCHASEABLE) { //If not purchaseable
+            if (treat.getUserPurchases() > 0) { //User might have bought it earlier
+                setTreatSoldOut();
+            } else {
+                treatBinding.purchaseBtn.setVisibility(View.GONE);
+            }
+            return;
+        }
+
+        if (treat.getUserPurchases() >= treat.getPurchasesLimit()) { //If user reached the limit
+            setTreatSoldOut();
+            return;
+        }
+
+        setTreatPurchaseable(treat, position);
+    }
+
+    private void setTreatSoldOut() {
+        treatBinding.purchaseBtn.setBackgroundColor(Color.GRAY);
+        treatBinding.purchaseBtn.setOnClickListener(view -> Log.d(TAG, "Treat already sold out"));
+        treatBinding.purchaseBtn.setText(treatBinding.getRoot().getResources().getString(R.string.sold_out));
+    }
+
+    private void setTreatPurchaseable(Treat treat, int position){
+        treatBinding.purchaseBtn.setBackgroundColor(Color.GREEN);
+        treatBinding.purchaseBtn.setText(treatBinding.getRoot().getResources().getString(R.string.title_purchase));
+        treatBinding.purchaseBtn.setOnClickListener(view -> onPurchaseClickListener.onClick(treat, position));
+    }
+
+    private void setTreatOptionsClickListener(Treat treat, int position){
         treatBinding.optionsManagerBtn.setOnClickListener((View view) -> {
             TreatOptionsVH treatOptions = new TreatOptionsVH(treatAdminOptionsBinding);
             DialogPlus dialog = DialogPlus.newDialog(treatBinding.getRoot().getContext())
@@ -75,24 +118,5 @@ class TreatVH extends RecyclerView.ViewHolder {
             dialog.show();
             treatOptions.init(dialog, treat, position); //Must call after dialog has shown
         });
-
-        treatBinding.purchaseBtn.setOnClickListener(view -> onPurchaseClickListener.onClick(treat, position));
-        Log.d(TAG, treat.getText() + " is presented in the list as a treat");
-    }
-
-    private void initUserStatusDataBasedViews() {
-        treatBinding.optionsManagerBtn.setVisibility(DataManager.getInstance().getUserStatusData().getTreatOptionsManagerVisibility());
-        treatBinding.purchaseBtn.setClickable(DataManager.getInstance().getUserStatusData().isPurchaseBtnClickable());
-        treatBinding.purchaseBtn.setBackgroundColor(DataManager.getInstance().getUserStatusData().getPurchaseBtnColor());
-    }
-
-    private void initTreatStateBasedViews(Treat treat) {
-        if (treat.getUserPurchases() >= treat.getPurchasesLimit()) {
-            treatBinding.purchaseBtn.setBackgroundColor(Color.GRAY);
-            treatBinding.purchaseBtn.setClickable(false);
-            treatBinding.purchaseBtn.setText(treatBinding.getRoot().getResources().getString(R.string.sold_out));
-        }
     }
 }
-
-

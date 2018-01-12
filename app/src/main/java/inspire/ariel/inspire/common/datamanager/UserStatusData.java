@@ -3,6 +3,13 @@ package inspire.ariel.inspire.common.datamanager;
 import android.graphics.Color;
 import android.view.View;
 
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import inspire.ariel.inspire.R;
+import inspire.ariel.inspire.common.constants.AppNumbers;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -21,27 +28,28 @@ public class UserStatusData {
      * 2. For unautherized user
      * 3. For admin data
      */
+    @Getter
+    private int goToTreatDesignerVisibility;
+ /*   @Getter
+    private int purchaseBtnVisibility;*/
+    @Getter
+    private int treatOptionsVisibility;
 
-    @Getter private int goToTreatDesignerVisibility;
-    @Getter private boolean purchaseBtnClickable;
-    @Getter private int purchaseBtnColor;
-    @Getter private int treatOptionsManagerVisibility;
-
-    @Getter static UserStatusData unAuthorizedUserData = UserStatusData.builder()
+    @Getter
+    static UserStatusData unAuthorizedUserData = UserStatusData.builder()
             .goToTreatDesignerVisibility(View.GONE)
-            .goToTreatDesignerVisibility(View.GONE)
-            .purchaseBtnClickable(false)
-            .purchaseBtnColor(Color.GRAY).build();
+            .treatOptionsVisibility(View.GONE)
+            .build();
 
-    @Getter static UserStatusData normalUserData = UserStatusData.builder()
-            .treatOptionsManagerVisibility(View.GONE)
+    @Getter
+    static UserStatusData normalUserData = UserStatusData.builder()
             .goToTreatDesignerVisibility(View.GONE)
-            .purchaseBtnClickable(true)
-            .purchaseBtnColor(Color.GREEN).build();
+            .treatOptionsVisibility(View.GONE)
+            .build();
 
-    @Getter static UserStatusData adminDataUserData = UserStatusData.builder()
-            .treatOptionsManagerVisibility(View.VISIBLE)
+    @Getter
+    static UserStatusData adminDataUserData = UserStatusData.builder()
             .goToTreatDesignerVisibility(View.VISIBLE)
-            .purchaseBtnClickable(true)
-            .purchaseBtnColor(Color.GREEN).build();
+            .treatOptionsVisibility(View.VISIBLE)
+            .build();
 }

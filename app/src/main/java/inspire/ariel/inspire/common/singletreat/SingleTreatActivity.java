@@ -8,7 +8,7 @@ import android.text.method.ScrollingMovementMethod;
 
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.imageutils.ImageUtils;
 import inspire.ariel.inspire.databinding.ActivitySingleTreatBinding;

@@ -65,12 +65,16 @@ public class AppNumbers {
 
     //Treats
     public static final int DEFAULT_PURCHASES_LIMIT = 1;
-    public static final int DEFAULT_TREAT_TIMES_PURCHASED = 0;
+    public static final int DEFAULT_TREAT_USER_PURCHASED = 0;
+    public static final int NOT_PURCHASEABLE = 0;
+
+    //Drawer
+    public static final long CREATE_TREAT_DRAWER_ITEM_IDENTIFIER = 0;
+    public static final long PURCHASE_HISTORY_DRAWER_ITEM_IDENTIFIER = 1;
+    public static final long LOGOUT_DRAWER_ITEM_IDENTIFIER = 2;
 
     //Other
     public static final int NO_HEIGHT = 0;
     public static final int FIRST_LINE = 0;
-    public static final int VAL_PURCHASER = 1313;
-
 
 }

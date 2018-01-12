@@ -19,9 +19,9 @@ import lombok.NonNull;
 public class PresentersModule {
 
     @NonNull private AppComponent appComponent;
-    private TreatsDesignerViewController treatsDesignerViewController;
-    private TreatsListView treatsListView;
-    private LoginView loginView;
+    private final TreatsDesignerViewController treatsDesignerViewController;
+    private final TreatsListView treatsListView;
+    private final LoginView loginView;
 
     public PresentersModule(AppComponent appComponent, TreatsDesignerViewController treatsDesignerViewController, TreatsListView treatsListView, LoginView loginView) {
         this.appComponent = appComponent;

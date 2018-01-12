@@ -8,13 +8,14 @@
         android:background="@drawable/pink_grey_bg"
         android:orientation="vertical">
 
-        <fragment
+       <fragment
             android:id="@+id/treatListMenuFragment"
             android:name="inspire.ariel.inspire.common.treatslist.view.optionsmenufragment.TreatsListMenuFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
+
 
         <com.yarolegovich.discretescrollview.DiscreteScrollView
             android:id="@+id/treatsRv"

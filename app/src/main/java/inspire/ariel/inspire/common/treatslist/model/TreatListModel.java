@@ -1,28 +1,29 @@
 package inspire.ariel.inspire.common.treatslist.model;
 
+import android.content.Context;
+
 import java.util.List;
 
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
+import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 
 public interface TreatListModel {
 
-    List<Treat> getTreatsInAdapter();
+    List<Treat> getTreats();
 
-    void setTreatsInAdapter(List<Treat> treats);
+    void setTreats(List<Treat> treats);
 
-    void saveTreatToDb(Treat newTreat);
+    void insertOrUpdateTreatsListToDb(List<Treat> treats);
 
-    void saveTreatsListToDb(List<Treat> treats);
+    void syncRealmWithServerTreats(Context context, List<Treat> serverTreats, GenericOperationCallback callback);
 
-    void syncRealmWithServerTreats(List<Treat> serverTreats);
+    void syncPurchasedTreatsInDb(Context context, List<Treat> serverTreats, GenericOperationCallback callback);
 
     void updateTreatInDb(Treat treat);
 
+    void updateTreatUserPurchasesInDb(Treat treat);
+
     void deleteAllTreatsFromDb();
-
-    void updatePurchasedTreatsInDb(List<Treat> serverTreats);
-
-    List<Treat> getVisibleTreatsFromDb();
 
     void deleteTreatFromDb(Treat treat);
 }

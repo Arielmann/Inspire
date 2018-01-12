@@ -35,10 +35,10 @@ import inspire.ariel.inspire.common.di.DaggerViewComponent;
 import inspire.ariel.inspire.common.di.PresentersModule;
 import inspire.ariel.inspire.common.di.RecyclerViewsModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
-import inspire.ariel.inspire.common.di.ViewInjector;
+import inspire.ariel.inspire.common.di.ViewsInjector;
 import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
@@ -48,7 +48,7 @@ import inspire.ariel.inspire.owner.treatdesigner.presenter.TreatsDesignerPresent
 import inspire.ariel.inspire.owner.treatdesigner.view.optionmenufragment.TreatDesignerMenuView;
 import lombok.Getter;
 
-public abstract class AbstractTreatDesignerActivity extends AppCompatActivity implements TreatsDesignerViewController, TreatsDesignerViewTreatProps, ViewInjector {
+public abstract class AbstractTreatDesignerActivity extends AppCompatActivity implements TreatsDesignerViewController, TreatsDesignerViewTreatProps, ViewsInjector {
 
     @Inject
     Handler backgroundChangeHandler;
@@ -104,7 +104,7 @@ public abstract class AbstractTreatDesignerActivity extends AppCompatActivity im
     private void initTreatMenuView() {
         treatDesignerMenuView.setTreatsDesignerActivityViewProps(this);
         treatDesignerMenuView.willInject(((InspireApplication) getApplication()).getAppComponent(), this, getAssets());
-        treatDesignerMenuView.initView();
+        treatDesignerMenuView.init();
     }
 
     private void inject() {

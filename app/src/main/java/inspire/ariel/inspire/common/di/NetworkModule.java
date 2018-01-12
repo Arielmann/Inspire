@@ -14,7 +14,7 @@ import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkChecker;
 
 @Module

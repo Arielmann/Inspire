@@ -21,7 +21,7 @@ import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.common.localdbmanager.RealmManager;
 
@@ -46,9 +46,9 @@ public class PushNotificationService extends BackendlessPushService {
     public boolean onMessage(Context context, Intent serverIntent) {
         DataManager.getInstance().setMessagesSize(DataManager.getInstance().getMessagesSize() + 1);
         Treat newTreat = parseQuote(serverIntent);
-        RealmManager.getInstance().saveTreat(newTreat);
+        RealmManager.getInstance().insertTreat(newTreat);
 
-        if(TreatsListActivity.isInForeground){
+        if(TreatsListActivity.isInForeground()){
             handelMessageWhenActivityInForeground(newTreat);
             return false;
         }
@@ -123,7 +123,7 @@ public class PushNotificationService extends BackendlessPushService {
     private Notification createNewQuoteNotification(String contentText, Treat newTreat) {
         Intent intent = new Intent(this, TreatsListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if(TreatsListActivity.isInStack) { //Treat download doesn't happen if activity is in stack so put the treat for it
+        if(TreatsListActivity.isInStack()) { //Treat download doesn't happen if activity is in stack so put the treat for it
             intent.putExtra(AppStrings.KEY_TREAT, newTreat);
         }
         PendingIntent treatListPendingIntent = PendingIntent.getActivity(this, AppNumbers.DEFAULT_REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT);

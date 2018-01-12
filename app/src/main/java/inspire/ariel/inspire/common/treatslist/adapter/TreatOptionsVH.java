@@ -6,9 +6,9 @@ import com.orhanobut.dialogplus.ViewHolder;
 import org.greenrobot.eventbus.EventBus;
 
 import inspire.ariel.inspire.R;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.treatslist.events.OnTreatDeleteClickedEvent;
-import inspire.ariel.inspire.common.treatslist.events.OnTreatUpdatedEvent;
+import inspire.ariel.inspire.common.treatslist.events.OnTreatsUpdateClickEvent;
 import inspire.ariel.inspire.databinding.VhAdminTreatOptionsBinding;
 import lombok.Getter;
 
@@ -36,7 +36,7 @@ public class TreatOptionsVH extends ViewHolder {
 
     public void init(DialogPlus dialog, Treat treat, int position) {
         binding.editBtn.setOnClickListener(view -> {
-            EventBus.getDefault().post(new OnTreatUpdatedEvent(treat, position));
+            EventBus.getDefault().post(new OnTreatsUpdateClickEvent(treat, position));
             dialog.dismiss();
         });
 

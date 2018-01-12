@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 
 public class TreatEditorActivity extends AbstractTreatDesignerActivity {

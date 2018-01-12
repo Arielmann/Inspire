@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import inspire.ariel.inspire.common.app.InspireApplication;
+import inspire.ariel.inspire.common.utils.activityutils.viewpagerutils.ViewPagerAdapter;
 import inspire.ariel.inspire.common.utils.errorutils.ErrorsManager;
 import inspire.ariel.inspire.common.localdbmanager.RealmManager;
 
@@ -20,8 +21,8 @@ import inspire.ariel.inspire.common.localdbmanager.RealmManager;
 
 public class AppModule {
 
-    private InspireApplication application;
-    private NotificationCompat.InboxStyle inboxStyle;
+    private final InspireApplication application;
+    private final NotificationCompat.InboxStyle inboxStyle;
 
     public AppModule(InspireApplication application) {
         this.application = application;

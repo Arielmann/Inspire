@@ -1,6 +1,6 @@
 package inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity;
 
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 
 public class TreatsCreatorActivity extends AbstractTreatDesignerActivity {
 

@@ -18,9 +18,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import hugo.weaving.DebugLog;
 import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
+import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
 import inspire.ariel.inspire.common.di.AppModule;
 import inspire.ariel.inspire.common.di.DaggerAppComponent;
@@ -33,9 +35,8 @@ import inspire.ariel.inspire.common.utils.asyncutils.CodependentTasksManager;
 import inspire.ariel.inspire.common.utils.fontutils.FontsManager;
 import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import io.realm.Realm;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
+@DebugLog
 public class InspireApplication extends Application {
 
     @Inject

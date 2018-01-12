@@ -14,6 +14,7 @@ import com.backendless.messaging.PublishOptions;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -24,13 +25,12 @@ import inspire.ariel.inspire.R;
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.datamanager.DataManager;
 import inspire.ariel.inspire.common.di.AppComponent;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenterImpl;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.common.resources.ResourcesProvider;
 import inspire.ariel.inspire.common.utils.backendutils.NetworkChecker;
 import inspire.ariel.inspire.common.utils.imageutils.InspireBackgroundImage;
-import inspire.ariel.inspire.common.localdbmanager.RealmManager;
 import inspire.ariel.inspire.owner.treatdesigner.model.TreatDesignerModel;
 import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.TreatsDesignerViewController;
 import lombok.Getter;
@@ -63,18 +63,20 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
         this.treatDesignerViewController = treatDesignerViewController;
     }
 
-    /**
-     * Lifecycle Methods
-     */
+    //==============================================================================================
+    //  Lifecycle methods
+    //==============================================================================================
+
 
     @Override
     public void onDestroy() {
         treatDesignerViewController = null;
     }
 
-    /**
-     * Getters
-     */
+    //==============================================================================================
+    //  Getters
+    //==============================================================================================
+
     @Override
     public String getBgImgName() {
         return model.getBgImageName();
@@ -90,9 +92,9 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
         return customResourcesProvider.getResources().getDrawable(model.getBgDrawableIntValue());
     }
 
-    /**
-     * Background Image Methods
-     */
+    //==============================================================================================
+    //  Background images methods
+    //==============================================================================================
 
     @Getter
     private DiscreteScrollView.OnItemChangedListener onItemChangedListener = (viewHolder, adapterPosition) -> willSetBackgroundImage(adapterPosition);
@@ -105,9 +107,9 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
         }
     }
 
-    /**
-     * Treat Validation
-     */
+    //==============================================================================================
+    //  Treat validation
+    //==============================================================================================
 
     public boolean validateTreatForUpload(String text) {
         if (text.replaceAll(AppStrings.REGEX_FIND_WHITESPACES, AppStrings.EMPTY_STRING).isEmpty()) {
@@ -128,9 +130,9 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
         return true;
     }
 
-    /**
-     * Server Communication
-     */
+    //==============================================================================================
+    //  Serve communication
+    //==============================================================================================
 
     //TODO: Protect from using the app id to post as this user from a rouge device
     @Override
@@ -146,7 +148,7 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
         treatsStorage.save(treat, new AsyncCallback<Treat>() {
             @Override
             public void handleResponse(Treat treat) {
-                RealmManager.getInstance().saveTreat(treat);
+                model.insertTreatToDb(treat);
                 sendPushNotification(DataManager.getInstance().getUser(), treat);
             }
 
@@ -196,9 +198,13 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
     }
 
     /**
-     * NOTE for keys:
-     * NOTIFICATION_HEADER_CONTENT_TEXT - For presenting in notification
-     * KEY_TEXT - The actual treat for the app
+     * <pre>
+     * Note for keys:
+     *
+     * NOTIFICATION_HEADER_CONTENT_TEXT - Text for push notification title
+     *
+     * KEY_TEXT - The actual treat's text for the app
+     * </pre>
      */
     //TODO: Don't register user to it's own server channel or you get double newTreat on his machine! (until app restarts)
     private void sendPushNotification(BackendlessUser user, Treat treat) {
@@ -224,9 +230,7 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
                 intent.putExtra(AppStrings.KEY_TREAT, treat);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 treatDesignerViewController.goToOtherActivity(intent);
-                setAdminTreatRelation(user, new ArrayList<Treat>() {{
-                    add(treat);
-                }});
+                setAdminTreatRelation(user, Collections.singletonList(treat));
             }
 
             @Override
@@ -237,9 +241,7 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
                 Intent intent = new Intent().putExtra(AppStrings.KEY_TREAT, treat);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 treatDesignerViewController.goToOtherActivity(intent);
-                setAdminTreatRelation(user, new ArrayList<Treat>() {{
-                    add(treat);
-                }});
+                setAdminTreatRelation(user, Collections.singletonList(treat));
             }
         });
     }
@@ -260,9 +262,10 @@ public class TreatsDesignerPresenterImpl implements TreatsDesignerPresenter {
                 });
     }
 
-    /**
-     * Menu Items Clicked Methods
-     */
+    //==============================================================================================
+    //  Menu items click methods
+    //==============================================================================================
+
 
     @Override
     public void onTreatFontClicked(String path) {

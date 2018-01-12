@@ -8,7 +8,7 @@ import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.Trea
 
 public interface TreatDesignerMenuView {
 
-    void initView();
+    void init();
 
     void setTreatsDesignerActivityViewProps(TreatsDesignerViewTreatProps treatCreatorViewProps);
 

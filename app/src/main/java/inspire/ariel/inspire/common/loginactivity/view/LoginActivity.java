@@ -1,6 +1,5 @@
 package inspire.ariel.inspire.common.loginactivity.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -9,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -22,14 +20,14 @@ import inspire.ariel.inspire.common.di.DaggerViewComponent;
 import inspire.ariel.inspire.common.di.RecyclerViewsModule;
 import inspire.ariel.inspire.common.di.PresentersModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
-import inspire.ariel.inspire.common.di.ViewInjector;
+import inspire.ariel.inspire.common.di.ViewsInjector;
 import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.loginactivity.presenter.LoginPresenter;
 import inspire.ariel.inspire.common.treatslist.view.TreatsListActivity;
 import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.databinding.ActivityLoginBinding;
 
-public class LoginActivity extends AppCompatActivity implements LoginView, ViewInjector {
+public class LoginActivity extends AppCompatActivity implements LoginView, ViewsInjector {
 
 
     //4267B2 - Facebook blue color

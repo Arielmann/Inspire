@@ -27,7 +27,9 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import hugo.weaving.DebugLog;
 import inspire.ariel.inspire.R;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.app.InspireApplication;
 import inspire.ariel.inspire.common.constants.AppNumbers;
 import inspire.ariel.inspire.common.constants.AppStrings;
@@ -38,15 +40,13 @@ import inspire.ariel.inspire.common.di.DaggerViewComponent;
 import inspire.ariel.inspire.common.di.PresentersModule;
 import inspire.ariel.inspire.common.di.RecyclerViewsModule;
 import inspire.ariel.inspire.common.di.ResourcesModule;
-import inspire.ariel.inspire.common.di.ViewInjector;
+import inspire.ariel.inspire.common.di.ViewsInjector;
 import inspire.ariel.inspire.common.di.ViewsModule;
 import inspire.ariel.inspire.common.loginactivity.view.LoginActivity;
-import inspire.ariel.inspire.common.treatslist.Treat;
 import inspire.ariel.inspire.common.treatslist.adapter.TreatListAdapter;
 import inspire.ariel.inspire.common.treatslist.events.OnTreatDeleteClickedEvent;
-import inspire.ariel.inspire.common.treatslist.events.OnTreatUpdatedEvent;
+import inspire.ariel.inspire.common.treatslist.events.OnTreatsUpdateClickEvent;
 import inspire.ariel.inspire.common.treatslist.presenter.TreatsListPresenter;
-import inspire.ariel.inspire.common.treatslist.view.optionsmenufragment.TreatListMenuView;
 import inspire.ariel.inspire.common.utils.activityutils.ActivityStarter;
 import inspire.ariel.inspire.common.utils.listutils.DiscreteScrollViewData;
 import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
@@ -55,10 +55,11 @@ import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.Trea
 import inspire.ariel.inspire.owner.treatdesigner.view.treatdesigneractivity.TreatsCreatorActivity;
 import lombok.Getter;
 
-public class TreatsListActivity extends AppCompatActivity implements TreatsListView, ViewInjector {
+@DebugLog
+public class TreatsListActivity extends AppCompatActivity implements TreatsListView, ViewsInjector {
 
     @Inject //List Module
-    TreatListAdapter adapter;
+            TreatListAdapter adapter;
 
     @Inject //Views Module
     @Named(AppStrings.TREAT_LIST_ACTIVITY_DISCRETE_SCROLL_VIEW_DATA)
@@ -83,18 +84,17 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     @Getter
     TreatsListPresenter presenter;
 
-    @Inject //Views Module
-    TreatListMenuView treatListMenuView;
-
-    public static boolean isInForeground;
-    public static boolean isInStack;
+    @Getter
+    private static boolean isInForeground;
+    @Getter
+    private static boolean isInStack;
     private final String TAG = TreatsListActivity.class.getName();
     private final Set<KProgressHUD> activeProgressDialogs = new HashSet<>();
     private ActivityTreatsListBinding binding;
 
-    /**
-     * Initialization
-     */
+    //==============================================================================================
+    //  Init
+    //==============================================================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
         isInStack = true;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_treats_list);
         inject();
-        presenter.prepareForFirsLaunchIfNeeded();
+        presenter.prepareForFirstLaunchIfNeeded();
         ((InspireApplication) getApplication()).initAppForFirstTimeIfNeeded(new GenericOperationCallback() {
             @Override
             public void onSuccess() {
@@ -130,7 +130,6 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     }
 
     private void initActivity() {
-        treatListMenuView.init(this);
         //TODO: You can't know between treats download or login check - who will finish first. Therefore, dismiss progress dialog only after both finish
         presenter.startOperations(adapter); //presenter's model already available so no crush
         initTreatsRecyclerView();
@@ -151,9 +150,9 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
         binding.treatsRv.setItemTransformer(discreteScrollViewData.getScaleTransformer());
     }
 
-    /**
-     * Optional Life Cycle Methods
-     */
+    //==============================================================================================
+    //  Lifecycle methods
+    //==============================================================================================
 
     @Override
     protected void onStart() {
@@ -193,9 +192,9 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * Event bus
-     */
+    //==============================================================================================
+    //  Event bus
+    //==============================================================================================
 
     @Subscribe
     public void onTreatDeleteClickedEvent(OnTreatDeleteClickedEvent event) {
@@ -203,28 +202,22 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
     }
 
     @Subscribe
-    public void onTreatUpdateClickedEvent(OnTreatUpdatedEvent event) {
+    public void onTreatUpdateClickedEvent(OnTreatsUpdateClickEvent event) {
         Intent intent = new Intent(binding.getRoot().getContext(), TreatEditorActivity.class);
         intent.putExtra(AppStrings.KEY_TREAT, event.getTreat());
         intent.putExtra(AppStrings.KEY_TREAT_POSITION, event.getPosition());
         ((TreatsListActivity) binding.getRoot().getContext()).startActivityForResult(intent, AppNumbers.DEFAULT_REQUEST_CODE);
     }
 
-    /**
-     * User login status adaptation
-     */
+    //==============================================================================================
+    //  User login status adaptation
+    //==============================================================================================
 
     @Override
     public void onUserLoggedIn() {
         dismissProgressDialog(loginLogoutProgressDialog);
         binding.goToCreateTreatActivityBtn.setVisibility(DataManager.getInstance().getUserStatusData().getGoToTreatDesignerVisibility());
-        treatListMenuView.resetLoginLogoutBtn(getResources().getDrawable(R.drawable.logout_icon), treatListMenuView.getOnLogoutClicked());
         binding.goToCreateTreatActivityBtn.setOnClickListener(view -> ActivityStarter.startActivity(TreatsListActivity.this, TreatsCreatorActivity.class));
-    }
-
-    @Override
-    public void showToastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -234,9 +227,9 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
         binding.goToCreateTreatActivityBtn.setVisibility(View.GONE);
     }
 
-    /**
-     * Progress Dialog
-     */
+    //==============================================================================================
+    //  Progress dialog
+    //==============================================================================================
 
     @Override
     public void showProgressDialog(KProgressHUD dialog) {
@@ -260,12 +253,13 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
         }
     }
 
-    /**
-     * Show Messages
-     */
+    //==============================================================================================
+    //  Show messages
+    //==============================================================================================
+
 
     public void showSnackbarMessage(String message) {
-        if(message.isEmpty()){
+        if (message.isEmpty()) {
             return;
         }
         Snackbar snackBar = Snackbar.make(binding.treatListLayout, message, AppTimeMillis.ALMOST_FOREVER);
@@ -275,6 +269,12 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
         snackBar.setAction(R.string.ok, view -> snackBar.dismiss());
         snackBar.show();
     }
+
+    @Override
+    public void showToastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
 
     @Override
     public void onServerOperationFailed(String error) {
@@ -316,17 +316,21 @@ public class TreatsListActivity extends AppCompatActivity implements TreatsListV
                 .show();
     }
 
-    /**
-     * Getters
-     */
+    //==============================================================================================
+    //  Getters
+    //==============================================================================================
 
     @Override
     public Context getContext() {
         return this;
     }
 
+    //==============================================================================================
+    //  DiscreteScrollView
+    //==============================================================================================
+
     /**
-     * DiscreteScrollView Programmatic Scrolling
+     * DiscreteScrollView programmatic scrolling
      */
 
     @Override

@@ -4,12 +4,12 @@ import android.content.Intent;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.treatslist.adapter.TreatListAdapterPresenter;
 
 public interface TreatsListPresenter {
 
-    void prepareForFirsLaunchIfNeeded();
+    void prepareForFirstLaunchIfNeeded();
 
     void startOperations(TreatListAdapterPresenter adapterPresenter);
 

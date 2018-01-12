@@ -1,5 +1,7 @@
 package inspire.ariel.inspire.common.treatslist.model;
 
+import android.content.Context;
+
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
@@ -9,8 +11,9 @@ import javax.inject.Inject;
 
 import inspire.ariel.inspire.common.constants.AppStrings;
 import inspire.ariel.inspire.common.di.AppComponent;
-import inspire.ariel.inspire.common.treatslist.Treat;
+import inspire.ariel.inspire.common.Treat;
 import inspire.ariel.inspire.common.localdbmanager.RealmManager;
+import inspire.ariel.inspire.common.utils.operationsutils.GenericOperationCallback;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,15 +30,15 @@ public class TreatsListModelImpl implements TreatListModel {
     RealmManager realmManager;
 
     private static TreatsListModelImpl model;
-    @Setter @Getter private List<Treat> treatsInAdapter;
+    @Setter @Getter private List<Treat> treats;
 
     public static TreatsListModelImpl getInstance(AppComponent component) {
         if (model == null) {
             model = new TreatsListModelImpl();
             component.inject(model);
-            model.treatsInAdapter = new ArrayList<>();
+            model.treats = new ArrayList<>();
             if (!((boolean) Hawk.get(AppStrings.KEY_IS_FIRST_TIME_LOGGED_IN_FOR_THIS_USER))) {
-                model.treatsInAdapter = model.realmManager.getVisibleTreats();
+                model.treats = model.realmManager.getVisibleTreats();
             }
         }
         return model;
@@ -44,19 +47,40 @@ public class TreatsListModelImpl implements TreatListModel {
     private TreatsListModelImpl() {
     }
 
-    @Override
-    public void saveTreatToDb(Treat treat) {
-        realmManager.saveTreat(treat);
+    public void insertOrUpdateTreatsListToDb(List<Treat> treats) {
+        realmManager.insertOrUpdateTreatsList(treats);
     }
 
     @Override
-    public void saveTreatsListToDb(List<Treat> treats) {
-        realmManager.saveTreatsList(treats);
+    public void syncRealmWithServerTreats(Context context, List<Treat> serverTreats, GenericOperationCallback networkOperationsCallback) {
+        realmManager.syncRealmWithServerTreats(context, serverTreats, treats, new GenericOperationCallback() {
+            @Override
+            public void onSuccess() {
+                model.treats = realmManager.getVisibleTreats();
+                networkOperationsCallback.onSuccess();
+            }
+
+            @Override
+            public void onFailure(String errorForUser) {
+                networkOperationsCallback.onFailure(errorForUser);
+            }
+        });
     }
 
     @Override
-    public void syncRealmWithServerTreats(List<Treat> serverTreats) {
-        realmManager.syncRealmWithServerTreats(serverTreats);
+    public void syncPurchasedTreatsInDb(Context context, List<Treat> serverTreats, GenericOperationCallback netWorkOperationsCallback) {
+        realmManager.syncPurchasedTreatsInDb(context, serverTreats, new GenericOperationCallback() {
+            @Override
+            public void onSuccess() {
+                model.treats = realmManager.getVisibleTreats();
+                netWorkOperationsCallback.onSuccess();
+            }
+
+            @Override
+            public void onFailure(String errorForUser) {
+                netWorkOperationsCallback.onFailure(errorForUser);
+            }
+        });
     }
 
     @Override
@@ -65,18 +89,13 @@ public class TreatsListModelImpl implements TreatListModel {
     }
 
     @Override
+    public void updateTreatUserPurchasesInDb(Treat treat) {
+        realmManager.updateTreatUserPurchasesColumn(treat);
+    }
+
+    @Override
     public void deleteAllTreatsFromDb() {
         realmManager.deleteAllTreats();
-    }
-
-    @Override
-    public void updatePurchasedTreatsInDb(List<Treat> serverTreats) {
-        realmManager.updatePurchasedTreatsInDb(serverTreats);
-    }
-
-    @Override
-    public List<Treat> getVisibleTreatsFromDb() {
-        return realmManager.getVisibleTreats();
     }
 
     @Override

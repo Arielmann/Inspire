@@ -1,4 +1,4 @@
-package inspire.ariel.inspire.common.treatslist;
+package inspire.ariel.inspire.common;
 
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
@@ -18,57 +18,74 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NonNull;
-import lombok.ToString;
 import weborb.service.ExcludeProperties;
 
 @Data
 @Builder
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"image"})//Throws warning if not put as string literal
-@ToString
+@EqualsAndHashCode(exclude = {"image", "userPurchases"}) //Throws warning if not put as string literal
 @RealmClass
 @ExcludeProperties(propertyNames = {AppStrings.KEY_IS_PURCHASED, AppStrings.KEY_USER_PURCHASES, AppStrings.KEY_IMAGE, AppStrings.BACKENDLESS_TABLE_TREAT_COLUMN_IS_VISIBLE_TO_USER})
 public class Treat implements Parcelable, RealmModel {
 
-    @PrimaryKey @Nullable private String objectId;
-    @NonNull private String ownerId;
-    @NonNull private String text;
+    @PrimaryKey
+    @Nullable
+    private String objectId;
+    @NonNull
+    private String ownerId;
+    @NonNull
+    private String text;
     private int textColor;
     private int textSize;
-    @NonNull private String fontPath;
-    @NonNull private String bgImageName;
-    @Nullable private Date created;
-    @Ignore private Drawable image;
-    @Builder.Default private int purchasesLimit = AppNumbers.DEFAULT_PURCHASES_LIMIT;
-    @Index @Builder.Default private int userPurchases = AppNumbers.DEFAULT_TREAT_TIMES_PURCHASED;
-    @Builder.Default private int allPurchases = AppNumbers.DEFAULT_TREAT_TIMES_PURCHASED;
-    @Getter @Index @Builder.Default private boolean purchaseable = true;
-    @Index @Builder.Default private boolean visible = true;
+    @NonNull
+    private String fontPath;
+    @NonNull
+    private String bgImageName;
+    @Nullable
+    private Date created;
+    @Ignore
+    private Drawable image;
+    @Builder.Default
+    private int purchasesLimit = AppNumbers.DEFAULT_PURCHASES_LIMIT;
+    @Index
+    @Builder.Default
+    private int userPurchases = AppNumbers.DEFAULT_TREAT_USER_PURCHASED;
+    @Builder.Default
+    private int allPurchases = AppNumbers.DEFAULT_TREAT_USER_PURCHASED;
+    @Index
+    @Builder.Default
+    private boolean visible = true;
 
-    public Treat() {
-    }
+    public Treat(){}
 
     protected Treat(Parcel in) {
-        text = in.readString();
+        objectId = in.readString();
         ownerId = in.readString();
+        text = in.readString();
         textColor = in.readInt();
         textSize = in.readInt();
         fontPath = in.readString();
         bgImageName = in.readString();
-        objectId = in.readString();
+        purchasesLimit = in.readInt();
+        userPurchases = in.readInt();
+        allPurchases = in.readInt();
+        visible = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(text);
+        dest.writeString(objectId);
         dest.writeString(ownerId);
+        dest.writeString(text);
         dest.writeInt(textColor);
         dest.writeInt(textSize);
         dest.writeString(fontPath);
         dest.writeString(bgImageName);
-        dest.writeString(objectId);
+        dest.writeInt(purchasesLimit);
+        dest.writeInt(userPurchases);
+        dest.writeInt(allPurchases);
+        dest.writeByte((byte) (visible ? 1 : 0));
     }
 
     @Override
@@ -87,6 +104,7 @@ public class Treat implements Parcelable, RealmModel {
             return new Treat[size];
         }
     };
+
 }
 
 

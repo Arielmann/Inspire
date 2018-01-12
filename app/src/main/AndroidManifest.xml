@@ -79,7 +79,8 @@
 
         <activity android:name=".common.singletreat.SingleTreatActivity" />
         <activity android:name=".common.loginactivity.view.LoginActivity" />
-        <activity android:name=".owner.treatdesigner.view.treatdesigneractivity.AbstractTreatDesignerActivity"></activity>
+        <activity android:name=".owner.treatdesigner.view.treatdesigneractivity.AbstractTreatDesignerActivity" />
+        <activity android:name=".common.purchaseshistory.view.PurchasesHistoryFragment"></activity>
     </application>
 
 </manifest>

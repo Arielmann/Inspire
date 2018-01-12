@@ -1,5 +1,7 @@
 package inspire.ariel.inspire.owner.treatdesigner.model;
 
+import inspire.ariel.inspire.common.localdbmanager.RealmManager;
+import inspire.ariel.inspire.common.Treat;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,4 +17,8 @@ public class TreatDesignerModelImpl implements TreatDesignerModel {
    @NonNull String bgImageName;
    int bgDrawableIntValue;
 
+   @Override
+   public void insertTreatToDb(Treat treat) {
+      RealmManager.getInstance().insertTreat(treat);
+   }
 }
